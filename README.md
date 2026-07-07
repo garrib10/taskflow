@@ -1,11 +1,11 @@
 # TaskFlow
 
-TaskFlow is a rules-based Kanban board built with React and TypeScript.
-
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)
+
+TaskFlow is a rules-based Kanban board built with React and TypeScript.
 
 Unlike a traditional task board, TaskFlow uses type-safe workflow rules, priority scoring, and task constraints to create a structured task management system.
 
