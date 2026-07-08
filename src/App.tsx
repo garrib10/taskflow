@@ -1,12 +1,10 @@
 import "./App.css";
 
+import Board from "./components/Board/Board";
+import { initialBoard } from "./utils/mockData";
+
 function App() {
-  return (
-    <main>
-      <h1>TaskFlow</h1>
-      <p>Rules-Based Kanban Board</p>
-    </main>
-  );
+  return <Board board={initialBoard} />;
 }
 
 export default App;
