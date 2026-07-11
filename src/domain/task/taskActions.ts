@@ -17,9 +17,9 @@ export function createTask(title: string, priority: Priority): Task {
   };
 }
 
-export function moveTask(task: Task, newStatus: TaskStatus): Task {
+export function moveTask(task: Task, newStatus: TaskStatus): Task | null {
   if (!canMoveTask(task.status, newStatus)) {
-    throw new Error(`Cannot move task from ${task.status} to ${newStatus}`);
+    return null;
   }
 
   return {

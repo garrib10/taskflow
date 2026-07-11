@@ -39,6 +39,10 @@ function boardReducer(state: Board, action: BoardAction): Board {
       // Validate and update task status
       const updatedTask = moveTask(movedTask, action.newStatus);
 
+      if (!updatedTask) {
+        return state;
+      }
+
       // Add task to the new column
       return {
         ...state,

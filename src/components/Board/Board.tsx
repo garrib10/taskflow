@@ -1,10 +1,14 @@
+import { useEffect, useRef, useState } from "react";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { TaskStatus } from "../../domain/task/Task";
 import type { BoardAction } from "../../hooks/useBoardReducer";
 
+import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
+
 import Column from "../Column/Column";
+import Notification from "../Notification/Notification";
 
 interface BoardProps {
   board: BoardType;
@@ -12,6 +16,18 @@ interface BoardProps {
 }
 
 export default function Board({ board, dispatch }: BoardProps) {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const errorTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
+    };
+  }, []);
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
@@ -22,11 +38,29 @@ export default function Board({ board, dispatch }: BoardProps) {
     const taskId = active.id.toString();
     const newStatus = over.id.toString() as TaskStatus;
 
-    const currentStatus = board.columns
+    const currentTask = board.columns
       .flatMap((column) => column.tasks)
-      .find((task) => task.id === taskId)?.status;
+      .find((task) => task.id === taskId);
 
-    if (!currentStatus || currentStatus === newStatus) {
+    if (!currentTask) {
+      return;
+    }
+
+    if (currentTask.status === newStatus) {
+      return;
+    }
+
+    if (!canMoveTask(currentTask.status, newStatus)) {
+      setErrorMessage(getMoveErrorMessage(currentTask.status, newStatus));
+
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
+
+      errorTimeoutRef.current = window.setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+
       return;
     }
 
@@ -35,11 +69,15 @@ export default function Board({ board, dispatch }: BoardProps) {
       taskId,
       newStatus,
     });
+
+    setErrorMessage(null);
   }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div>
+        {errorMessage && <Notification message={errorMessage} />}
+
         <h1>{board.name}</h1>
 
         <div className="board">
