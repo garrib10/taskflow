@@ -4,9 +4,9 @@ import Board from "./components/Board/Board";
 import { useBoardReducer } from "./hooks/useBoardReducer";
 
 function App() {
-  const [board] = useBoardReducer();
+  const [board, dispatch] = useBoardReducer();
 
-  return <Board board={board} />;
+  return <Board board={board} dispatch={dispatch} />;
 }
 
 export default App;

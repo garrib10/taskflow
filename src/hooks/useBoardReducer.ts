@@ -7,7 +7,7 @@ import { moveTask } from "../domain/task/taskActions";
 import { initialBoard } from "../utils/mockData";
 import { loadBoard, saveBoard } from "../utils/storage";
 
-type BoardAction = {
+export type BoardAction = {
   type: "MOVE_TASK";
   taskId: string;
   newStatus: TaskStatus;
@@ -15,16 +15,43 @@ type BoardAction = {
 
 function boardReducer(state: Board, action: BoardAction): Board {
   switch (action.type) {
-    case "MOVE_TASK":
+    case "MOVE_TASK": {
+      let movedTask = null;
+
+      // Remove task from its current column
+      const columnsWithoutTask = state.columns.map((column) => ({
+        ...column,
+        tasks: column.tasks.filter((task) => {
+          if (task.id === action.taskId) {
+            movedTask = task;
+            return false;
+          }
+
+          return true;
+        }),
+      }));
+
+      // Task was not found
+      if (!movedTask) {
+        return state;
+      }
+
+      // Validate and update task status
+      const updatedTask = moveTask(movedTask, action.newStatus);
+
+      // Add task to the new column
       return {
         ...state,
-        columns: state.columns.map((column) => ({
-          ...column,
-          tasks: column.tasks.map((task) =>
-            task.id === action.taskId ? moveTask(task, action.newStatus) : task,
-          ),
-        })),
+        columns: columnsWithoutTask.map((column) =>
+          column.id === action.newStatus
+            ? {
+                ...column,
+                tasks: [...column.tasks, updatedTask],
+              }
+            : column,
+        ),
       };
+    }
 
     default:
       return state;
