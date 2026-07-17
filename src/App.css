@@ -23,3 +23,14 @@
   padding: 12px;
   margin-bottom: 10px;
 }
+
+.top-priority {
+  box-shadow: 0 0 0 2px gold;
+}
+
+.top-priority-badge {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: goldenrod;
+  margin-bottom: 0.5rem;
+}
