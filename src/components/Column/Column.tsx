@@ -19,11 +19,23 @@ export default function Column({ column }: ColumnProps) {
 
   return (
     <div ref={setNodeRef} className="column">
-      <h2>{column.title}</h2>
+      <div className="column-header">
+        <h2>
+          {column.title} ({column.tasks.length})
+        </h2>
+      </div>
 
-      {sortedTasks.map((task, index) => (
-        <TaskCard key={task.id} task={task} isTopPriority={index === 0} />
-      ))}
+      {sortedTasks.length === 0 ? (
+        <div className="empty-column">No tasks</div>
+      ) : (
+        sortedTasks.map((task, index) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            isTopPriority={column.id !== "done" && index === 0}
+          />
+        ))
+      )}
     </div>
   );
 }

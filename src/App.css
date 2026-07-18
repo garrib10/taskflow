@@ -1,36 +1,272 @@
+/* ===========================
+   Board Layout
+=========================== */
+
+.board-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  width: 100%;
+}
+
 .board {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   align-items: flex-start;
+
+  padding: 1rem 0;
 }
+
+.board-header {
+  background: white;
+
+  padding: 1rem 1.5rem;
+
+  border-radius: 12px;
+
+  margin-bottom: 1.5rem;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.board-header h1 {
+  margin: 0;
+}
+
+.board-header p {
+  margin: 4px 0 0;
+}
+
+/* ===========================
+   Columns
+=========================== */
 
 .column {
   flex: 1;
-  min-height: 400px;
+
+  min-height: 500px;
+
+  background: var(--column-background);
+
+  border: 1px solid var(--column-border);
+
+  border-radius: var(--radius-large);
+
   padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+
+  transition: box-shadow var(--transition-speed);
 }
+
+.column h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+
+  color: var(--text-primary);
+}
+
+.column-header {
+  background: white;
+
+  padding: 1rem;
+
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+
+  border-bottom: 1px solid var(--column-border);
+
+  margin: -1rem -1rem 1rem;
+}
+
+.column-header h2 {
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 1rem;
+}
+
+.empty-column {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  height: 150px;
+
+  color: var(--text-secondary);
+
+  font-style: italic;
+
+  border: 2px dashed var(--column-border);
+
+  border-radius: var(--radius-medium);
+}
+
+/* ===========================
+   Task Cards
+=========================== */
 
 .task-card {
+  background: var(--card-background);
+  cursor: grab;
+
   margin-bottom: 1rem;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+
+  padding: 1rem;
+
+  border-radius: var(--radius-medium);
+
+  box-shadow: var(--shadow-small);
+
+  transition:
+    transform var(--transition-speed),
+    box-shadow var(--transition-speed);
 }
 
-.notification {
-  padding: 12px;
-  margin-bottom: 10px;
+.task-card h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
 }
+
+.task-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow: var(--shadow-medium);
+}
+
+.task-description {
+  color: var(--text-secondary);
+  margin: 0.75rem 0 1rem;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.task-score {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+/* ===========================
+   Priority Borders
+=========================== */
+
+.priority-high {
+  border-left: 6px solid var(--priority-high);
+}
+
+.priority-medium {
+  border-left: 6px solid var(--priority-medium);
+}
+
+.priority-low {
+  border-left: 6px solid var(--priority-low);
+}
+
+/* ===========================
+   Priority Badges
+=========================== */
+
+.badge-high,
+.badge-medium,
+.badge-low {
+  display: inline-block;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  margin-top: 0.5rem;
+}
+
+.badge-high {
+  color: var(--priority-high);
+  background: #fee2e2;
+}
+
+.badge-medium {
+  color: var(--priority-medium);
+  background: #fef3c7;
+}
+
+.badge-low {
+  color: var(--priority-low);
+  background: #dcfce7;
+}
+
+.completed-badge {
+  color: #15803d;
+
+  background: #dcfce7;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+}
+
+/* ===========================
+   Highest Priority
+=========================== */
 
 .top-priority {
-  box-shadow: 0 0 0 2px gold;
+  box-shadow:
+    0 0 0 2px gold,
+    var(--shadow-small);
 }
 
 .top-priority-badge {
-  font-size: 0.8rem;
-  font-weight: bold;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  width: fit-content;
+
+  margin: 0 auto 1rem;
+
+  padding: 4px 12px;
+
+  border-radius: 999px;
+
+  background: #fef3c7;
+
   color: goldenrod;
-  margin-bottom: 0.5rem;
+
+  font-size: 0.75rem;
+
+  font-weight: 700;
+}
+
+/* ===========================
+   Notification
+=========================== */
+
+.notification {
+  background: #fee2e2;
+
+  color: #991b1b;
+
+  border: 1px solid #fecaca;
+
+  border-radius: var(--radius-small);
+
+  padding: 12px 16px;
+
+  margin-bottom: 1rem;
+
+  box-shadow: var(--shadow-small);
 }

@@ -75,10 +75,13 @@ export default function Board({ board, dispatch }: BoardProps) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div>
+      <div className="board-container">
         {errorMessage && <Notification message={errorMessage} />}
 
-        <h1>{board.name}</h1>
+        <div className="board-header">
+          <h1>TaskFlow</h1>
+          <p>Rule-Based Workflow Board</p>
+        </div>
 
         <div className="board">
           {board.columns.map((column) => (

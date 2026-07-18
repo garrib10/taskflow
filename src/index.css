@@ -5,11 +5,45 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+
   line-height: 1.5;
   font-weight: 400;
 
-  color: #1f2937;
-  background-color: #ffffff;
+  /* ===== App Colors ===== */
+  --background: #f4f6f9;
+  --board-background: #ffffff;
+
+  /* ===== Columns ===== */
+  --column-background: #e9eef5;
+  --column-border: #d8e0ea;
+
+  /* ===== Cards ===== */
+  --card-background: #ffffff;
+
+  /* ===== Text ===== */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+
+  /* ===== Priority ===== */
+  --priority-high: #dc2626;
+  --priority-medium: #d97706;
+  --priority-low: #16a34a;
+
+  /* ===== Shadows ===== */
+  --shadow-small: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 8px 20px rgba(0, 0, 0, 0.16);
+
+  /* ===== Radius ===== */
+  --radius-large: 16px;
+  --radius-medium: 12px;
+  --radius-small: 8px;
+
+  /* ===== Animation ===== */
+  --transition-speed: 0.18s ease;
+
+  color: var(--text-primary);
+  background-color: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,6 +58,7 @@
 body {
   margin: 0;
   min-width: 320px;
+  background: var(--background);
 }
 
 #root {
