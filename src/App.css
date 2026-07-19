@@ -270,3 +270,61 @@
 
   box-shadow: var(--shadow-small);
 }
+/* /* ===========================
+   Responsive Design
+=========================== */
+
+/* Small laptops / tablets */
+@media (max-width: 1024px) {
+  .board {
+    gap: 16px;
+
+    overflow-x: auto;
+    flex-wrap: nowrap;
+
+    padding-bottom: 0.5rem;
+  }
+
+  .column {
+    flex: 0 0 320px;
+    min-height: 450px;
+  }
+
+  .board::-webkit-scrollbar {
+    height: 8px;
+  }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+  .board {
+    flex-direction: column;
+
+    overflow-x: visible;
+  }
+
+  .column {
+    width: 100%;
+    flex: 1;
+
+    min-height: auto;
+  }
+
+  .board-header {
+    text-align: center;
+  }
+
+  .board-container {
+    padding: 0 1rem;
+  }
+
+  .task-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .task-card h3 {
+    font-size: 1rem;
+  }
+}
