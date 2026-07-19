@@ -30,7 +30,17 @@ The goal of this project is to demonstrate modern React development practices in
 
 ## Screenshots
 
-Screenshots coming soon.
+### Board Overview
+
+![TaskFlow Board](./screenshots/taskflow-board.png)
+
+### Task Card Design
+
+![TaskFlow Task Card](./screenshots/taskflow-card.png)
+
+### Workflow Validation
+
+![TaskFlow Workflow Validation](./screenshots/taskflow-validation.png)
 
 ---
 
