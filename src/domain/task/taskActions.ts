@@ -12,6 +12,7 @@ export function createTask(title: string, priority: Priority): Task {
     id: crypto.randomUUID(),
     title,
     priority,
+    category: "feature",
     status: "todo",
     createdAt: new Date(),
   };

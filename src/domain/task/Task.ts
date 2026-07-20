@@ -1,3 +1,4 @@
+import type { TaskCategory } from "./taskCategory";
 /** union type for task priority and status */
 
 export type Priority = "low" | "medium" | "high";
@@ -11,6 +12,7 @@ export interface Task {
   title: string;
   description?: string;
   priority: Priority;
+  category: TaskCategory;
   status: TaskStatus;
   createdAt: Date;
 }

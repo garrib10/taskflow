@@ -1,9 +1,8 @@
 import { useDraggable } from "@dnd-kit/core";
-
 import type { Task } from "../../domain/task/Task";
-
 import { getPriorityScore } from "../../domain/task/taskPriority";
 import { priorityStyles } from "../../domain/task/priorityStyles";
+import { categoryStyles } from "../../domain/task/categoryStyles";
 
 interface TaskCardProps {
   task: Task;
@@ -25,6 +24,7 @@ export default function TaskCard({
     : undefined;
 
   const priorityStyle = priorityStyles[task.priority];
+  const categoryStyle = categoryStyles[task.category];
 
   return (
     <div
@@ -41,6 +41,10 @@ export default function TaskCard({
       )}
 
       <h3>{task.title}</h3>
+
+      <span className={`task-category ${categoryStyle.badgeClass}`}>
+        {categoryStyle.label}
+      </span>
 
       {task.description && (
         <p className="task-description">{task.description}</p>
