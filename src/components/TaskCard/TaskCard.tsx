@@ -7,11 +7,13 @@ import { categoryStyles } from "../../domain/task/categoryStyles";
 interface TaskCardProps {
   task: Task;
   isTopPriority?: boolean;
+  onEdit: (task: Task) => void;
 }
 
 export default function TaskCard({
   task,
   isTopPriority = false,
+  onEdit,
 }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
@@ -41,7 +43,6 @@ export default function TaskCard({
       )}
 
       <h3>{task.title}</h3>
-
       <span className={`task-category ${categoryStyle.badgeClass}`}>
         {categoryStyle.label}
       </span>
@@ -60,6 +61,19 @@ export default function TaskCard({
         ) : (
           <span className="task-score">⭐ {getPriorityScore(task)} pts</span>
         )}
+
+        <button
+          className="edit-task-button"
+          onPointerDown={(event) => {
+            event.stopPropagation();
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onEdit(task);
+          }}
+        >
+          Edit
+        </button>
       </div>
     </div>
   );

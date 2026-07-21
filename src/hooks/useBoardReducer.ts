@@ -1,8 +1,6 @@
 import { useEffect, useReducer } from "react";
-
 import type { Board } from "../domain/board/Board";
 import type { Task, TaskStatus } from "../domain/task/Task";
-
 import { moveTask } from "../domain/task/taskActions";
 import { initialBoard } from "../utils/mockData";
 import { loadBoard, saveBoard } from "../utils/storage";
@@ -15,6 +13,10 @@ export type BoardAction =
     }
   | {
       type: "CREATE_TASK";
+      task: Task;
+    }
+  | {
+      type: "UPDATE_TASK";
       task: Task;
     };
 
@@ -34,10 +36,20 @@ function boardReducer(state: Board, action: BoardAction): Board {
       };
     }
 
-    case "MOVE_TASK": {
-      let movedTask = null;
+    case "UPDATE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.task.id ? action.task : task,
+          ),
+        })),
+      };
+    }
 
-      // Remove task from its current column
+    case "MOVE_TASK": {
+      let movedTask: Task | null = null;
       const columnsWithoutTask = state.columns.map((column) => ({
         ...column,
         tasks: column.tasks.filter((task) => {
@@ -50,19 +62,16 @@ function boardReducer(state: Board, action: BoardAction): Board {
         }),
       }));
 
-      // Task was not found
       if (!movedTask) {
         return state;
       }
 
-      // Validate and update task status
       const updatedTask = moveTask(movedTask, action.newStatus);
 
       if (!updatedTask) {
         return state;
       }
 
-      // Add task to the new column
       return {
         ...state,
         columns: columnsWithoutTask.map((column) =>

@@ -1,28 +1,45 @@
-import { useState } from "react";
-
-import type { Priority } from "../../domain/task/Task";
+import { useEffect, useState } from "react";
+import type { Priority, Task } from "../../domain/task/Task";
 import type { TaskCategory } from "../../domain/task/taskCategory";
-
-import { createTask } from "../../domain/task/taskActions";
+import { createTask, updateTask } from "../../domain/task/taskActions";
 import type { BoardAction } from "../../hooks/useBoardReducer";
 
-interface CreateTaskFormProps {
+interface TaskFormProps {
+  task?: Task | null;
   onClose: () => void;
   dispatch: React.Dispatch<BoardAction>;
+  onSuccess: (message: string) => void;
 }
 
-export default function CreateTaskForm({
+export default function TaskForm({
+  task,
   onClose,
   dispatch,
-}: CreateTaskFormProps) {
+  onSuccess,
+}: TaskFormProps) {
+  const isEditing = Boolean(task);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const [priority, setPriority] = useState<Priority>("medium");
-
   const [category, setCategory] = useState<TaskCategory>("feature");
-
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description ?? "");
+      setPriority(task.priority);
+      setCategory(task.category);
+    } else {
+      setTitle("");
+      setDescription("");
+      setPriority("medium");
+      setCategory("feature");
+    }
+
+    setError("");
+  }, [task]);
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -42,24 +59,43 @@ export default function CreateTaskForm({
       return;
     }
 
+    if (trimmedTitle.length > 150) {
+      setError("Task title cannot exceed 150 characters.");
+      return;
+    }
+
     if (!trimmedDescription) {
       setError("Task description is required.");
       return;
     }
 
-    const task = createTask(
-      trimmedTitle,
-      trimmedDescription,
-      priority,
-      category,
-    );
+    if (trimmedDescription.length > 300) {
+      setError("Task description cannot exceed 300 characters.");
+      return;
+    }
 
-    dispatch({
-      type: "CREATE_TASK",
-      task,
-    });
+    if (isEditing && task) {
+      dispatch({
+        type: "UPDATE_TASK",
+        task: updateTask(
+          task,
+          trimmedTitle,
+          trimmedDescription,
+          priority,
+          category,
+        ),
+      });
 
-    // Reset form
+      onSuccess("Task updated successfully.");
+    } else {
+      dispatch({
+        type: "CREATE_TASK",
+        task: createTask(trimmedTitle, trimmedDescription, priority, category),
+      });
+
+      onSuccess("Task created successfully.");
+    }
+
     setTitle("");
     setDescription("");
     setPriority("medium");
@@ -72,7 +108,7 @@ export default function CreateTaskForm({
   return (
     <div className="create-task-modal">
       <form onSubmit={handleSubmit}>
-        <h2>Create New Task</h2>
+        <h2>{isEditing ? "Edit Task" : "Create New Task"}</h2>
 
         {error && <p className="form-error">{error}</p>}
 
@@ -88,6 +124,7 @@ export default function CreateTaskForm({
         />
 
         <small className="character-count">{title.trim().length}/150</small>
+
         <label htmlFor="task-description">Description</label>
 
         <textarea
@@ -110,9 +147,7 @@ export default function CreateTaskForm({
           onChange={(event) => setPriority(event.target.value as Priority)}
         >
           <option value="low">Low</option>
-
           <option value="medium">Medium</option>
-
           <option value="high">High</option>
         </select>
 
@@ -124,15 +159,10 @@ export default function CreateTaskForm({
           onChange={(event) => setCategory(event.target.value as TaskCategory)}
         >
           <option value="feature">Feature</option>
-
           <option value="ui">UI</option>
-
           <option value="bug">Bug</option>
-
           <option value="testing">Testing</option>
-
           <option value="refactor">Refactor</option>
-
           <option value="devops">DevOps</option>
         </select>
 
@@ -141,7 +171,9 @@ export default function CreateTaskForm({
             Cancel
           </button>
 
-          <button type="submit">Create Task</button>
+          <button type="submit">
+            {isEditing ? "Save Changes" : "Create Task"}
+          </button>
         </div>
       </form>
     </div>
