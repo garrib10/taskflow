@@ -1,4 +1,7 @@
 import type { Task, Priority, TaskStatus } from "./Task";
+
+import type { TaskCategory } from "./taskCategory";
+
 import { canMoveTask } from "./taskRules";
 
 /**
@@ -7,12 +10,18 @@ import { canMoveTask } from "./taskRules";
  * Business rules are validated before changes are applied.
  */
 
-export function createTask(title: string, priority: Priority): Task {
+export function createTask(
+  title: string,
+  description: string,
+  priority: Priority,
+  category: TaskCategory,
+): Task {
   return {
     id: crypto.randomUUID(),
     title,
+    description,
     priority,
-    category: "feature",
+    category,
     status: "todo",
     createdAt: new Date(),
   };

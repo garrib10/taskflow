@@ -1,20 +1,39 @@
 import { useEffect, useReducer } from "react";
 
 import type { Board } from "../domain/board/Board";
-import type { TaskStatus } from "../domain/task/Task";
+import type { Task, TaskStatus } from "../domain/task/Task";
 
 import { moveTask } from "../domain/task/taskActions";
 import { initialBoard } from "../utils/mockData";
 import { loadBoard, saveBoard } from "../utils/storage";
 
-export type BoardAction = {
-  type: "MOVE_TASK";
-  taskId: string;
-  newStatus: TaskStatus;
-};
+export type BoardAction =
+  | {
+      type: "MOVE_TASK";
+      taskId: string;
+      newStatus: TaskStatus;
+    }
+  | {
+      type: "CREATE_TASK";
+      task: Task;
+    };
 
 function boardReducer(state: Board, action: BoardAction): Board {
   switch (action.type) {
+    case "CREATE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) =>
+          column.id === "todo"
+            ? {
+                ...column,
+                tasks: [...column.tasks, action.task],
+              }
+            : column,
+        ),
+      };
+    }
+
     case "MOVE_TASK": {
       let movedTask = null;
 

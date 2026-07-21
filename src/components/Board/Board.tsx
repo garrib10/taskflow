@@ -9,6 +9,7 @@ import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 
 import Column from "../Column/Column";
 import Notification from "../Notification/Notification";
+import CreateTaskForm from "../Tasks/CreateTaskForm";
 
 interface BoardProps {
   board: BoardType;
@@ -17,6 +18,7 @@ interface BoardProps {
 
 export default function Board({ board, dispatch }: BoardProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showCreateTask, setShowCreateTask] = useState(false);
 
   const errorTimeoutRef = useRef<number | null>(null);
 
@@ -79,9 +81,25 @@ export default function Board({ board, dispatch }: BoardProps) {
         {errorMessage && <Notification message={errorMessage} />}
 
         <div className="board-header">
-          <h1>TaskFlow</h1>
-          <p>Rule-Based Workflow Board</p>
+          <div>
+            <h1>TaskFlow</h1>
+            <p>Rule-Based Workflow Board</p>
+          </div>
+
+          <button
+            className="create-task-button"
+            onClick={() => setShowCreateTask(true)}
+          >
+            + Create Task
+          </button>
         </div>
+
+        {showCreateTask && (
+          <CreateTaskForm
+            onClose={() => setShowCreateTask(false)}
+            dispatch={dispatch}
+          />
+        )}
 
         <div className="board">
           {board.columns.map((column) => (
