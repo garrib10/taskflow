@@ -7,9 +7,10 @@ import TaskCard from "../TaskCard/TaskCard";
 interface ColumnProps {
   column: ColumnType;
   onEdit: (task: Task) => void;
+  onDelete: (taskId: string) => void;
 }
 
-export default function Column({ column, onEdit }: ColumnProps) {
+export default function Column({ column, onEdit, onDelete }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -27,12 +28,12 @@ export default function Column({ column, onEdit }: ColumnProps) {
       {sortedTasks.length === 0 ? (
         <div className="empty-column">No tasks</div>
       ) : (
-        sortedTasks.map((task, index) => (
+        sortedTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
-            isTopPriority={column.id !== "done" && index === 0}
             onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))
       )}

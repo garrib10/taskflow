@@ -18,6 +18,10 @@ export type BoardAction =
   | {
       type: "UPDATE_TASK";
       task: Task;
+    }
+  | {
+      type: "DELETE_TASK";
+      taskId: string;
     };
 
 function boardReducer(state: Board, action: BoardAction): Board {
@@ -48,8 +52,19 @@ function boardReducer(state: Board, action: BoardAction): Board {
       };
     }
 
+    case "DELETE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.filter((task) => task.id !== action.taskId),
+        })),
+      };
+    }
+
     case "MOVE_TASK": {
       let movedTask: Task | null = null;
+
       const columnsWithoutTask = state.columns.map((column) => ({
         ...column,
         tasks: column.tasks.filter((task) => {

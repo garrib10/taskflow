@@ -18,6 +18,7 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+
   const errorTimeoutRef = useRef<number | null>(null);
   const successTimeoutRef = useRef<number | null>(null);
 
@@ -107,6 +108,36 @@ export default function Board({ board, dispatch }: BoardProps) {
     }, 3000);
   }
 
+  function handleDeleteTask(taskId: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    if (taskToEdit?.id === taskId) {
+      handleCloseTaskForm();
+    }
+
+    dispatch({
+      type: "DELETE_TASK",
+      taskId,
+    });
+
+    setErrorMessage(null);
+    setSuccessMessage("Task deleted successfully.");
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+    }
+
+    successTimeoutRef.current = window.setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="board-container">
@@ -138,7 +169,12 @@ export default function Board({ board, dispatch }: BoardProps) {
 
         <div className="board">
           {board.columns.map((column) => (
-            <Column key={column.id} column={column} onEdit={handleEditTask} />
+            <Column
+              key={column.id}
+              column={column}
+              onEdit={handleEditTask}
+              onDelete={handleDeleteTask}
+            />
           ))}
         </div>
       </div>

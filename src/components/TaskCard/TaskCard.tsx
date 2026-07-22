@@ -1,20 +1,15 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
-import { getPriorityScore } from "../../domain/task/taskPriority";
 import { priorityStyles } from "../../domain/task/priorityStyles";
 import { categoryStyles } from "../../domain/task/categoryStyles";
 
 interface TaskCardProps {
   task: Task;
-  isTopPriority?: boolean;
   onEdit: (task: Task) => void;
+  onDelete: (taskId: string) => void;
 }
 
-export default function TaskCard({
-  task,
-  isTopPriority = false,
-  onEdit,
-}: TaskCardProps) {
+export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   });
@@ -32,48 +27,58 @@ export default function TaskCard({
     <div
       ref={setNodeRef}
       style={dragStyle}
-      className={`task-card ${priorityStyle.borderClass} ${
-        isTopPriority ? "top-priority" : ""
-      }`}
+      className={`task-card ${priorityStyle.borderClass}`}
       {...listeners}
       {...attributes}
     >
-      {isTopPriority && task.status !== "done" && (
-        <div className="top-priority-badge">⭐ Highest Priority</div>
-      )}
-
       <h3>{task.title}</h3>
-      <span className={`task-category ${categoryStyle.badgeClass}`}>
-        {categoryStyle.label}
-      </span>
 
       {task.description && (
         <p className="task-description">{task.description}</p>
       )}
 
       <div className="task-footer">
-        <span className={priorityStyle.badgeClass}>
-          {priorityStyle.icon} {priorityStyle.label}
-        </span>
+        <div className="task-meta">
+          {task.status === "done" ? (
+            <span className="completed-badge">✔ Done</span>
+          ) : (
+            <span className={priorityStyle.badgeClass}>
+              {priorityStyle.icon} {priorityStyle.label}
+            </span>
+          )}
 
-        {task.status === "done" ? (
-          <span className="completed-badge">✔ Done</span>
-        ) : (
-          <span className="task-score">⭐ {getPriorityScore(task)} pts</span>
-        )}
+          <span className={`task-category ${categoryStyle.badgeClass}`}>
+            {categoryStyle.label}
+          </span>
+        </div>
 
-        <button
-          className="edit-task-button"
-          onPointerDown={(event) => {
-            event.stopPropagation();
-          }}
-          onClick={(event) => {
-            event.stopPropagation();
-            onEdit(task);
-          }}
-        >
-          Edit
-        </button>
+        <div className="task-actions">
+          <button
+            className="edit-task-button"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+              onEdit(task);
+            }}
+          >
+            Edit
+          </button>
+
+          <button
+            className="delete-task-button"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+              onDelete(task.id);
+            }}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );
