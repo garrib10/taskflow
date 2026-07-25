@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Priority, Task } from "../../domain/task/Task";
 import type { TaskCategory } from "../../domain/task/taskCategory";
 import { createTask, updateTask } from "../../domain/task/taskActions";
@@ -19,33 +19,51 @@ export default function TaskForm({
 }: TaskFormProps) {
   const isEditing = Boolean(task);
 
+  const initialTitle = task?.title ?? "";
+  const initialDescription = task?.description ?? "";
+  const initialPriority: Priority = task?.priority ?? "medium";
+  const initialCategory: TaskCategory = task?.category ?? "feature";
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
   const [category, setCategory] = useState<TaskCategory>("feature");
   const [error, setError] = useState("");
 
+  const hasUnsavedChanges =
+    title !== initialTitle ||
+    description !== initialDescription ||
+    priority !== initialPriority ||
+    category !== initialCategory;
+
   useEffect(() => {
-    if (task) {
-      setTitle(task.title);
-      setDescription(task.description ?? "");
-      setPriority(task.priority);
-      setCategory(task.category);
-    } else {
-      setTitle("");
-      setDescription("");
-      setPriority("medium");
-      setCategory("feature");
+    setTitle(initialTitle);
+    setDescription(initialDescription);
+    setPriority(initialPriority);
+    setCategory(initialCategory);
+    setError("");
+  }, [initialTitle, initialDescription, initialPriority, initialCategory]);
+
+  const handleRequestClose = useCallback(() => {
+    if (!hasUnsavedChanges) {
+      onClose();
+      return;
     }
 
-    setError("");
-  }, [task]);
+    const confirmed = window.confirm(
+      "You have unsaved changes. Are you sure you want to discard them?",
+    );
+
+    if (confirmed) {
+      onClose();
+    }
+  }, [hasUnsavedChanges, onClose]);
 
   useEffect(() => {
     function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        handleRequestClose();
       }
     }
 
@@ -54,7 +72,7 @@ export default function TaskForm({
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [onClose]);
+  }, [handleRequestClose]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -117,6 +135,7 @@ export default function TaskForm({
     setCategory("feature");
     setError("");
 
+    // Close directly because the changes were successfully saved.
     onClose();
   }
 
@@ -194,7 +213,7 @@ export default function TaskForm({
         </select>
 
         <div className="create-task-actions">
-          <button type="button" onClick={onClose}>
+          <button type="button" onClick={handleRequestClose}>
             Cancel
           </button>
 

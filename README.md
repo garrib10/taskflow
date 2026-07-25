@@ -238,6 +238,7 @@ Completed:
 - Improved task footer layout
 - Refined responsive board layout for four columns
 - Unified search and filtering into a streamlined board controls toolbar
+- Added confirmation before discarding unsaved task changes
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
@@ -249,9 +250,9 @@ Completed:
 
 Planned:
 
+- Replace the browser unsaved-changes prompt with a custom confirmation modal
 - Notification expansion
 - Last updated timestamp
-- Confirm unsaved changes
 
 ## Version 1.5 - Productivity Features
 
