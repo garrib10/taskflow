@@ -43,6 +43,14 @@ export default function Board({ board, dispatch }: BoardProps) {
 
   const isFiltering = isSearching || hasActiveFilters;
 
+  const formattedLastUpdated = board.lastUpdated.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
   const filteredColumns = board.columns.map((column) => ({
     ...column,
     tasks: column.tasks.filter((task) => {
@@ -212,6 +220,13 @@ export default function Board({ board, dispatch }: BoardProps) {
           <div>
             <h1>TaskFlow</h1>
             <p>Rule-Based Workflow Board</p>
+
+            <p className="last-updated">
+              Last updated:{" "}
+              <time dateTime={board.lastUpdated.toISOString()}>
+                {formattedLastUpdated}
+              </time>
+            </p>
           </div>
 
           <button
