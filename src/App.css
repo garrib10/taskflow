@@ -617,6 +617,24 @@
 }
 
 /* ===========================
+   Keyboard Focus
+=========================== */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.task-card-header:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: var(--radius-small);
+}
+
+/* ===========================
    Responsive Design
 =========================== */
 

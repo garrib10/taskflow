@@ -41,7 +41,22 @@ export default function TaskForm({
     setError("");
   }, [task]);
 
-  function handleSubmit(event: React.FormEvent) {
+  useEffect(() => {
+    function handleEscapeKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    }
+
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [onClose]);
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError("");
@@ -106,11 +121,22 @@ export default function TaskForm({
   }
 
   return (
-    <div className="create-task-modal">
+    <div
+      className="create-task-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="task-form-title"
+    >
       <form onSubmit={handleSubmit}>
-        <h2>{isEditing ? "Edit Task" : "Create New Task"}</h2>
+        <h2 id="task-form-title">
+          {isEditing ? "Edit Task" : "Create New Task"}
+        </h2>
 
-        {error && <p className="form-error">{error}</p>}
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
 
         <label htmlFor="task-title">Title</label>
 
@@ -120,6 +146,7 @@ export default function TaskForm({
           placeholder="Task title"
           maxLength={150}
           value={title}
+          autoFocus
           onChange={(event) => setTitle(event.target.value)}
         />
 

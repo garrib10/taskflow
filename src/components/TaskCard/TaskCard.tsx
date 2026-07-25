@@ -75,6 +75,7 @@ export default function TaskCard({
 
         <div className="task-actions">
           <button
+            type="button"
             className="edit-task-button"
             onPointerDown={(event) => {
               event.stopPropagation();
@@ -88,6 +89,7 @@ export default function TaskCard({
           </button>
 
           <button
+            type="button"
             className="delete-task-button"
             onPointerDown={(event) => {
               event.stopPropagation();

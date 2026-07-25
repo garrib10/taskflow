@@ -30,8 +30,9 @@ export default function SubtaskItem({
 
   return (
     <div className="subtask-item">
-      <label>
+      <label htmlFor={`subtask-${subtask.id}`} className="subtask-item-left">
         <input
+          id={`subtask-${subtask.id}`}
           type="checkbox"
           checked={subtask.completed}
           onChange={handleToggle}
@@ -42,7 +43,11 @@ export default function SubtaskItem({
         </span>
       </label>
 
-      <button className="subtask-delete-button" onClick={handleDelete}>
+      <button
+        type="button"
+        className="subtask-delete-button"
+        onClick={handleDelete}
+      >
         Delete
       </button>
     </div>

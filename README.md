@@ -42,6 +42,15 @@ The goal of this project is to demonstrate modern React development practices in
 - Reducer-driven subtask updates
 - Independent subtask lifecycle management
 
+## Accessibility
+
+- Keyboard-friendly task management
+- Escape key closes task dialogs
+- Enter submits forms
+- Tab navigation throughout the application
+- Visible keyboard focus indicators
+- Native accessible form controls
+
 ## TypeScript Architecture
 
 - Type-safe domain models
@@ -214,7 +223,7 @@ Completed:
 
 ---
 
-## Version 1.2 - Workflow Improvements
+## Version 1.2 - Workflow & Accessibility Improvements
 
 Completed:
 
@@ -224,6 +233,10 @@ Completed:
 - Improved task badge responsiveness
 - Improved task footer layout
 - Refined responsive board layout for four columns
+- Added keyboard accessibility support
+- Escape key closes task dialogs
+- Enter submits task forms
+- Improved keyboard navigation and focus indicators
 - Updated workflow screenshots and documentation
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
@@ -236,22 +249,27 @@ Completed:
 
 Planned:
 
-- Create subtasks directly from the task edit modal
-- Expand/collapse task details
-- Due dates
-- Assignees
-- Task notes
-- Task history tracking
+- Search functionality
+- Filtering options
+- Notification expansion
+- Last updated timestamp
+- Confirm unsaved changes
+- Improved Board Control
 
-## Version 1.3 - Productivity Features
+## Version 1.5 - Productivity Features
 
 Planned:
 
-- Search functionality
-- Filtering options
 - Advanced sorting controls
 - Task analytics
 - Productivity metrics
+- Edit / Audit Log
+- Expand/collapse task details
+- Create subtasks directly from the task edit modal
+- Task history tracking
+- Due dates
+- Assignees
+- Task notes
 
 ## Version 2.0 - Advanced Workflow
 

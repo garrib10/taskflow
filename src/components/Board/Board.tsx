@@ -153,7 +153,11 @@ export default function Board({ board, dispatch }: BoardProps) {
             <p>Rule-Based Workflow Board</p>
           </div>
 
-          <button className="create-task-button" onClick={handleCreateTask}>
+          <button
+            type="button"
+            className="create-task-button"
+            onClick={handleCreateTask}
+          >
             + Create Task
           </button>
         </div>
