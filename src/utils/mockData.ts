@@ -17,6 +17,7 @@ export const initialBoard: Board = {
           category: "feature",
           status: "todo",
           createdAt: new Date(),
+          subtasks: [],
         },
         {
           id: "task-2",
@@ -27,6 +28,7 @@ export const initialBoard: Board = {
           category: "ui",
           status: "todo",
           createdAt: new Date(),
+          subtasks: [],
         },
         {
           id: "task-3",
@@ -37,6 +39,7 @@ export const initialBoard: Board = {
           category: "feature",
           status: "todo",
           createdAt: new Date(),
+          subtasks: [],
         },
       ],
     },
@@ -53,6 +56,7 @@ export const initialBoard: Board = {
           category: "ui",
           status: "in-progress",
           createdAt: new Date(),
+          subtasks: [],
         },
         {
           id: "task-5",
@@ -63,6 +67,7 @@ export const initialBoard: Board = {
           category: "refactor",
           status: "in-progress",
           createdAt: new Date(),
+          subtasks: [],
         },
       ],
     },
@@ -79,6 +84,7 @@ export const initialBoard: Board = {
           category: "feature",
           status: "done",
           createdAt: new Date(),
+          subtasks: [],
         },
         {
           id: "task-7",
@@ -89,6 +95,7 @@ export const initialBoard: Board = {
           category: "feature",
           status: "done",
           createdAt: new Date(),
+          subtasks: [],
         },
         {
           id: "task-8",
@@ -99,6 +106,7 @@ export const initialBoard: Board = {
           category: "testing",
           status: "done",
           createdAt: new Date(),
+          subtasks: [],
         },
       ],
     },

@@ -1,15 +1,23 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
+import type { BoardAction } from "../../hooks/useBoardReducer";
 import { priorityStyles } from "../../domain/task/priorityStyles";
 import { categoryStyles } from "../../domain/task/categoryStyles";
+import SubtaskList from "../SubtaskList/SubtaskList";
 
 interface TaskCardProps {
   task: Task;
+  dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
 }
 
-export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
+export default function TaskCard({
+  task,
+  dispatch,
+  onEdit,
+  onDelete,
+}: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   });
@@ -28,14 +36,27 @@ export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       ref={setNodeRef}
       style={dragStyle}
       className={`task-card ${priorityStyle.borderClass}`}
-      {...listeners}
-      {...attributes}
     >
-      <h3>{task.title}</h3>
+      {/* Drag Handle Area */}
+      <div className="task-card-header" {...listeners} {...attributes}>
+        <h3>{task.title}</h3>
+      </div>
 
       {task.description && (
         <p className="task-description">{task.description}</p>
       )}
+
+      <div
+        className="subtask-container"
+        onPointerDown={(event) => {
+          event.stopPropagation();
+        }}
+        onMouseDown={(event) => {
+          event.stopPropagation();
+        }}
+      >
+        <SubtaskList task={task} dispatch={dispatch} />
+      </div>
 
       <div className="task-footer">
         <div className="task-meta">

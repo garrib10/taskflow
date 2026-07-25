@@ -1,9 +1,18 @@
 import type { TaskCategory } from "./taskCategory";
+
 /** union type for task priority and status */
 
 export type Priority = "low" | "medium" | "high";
-
 export type TaskStatus = "todo" | "in-progress" | "done";
+
+/**
+ * Individual checklist item inside a Task
+ */
+export interface Subtask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
 
 // Restricts tasks to the defined workflow states.
 // Prevents invalid states from being introduced into the application
@@ -15,4 +24,8 @@ export interface Task {
   category: TaskCategory;
   status: TaskStatus;
   createdAt: Date;
+
+  // Optional feature:
+  // Tasks can have zero or more subtasks
+  subtasks: Subtask[];
 }

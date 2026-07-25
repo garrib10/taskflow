@@ -172,6 +172,7 @@ export default function Board({ board, dispatch }: BoardProps) {
             <Column
               key={column.id}
               column={column}
+              dispatch={dispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
             />

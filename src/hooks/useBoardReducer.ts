@@ -1,7 +1,12 @@
 import { useEffect, useReducer } from "react";
 import type { Board } from "../domain/board/Board";
 import type { Task, TaskStatus } from "../domain/task/Task";
-import { moveTask } from "../domain/task/taskActions";
+import {
+  createSubtask,
+  moveTask,
+  toggleSubtask,
+  deleteSubtask,
+} from "../domain/task/taskActions";
 import { initialBoard } from "../utils/mockData";
 import { loadBoard, saveBoard } from "../utils/storage";
 
@@ -22,6 +27,21 @@ export type BoardAction =
   | {
       type: "DELETE_TASK";
       taskId: string;
+    }
+  | {
+      type: "ADD_SUBTASK";
+      taskId: string;
+      title: string;
+    }
+  | {
+      type: "TOGGLE_SUBTASK";
+      taskId: string;
+      subtaskId: string;
+    }
+  | {
+      type: "DELETE_SUBTASK";
+      taskId: string;
+      subtaskId: string;
     };
 
 function boardReducer(state: Board, action: BoardAction): Board {
@@ -58,6 +78,61 @@ function boardReducer(state: Board, action: BoardAction): Board {
         columns: state.columns.map((column) => ({
           ...column,
           tasks: column.tasks.filter((task) => task.id !== action.taskId),
+        })),
+      };
+    }
+
+    case "ADD_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? {
+                  ...task,
+                  subtasks: [
+                    ...(task.subtasks ?? []),
+                    createSubtask(action.title),
+                  ],
+                }
+              : task,
+          ),
+        })),
+      };
+    }
+
+    case "TOGGLE_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? {
+                  ...task,
+                  subtasks: (task.subtasks ?? []).map((subtask) =>
+                    subtask.id === action.subtaskId
+                      ? toggleSubtask(subtask)
+                      : subtask,
+                  ),
+                }
+              : task,
+          ),
+        })),
+      };
+    }
+
+    case "DELETE_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? deleteSubtask(task, action.subtaskId)
+              : task,
+          ),
         })),
       };
     }

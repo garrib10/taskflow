@@ -1,5 +1,4 @@
-import type { Task, Priority, TaskStatus } from "./Task";
-
+import type { Task, Priority, TaskStatus, Subtask } from "./Task";
 import type { TaskCategory } from "./taskCategory";
 import { canMoveTask } from "./taskRules";
 
@@ -23,6 +22,9 @@ export function createTask(
     category,
     status: "todo",
     createdAt: new Date(),
+
+    // New tasks begin with no subtasks
+    subtasks: [],
   };
 }
 
@@ -50,5 +52,36 @@ export function moveTask(task: Task, newStatus: TaskStatus): Task | null {
   return {
     ...task,
     status: newStatus,
+  };
+}
+
+/**
+ * Creates a new subtask.
+ */
+export function createSubtask(title: string): Subtask {
+  return {
+    id: crypto.randomUUID(),
+    title,
+    completed: false,
+  };
+}
+
+/**
+ * Toggles a subtask's completion state.
+ */
+export function toggleSubtask(subtask: Subtask): Subtask {
+  return {
+    ...subtask,
+    completed: !subtask.completed,
+  };
+}
+
+/**
+ * Removes a subtask from a task.
+ */
+export function deleteSubtask(task: Task, subtaskId: string): Task {
+  return {
+    ...task,
+    subtasks: task.subtasks.filter((subtask) => subtask.id !== subtaskId),
   };
 }

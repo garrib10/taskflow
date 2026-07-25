@@ -85,7 +85,6 @@
 
 .task-card {
   background: var(--card-background);
-  cursor: grab;
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: var(--radius-medium);
@@ -95,14 +94,29 @@
     box-shadow var(--transition-speed);
 }
 
-.task-card h3 {
-  margin-top: 0;
-  font-size: 1.05rem;
-}
-
 .task-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-medium);
+}
+
+/*
+ Drag area only
+ Prevents inputs/buttons/subtasks
+ from triggering drag behavior
+*/
+
+.task-card-header {
+  cursor: grab;
+  user-select: none;
+}
+
+.task-card-header:active {
+  cursor: grabbing;
+}
+
+.task-card-header h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
 }
 
 .task-description {
@@ -133,8 +147,104 @@
   gap: 8px;
 }
 
-.task-card:active {
-  cursor: grabbing;
+/* ===========================
+   Subtasks
+=========================== */
+
+.subtask-container {
+  margin-top: 1rem;
+}
+
+.subtask-list {
+  padding: 0.75rem;
+  background: var(--column-background);
+  border-radius: var(--radius-small);
+  border: 1px solid var(--column-border);
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 0.85rem;
+}
+
+.subtask-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.subtask-item-left span {
+  overflow-wrap: anywhere;
+}
+
+.subtask-item input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.subtask-completed {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.no-subtasks {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.subtask-delete-button {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.subtask-delete-button:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.subtask-input-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.subtask-input-container input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--column-border);
+  font-size: 0.85rem;
+}
+
+.subtask-input-container input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.add-subtask-button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: var(--radius-small);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-subtask-button:hover {
+  background: #2563eb;
 }
 
 /* ===========================
