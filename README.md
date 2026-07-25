@@ -230,14 +230,13 @@ Completed:
 - Added **In Review** workflow stage
 - Expanded workflow from **3** to **4** stages
 - Updated workflow validation rules
+- Added keyboard accessibility support
+- Added task search by title and description
+- Added task filtering by priority, category, and workflow status
+- Improved search and filter result feedback
 - Improved task badge responsiveness
 - Improved task footer layout
 - Refined responsive board layout for four columns
-- Added keyboard accessibility support
-- Escape key closes task dialogs
-- Enter submits task forms
-- Improved keyboard navigation and focus indicators
-- Updated workflow screenshots and documentation
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
@@ -249,8 +248,6 @@ Completed:
 
 Planned:
 
-- Search functionality
-- Filtering options
 - Notification expansion
 - Last updated timestamp
 - Confirm unsaved changes

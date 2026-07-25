@@ -8,6 +8,11 @@ import Column from "../Column/Column";
 import Notification from "../Notification/Notification";
 import TaskForm from "../TaskForm/TaskForm";
 import SearchBar from "../SearchBar/SearchBar";
+import FilterControls, {
+  type CategoryFilter,
+  type PriorityFilter,
+  type StatusFilter,
+} from "../FilterControls/FilterControls";
 
 interface BoardProps {
   board: BoardType;
@@ -19,7 +24,11 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+
   const [searchTerm, setSearchTerm] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const errorTimeoutRef = useRef<number | null>(null);
   const successTimeoutRef = useRef<number | null>(null);
@@ -27,13 +36,16 @@ export default function Board({ board, dispatch }: BoardProps) {
   const normalizedSearchTerm = searchTerm.trim().toLowerCase();
   const isSearching = normalizedSearchTerm.length > 0;
 
+  const hasActiveFilters =
+    priorityFilter !== "all" ||
+    categoryFilter !== "all" ||
+    statusFilter !== "all";
+
+  const isFiltering = isSearching || hasActiveFilters;
+
   const filteredColumns = board.columns.map((column) => ({
     ...column,
     tasks: column.tasks.filter((task) => {
-      if (!isSearching) {
-        return true;
-      }
-
       const titleMatches = task.title
         .toLowerCase()
         .includes(normalizedSearchTerm);
@@ -42,7 +54,20 @@ export default function Board({ board, dispatch }: BoardProps) {
         .toLowerCase()
         .includes(normalizedSearchTerm);
 
-      return titleMatches || descriptionMatches;
+      const searchMatches = !isSearching || titleMatches || descriptionMatches;
+
+      const priorityMatches =
+        priorityFilter === "all" || task.priority === priorityFilter;
+
+      const categoryMatches =
+        categoryFilter === "all" || task.category === categoryFilter;
+
+      const statusMatches =
+        statusFilter === "all" || task.status === statusFilter;
+
+      return (
+        searchMatches && priorityMatches && categoryMatches && statusMatches
+      );
     }),
   }));
 
@@ -62,6 +87,12 @@ export default function Board({ board, dispatch }: BoardProps) {
       }
     };
   }, []);
+
+  function handleClearFilters() {
+    setPriorityFilter("all");
+    setCategoryFilter("all");
+    setStatusFilter("all");
+  }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -193,7 +224,18 @@ export default function Board({ board, dispatch }: BoardProps) {
 
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
-        {isSearching && (
+        <FilterControls
+          priorityFilter={priorityFilter}
+          categoryFilter={categoryFilter}
+          statusFilter={statusFilter}
+          onPriorityChange={setPriorityFilter}
+          onCategoryChange={setCategoryFilter}
+          onStatusChange={setStatusFilter}
+          onClearFilters={handleClearFilters}
+          hasActiveFilters={hasActiveFilters}
+        />
+
+        {isFiltering && (
           <p className="search-results-count" aria-live="polite">
             {matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"}{" "}
             found
@@ -217,7 +259,7 @@ export default function Board({ board, dispatch }: BoardProps) {
               dispatch={dispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
-              isSearching={isSearching}
+              isFiltering={isFiltering}
             />
           ))}
         </div>
