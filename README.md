@@ -240,6 +240,7 @@ Completed:
 - Unified search and filtering into a streamlined board controls toolbar
 - Added confirmation before discarding unsaved task changes
 - Added a persistent board last-updated timestamp
+- Expanded notifications with icons, manual dismissal, and animated feedback
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
@@ -251,9 +252,7 @@ Completed:
 
 Planned:
 
-- Replace the browser unsaved-changes prompt with a custom confirmation modal
-- Notification expansion
-- Last updated timestamp
+- UI Polish
 
 ## Version 1.5 - Productivity Features
 
@@ -269,6 +268,9 @@ Planned:
 - Due dates
 - Assignees
 - Task notes
+- Add warning notification type (`.notification.warning`)
+- Add info notification type (`.notification.info`)
+- Replace the browser unsaved-changes prompt with a custom confirmation modal
 
 ## Version 2.0 - Advanced Workflow
 

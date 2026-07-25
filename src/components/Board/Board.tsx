@@ -96,6 +96,62 @@ export default function Board({ board, dispatch }: BoardProps) {
     };
   }, []);
 
+  function handleCloseErrorNotification() {
+    setErrorMessage(null);
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+  }
+
+  function handleCloseSuccessNotification() {
+    setSuccessMessage(null);
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+      successTimeoutRef.current = null;
+    }
+  }
+
+  function showErrorNotification(message: string) {
+    setSuccessMessage(null);
+    setErrorMessage(message);
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+      successTimeoutRef.current = null;
+    }
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+    }
+
+    errorTimeoutRef.current = window.setTimeout(() => {
+      setErrorMessage(null);
+      errorTimeoutRef.current = null;
+    }, 3000);
+  }
+
+  function showSuccessNotification(message: string) {
+    setErrorMessage(null);
+    setSuccessMessage(message);
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+    }
+
+    successTimeoutRef.current = window.setTimeout(() => {
+      setSuccessMessage(null);
+      successTimeoutRef.current = null;
+    }, 3000);
+  }
+
   function handleResetControls() {
     setSearchTerm("");
     setPriorityFilter("all");
@@ -126,17 +182,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     }
 
     if (!canMoveTask(currentTask.status, newStatus)) {
-      setSuccessMessage(null);
-      setErrorMessage(getMoveErrorMessage(currentTask.status, newStatus));
-
-      if (errorTimeoutRef.current) {
-        clearTimeout(errorTimeoutRef.current);
-      }
-
-      errorTimeoutRef.current = window.setTimeout(() => {
-        setErrorMessage(null);
-      }, 3000);
-
+      showErrorNotification(getMoveErrorMessage(currentTask.status, newStatus));
       return;
     }
 
@@ -146,7 +192,7 @@ export default function Board({ board, dispatch }: BoardProps) {
       newStatus,
     });
 
-    setErrorMessage(null);
+    handleCloseErrorNotification();
   }
 
   function handleCreateTask() {
@@ -165,16 +211,7 @@ export default function Board({ board, dispatch }: BoardProps) {
   }
 
   function handleTaskSaved(message: string) {
-    setErrorMessage(null);
-    setSuccessMessage(message);
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-
-    successTimeoutRef.current = window.setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    showSuccessNotification(message);
   }
 
   function handleDeleteTask(taskId: string) {
@@ -195,25 +232,26 @@ export default function Board({ board, dispatch }: BoardProps) {
       taskId,
     });
 
-    setErrorMessage(null);
-    setSuccessMessage("Task deleted successfully.");
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-
-    successTimeoutRef.current = window.setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    showSuccessNotification("Task deleted successfully.");
   }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="board-container">
-        {errorMessage && <Notification message={errorMessage} type="error" />}
+        {errorMessage && (
+          <Notification
+            message={errorMessage}
+            type="error"
+            onClose={handleCloseErrorNotification}
+          />
+        )}
 
         {successMessage && (
-          <Notification message={successMessage} type="success" />
+          <Notification
+            message={successMessage}
+            type="success"
+            onClose={handleCloseSuccessNotification}
+          />
         )}
 
         <div className="board-header">
