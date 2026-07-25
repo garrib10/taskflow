@@ -7,6 +7,7 @@ import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 import Column from "../Column/Column";
 import Notification from "../Notification/Notification";
 import TaskForm from "../TaskForm/TaskForm";
+import SearchBar from "../SearchBar/SearchBar";
 
 interface BoardProps {
   board: BoardType;
@@ -18,9 +19,37 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const errorTimeoutRef = useRef<number | null>(null);
   const successTimeoutRef = useRef<number | null>(null);
+
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const isSearching = normalizedSearchTerm.length > 0;
+
+  const filteredColumns = board.columns.map((column) => ({
+    ...column,
+    tasks: column.tasks.filter((task) => {
+      if (!isSearching) {
+        return true;
+      }
+
+      const titleMatches = task.title
+        .toLowerCase()
+        .includes(normalizedSearchTerm);
+
+      const descriptionMatches = (task.description ?? "")
+        .toLowerCase()
+        .includes(normalizedSearchTerm);
+
+      return titleMatches || descriptionMatches;
+    }),
+  }));
+
+  const matchingTaskCount = filteredColumns.reduce(
+    (total, column) => total + column.tasks.length,
+    0,
+  );
 
   useEffect(() => {
     return () => {
@@ -162,6 +191,15 @@ export default function Board({ board, dispatch }: BoardProps) {
           </button>
         </div>
 
+        <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+
+        {isSearching && (
+          <p className="search-results-count" aria-live="polite">
+            {matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"}{" "}
+            found
+          </p>
+        )}
+
         {showTaskForm && (
           <TaskForm
             task={taskToEdit}
@@ -172,13 +210,14 @@ export default function Board({ board, dispatch }: BoardProps) {
         )}
 
         <div className="board">
-          {board.columns.map((column) => (
+          {filteredColumns.map((column) => (
             <Column
               key={column.id}
               column={column}
               dispatch={dispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
+              isSearching={isSearching}
             />
           ))}
         </div>
