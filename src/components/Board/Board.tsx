@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-
 import type { Board as BoardType } from "../../domain/board/Board";
-import type { TaskStatus } from "../../domain/task/Task";
+import type { Task, TaskStatus } from "../../domain/task/Task";
 import type { BoardAction } from "../../hooks/useBoardReducer";
-
 import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
-
 import Column from "../Column/Column";
 import Notification from "../Notification/Notification";
+import TaskForm from "../TaskForm/TaskForm";
 
 interface BoardProps {
   board: BoardType;
@@ -17,13 +15,21 @@ interface BoardProps {
 
 export default function Board({ board, dispatch }: BoardProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
   const errorTimeoutRef = useRef<number | null>(null);
+  const successTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current);
+      }
+
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
       }
     };
   }, []);
@@ -51,6 +57,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     }
 
     if (!canMoveTask(currentTask.status, newStatus)) {
+      setSuccessMessage(null);
       setErrorMessage(getMoveErrorMessage(currentTask.status, newStatus));
 
       if (errorTimeoutRef.current) {
@@ -73,19 +80,102 @@ export default function Board({ board, dispatch }: BoardProps) {
     setErrorMessage(null);
   }
 
+  function handleCreateTask() {
+    setTaskToEdit(null);
+    setShowTaskForm(true);
+  }
+
+  function handleEditTask(task: Task) {
+    setTaskToEdit(task);
+    setShowTaskForm(true);
+  }
+
+  function handleCloseTaskForm() {
+    setTaskToEdit(null);
+    setShowTaskForm(false);
+  }
+
+  function handleTaskSaved(message: string) {
+    setErrorMessage(null);
+    setSuccessMessage(message);
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+    }
+
+    successTimeoutRef.current = window.setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  }
+
+  function handleDeleteTask(taskId: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    if (taskToEdit?.id === taskId) {
+      handleCloseTaskForm();
+    }
+
+    dispatch({
+      type: "DELETE_TASK",
+      taskId,
+    });
+
+    setErrorMessage(null);
+    setSuccessMessage("Task deleted successfully.");
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+    }
+
+    successTimeoutRef.current = window.setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="board-container">
-        {errorMessage && <Notification message={errorMessage} />}
+        {errorMessage && <Notification message={errorMessage} type="error" />}
+
+        {successMessage && (
+          <Notification message={successMessage} type="success" />
+        )}
 
         <div className="board-header">
-          <h1>TaskFlow</h1>
-          <p>Rule-Based Workflow Board</p>
+          <div>
+            <h1>TaskFlow</h1>
+            <p>Rule-Based Workflow Board</p>
+          </div>
+
+          <button className="create-task-button" onClick={handleCreateTask}>
+            + Create Task
+          </button>
         </div>
+
+        {showTaskForm && (
+          <TaskForm
+            task={taskToEdit}
+            onClose={handleCloseTaskForm}
+            dispatch={dispatch}
+            onSuccess={handleTaskSaved}
+          />
+        )}
 
         <div className="board">
           {board.columns.map((column) => (
-            <Column key={column.id} column={column} />
+            <Column
+              key={column.id}
+              column={column}
+              dispatch={dispatch}
+              onEdit={handleEditTask}
+              onDelete={handleDeleteTask}
+            />
           ))}
         </div>
       </div>

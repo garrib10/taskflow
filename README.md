@@ -5,89 +5,146 @@
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)
 
-TaskFlow is a rule-based Kanban board built with React, TypeScript, and Vite.
+TaskFlow is a rule-based Kanban board application built with React, TypeScript, and Vite.
 
-Unlike a traditional task board, TaskFlow uses type-safe workflow rules, priority scoring, and workflow validation to create a structured task management experience.
+Unlike a traditional task board, TaskFlow uses type-safe workflow rules, priority scoring, workflow validation, and structured task management features to create a more controlled project management experience.
 
-The goal of this project is to demonstrate modern React development practices including component architecture, state management, domain-driven organization, and reusable TypeScript patterns.
+The goal of this project is to demonstrate modern React development practices including component architecture, TypeScript domain modeling, reducer-based state management, reusable components, and separation of business logic from UI presentation.
 
 ---
 
-## Features
+# Features
 
-- Drag-and-drop task movement
-- Rule-based workflow validation
-- Priority scoring system
-- Automatic task sorting by priority
-- Priority-based visual indicators
+## Task Management
+
+- Create, edit, and delete tasks
+- Priority-based task organization
+- Task categories
 - Task completion indicators
 - Responsive Kanban board layout
 - Local storage persistence
+
+## Workflow Management
+
+- Drag-and-drop task movement
+- Rule-based workflow validation
+- Prevents invalid task transitions
+- User-friendly workflow error notifications
+- Automatic priority-based task sorting
+
+## Subtask Management
+
+- Create subtasks for larger tasks
+- Complete subtasks using checklist functionality
+- Delete subtasks
+- Persist subtask state using local storage
+- Support tasks with zero or multiple subtasks
+- Reducer-driven subtask updates
+- Independent subtask lifecycle management
+
+## TypeScript Architecture
+
 - Type-safe domain models
-- Error handling for invalid workflow transitions
+- Strongly typed application state
+- Reusable interfaces and components
+- Separation between UI and business logic
 
 ---
 
-## Screenshots
+# Screenshots
 
-### Board Overview
+## Board Overview
 
 ![TaskFlow Board](./screenshots/taskflow-board.png)
 
-### Task Card Design
+## Task Card Design
 
-![TaskFlow Task Card](./screenshots/taskflow-card.png)
+![TaskFlow Task Card](./screenshots/taskflow-task-card.png)
 
-### Workflow Validation
+## Create Task Form
+
+![TaskFlow Create Task](./screenshots/taskflow-create-task.png)
+
+## Subtask Management
+
+![TaskFlow Subtasks](./screenshots/taskflow-subtasks.png)
+
+## Workflow Validation
 
 ![TaskFlow Workflow Validation](./screenshots/taskflow-validation.png)
 
----
+# Tech Stack
 
-## Tech Stack
-
-| Technology    | Purpose                           |
-| ------------- | --------------------------------- |
-| React         | User interface components         |
-| TypeScript    | Type-safe application development |
-| Vite          | Development and build tooling     |
-| CSS           | Custom styling and UI design      |
-| @dnd-kit      | Drag-and-drop functionality       |
-| Local Storage | Client-side persistence           |
+| Technology    | Purpose                              |
+| ------------- | ------------------------------------ |
+| React         | User interface components            |
+| TypeScript    | Type-safe application development    |
+| Vite          | Development and build tooling        |
+| CSS           | Custom styling and responsive design |
+| @dnd-kit      | Drag-and-drop functionality          |
+| Local Storage | Client-side persistence              |
 
 ---
 
-## Project Architecture
+# Project Architecture
 
-TaskFlow separates UI components, domain logic, and state management to create a maintainable and scalable React application.
+TaskFlow separates UI components, domain logic, and application state management to create a maintainable and scalable React application.
 
 ```text
 src
+├── App.tsx
+├── main.tsx
+├── App.css
+├── index.css
+│
 ├── components
 │   ├── Board
+│   │   └── Board.tsx
+│   │
 │   ├── Column
-│   └── TaskCard
+│   │   └── Column.tsx
+│   │
+│   ├── TaskCard
+│   │   └── TaskCard.tsx
+│   │
+│   ├── SubtaskItem
+│   │   └── SubtaskItem.tsx
+│   │
+│   ├── SubtaskList
+│   │   └── SubtaskList.tsx
+│   │
+│   ├── TaskForm
+│   │   └── TaskForm.tsx
+│   │
+│   └── Notification
+│       └── Notification.tsx
 │
 ├── domain
 │   ├── board
+│   │   └── Board.ts
+│   │
 │   └── task
+│       ├── Task.ts
+│       ├── taskActions.ts
+│       ├── taskRules.ts
+│       ├── taskPriority.ts
+│       ├── priorityStyles.ts
+│       ├── categoryStyles.ts
+│       └── taskCategory.ts
 │
 ├── hooks
+│   └── useBoardReducer.ts
+│
+├── utils
+│   ├── mockData.ts
+│   └── storage.ts
 │
 └── assets
 ```
 
-Key concepts demonstrated:
-
-- Type-safe domain models
-- Separation of business rules from UI components
-- Reducer-based state management
-- Reusable React component patterns
-- Organized project structure
-
 ---
 
-## Project Goals
+# Project Goals
 
 This project focuses on demonstrating:
 
@@ -97,10 +154,11 @@ This project focuses on demonstrating:
 - Workflow validation systems
 - State management patterns
 - Building reusable UI components
+- Designing maintainable front-end applications
 
 ---
 
-## What I Learned
+# What I Learned
 
 Building TaskFlow helped strengthen my experience with:
 
@@ -110,47 +168,87 @@ Building TaskFlow helped strengthen my experience with:
 - Implementing drag-and-drop functionality
 - Separating application logic from presentation layers
 - Creating maintainable CSS architecture
+- Structuring applications using domain-driven organization
+- Building features around business rules instead of only UI behavior
 
 ---
 
-## Future Roadmap
+# Version History
 
-### Version 1.1 - Rich Task Management
+TaskFlow has evolved through multiple iterations, expanding from a rule-based Kanban board into a structured workflow management application.
 
-- In Review workflow column
-- Work Type categories
+## Version 1.0 - Core Kanban System
+
+Completed:
+
+- Kanban board layout
+- Task cards
+- Workflow columns
+- Drag-and-drop functionality
+- Basic task movement between workflow states
+- Initial component architecture
+- Reducer-based state management
+
+![TaskFlow Version 1.0](./screenshots/taskflow-v1-board.png)
+
+## Version 1.1 - Task Management Enhancement
+
+Completed:
+
+- Task creation
+- Task editing
+- Task deletion
+- Priority system
+- Task categories
+- Priority-based task sorting
+- Workflow validation rules
+- Invalid transition notifications
+- Local storage persistence
+- Subtask creation
+- Subtask completion tracking
+- Subtask deletion
+
+![TaskFlow Version 1.1](./screenshots/taskflow-board.png)
+
+---
+
+# Future Roadmap
+
+## Version 1.2 - Enhanced Task Experience
+
+Planned:
+
+- Create subtasks directly from the task edit modal
+- Expand/collapse task details
 - Due dates
 - Assignees
+- Task notes
+- Task history tracking
 
-### Version 1.2 - Task Management
+## Version 1.3 - Productivity Features
 
-- Add tasks
-- Edit tasks
-- Delete tasks
-- Improved validation
+Planned:
 
-### Version 1.3 - Task Breakdown
+- Search functionality
+- Filtering options
+- Advanced sorting controls
+- Task analytics
+- Productivity metrics
 
-- Subtasks
-- Progress tracking
-- Expand/collapse task details
+## Version 2.0 - Advanced Workflow
 
-### Version 1.4 - Productivity Features
+Planned:
 
-- Search
-- Filtering
-- Sorting options
-
-### Version 2.0 - Advanced Workflow
-
-- Workflow settings
+- Custom workflow configuration
+- User authentication
+- Team collaboration features
 - Analytics dashboard
 - Dark mode
 - Keyboard shortcuts
 
 ---
 
-## Getting Started
+# Getting Started
 
 Clone the repository:
 

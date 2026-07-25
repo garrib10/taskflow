@@ -1,24 +1,145 @@
 import { useEffect, useReducer } from "react";
-
 import type { Board } from "../domain/board/Board";
-import type { TaskStatus } from "../domain/task/Task";
-
-import { moveTask } from "../domain/task/taskActions";
+import type { Task, TaskStatus } from "../domain/task/Task";
+import {
+  createSubtask,
+  moveTask,
+  toggleSubtask,
+  deleteSubtask,
+} from "../domain/task/taskActions";
 import { initialBoard } from "../utils/mockData";
 import { loadBoard, saveBoard } from "../utils/storage";
 
-export type BoardAction = {
-  type: "MOVE_TASK";
-  taskId: string;
-  newStatus: TaskStatus;
-};
+export type BoardAction =
+  | {
+      type: "MOVE_TASK";
+      taskId: string;
+      newStatus: TaskStatus;
+    }
+  | {
+      type: "CREATE_TASK";
+      task: Task;
+    }
+  | {
+      type: "UPDATE_TASK";
+      task: Task;
+    }
+  | {
+      type: "DELETE_TASK";
+      taskId: string;
+    }
+  | {
+      type: "ADD_SUBTASK";
+      taskId: string;
+      title: string;
+    }
+  | {
+      type: "TOGGLE_SUBTASK";
+      taskId: string;
+      subtaskId: string;
+    }
+  | {
+      type: "DELETE_SUBTASK";
+      taskId: string;
+      subtaskId: string;
+    };
 
 function boardReducer(state: Board, action: BoardAction): Board {
   switch (action.type) {
-    case "MOVE_TASK": {
-      let movedTask = null;
+    case "CREATE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) =>
+          column.id === "todo"
+            ? {
+                ...column,
+                tasks: [...column.tasks, action.task],
+              }
+            : column,
+        ),
+      };
+    }
 
-      // Remove task from its current column
+    case "UPDATE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.task.id ? action.task : task,
+          ),
+        })),
+      };
+    }
+
+    case "DELETE_TASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.filter((task) => task.id !== action.taskId),
+        })),
+      };
+    }
+
+    case "ADD_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? {
+                  ...task,
+                  subtasks: [
+                    ...(task.subtasks ?? []),
+                    createSubtask(action.title),
+                  ],
+                }
+              : task,
+          ),
+        })),
+      };
+    }
+
+    case "TOGGLE_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? {
+                  ...task,
+                  subtasks: (task.subtasks ?? []).map((subtask) =>
+                    subtask.id === action.subtaskId
+                      ? toggleSubtask(subtask)
+                      : subtask,
+                  ),
+                }
+              : task,
+          ),
+        })),
+      };
+    }
+
+    case "DELETE_SUBTASK": {
+      return {
+        ...state,
+        columns: state.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) =>
+            task.id === action.taskId
+              ? deleteSubtask(task, action.subtaskId)
+              : task,
+          ),
+        })),
+      };
+    }
+
+    case "MOVE_TASK": {
+      let movedTask: Task | null = null;
+
       const columnsWithoutTask = state.columns.map((column) => ({
         ...column,
         tasks: column.tasks.filter((task) => {
@@ -31,19 +152,16 @@ function boardReducer(state: Board, action: BoardAction): Board {
         }),
       }));
 
-      // Task was not found
       if (!movedTask) {
         return state;
       }
 
-      // Validate and update task status
       const updatedTask = moveTask(movedTask, action.newStatus);
 
       if (!updatedTask) {
         return state;
       }
 
-      // Add task to the new column
       return {
         ...state,
         columns: columnsWithoutTask.map((column) =>
