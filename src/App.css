@@ -3,16 +3,33 @@
 =========================== */
 
 .board-container {
-  max-width: 1400px;
-  margin: 2rem auto;
   width: 100%;
+  max-width: 1800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .board {
   display: flex;
-  gap: 24px;
   align-items: flex-start;
-  padding: 1rem 0;
+  gap: 24px;
+
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem 0 0.5rem;
+}
+
+.board::-webkit-scrollbar {
+  height: 8px;
+}
+
+.board::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.board::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .board-header {
@@ -21,6 +38,7 @@
   border-radius: 12px;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,12 +57,15 @@
 =========================== */
 
 .column {
-  flex: 1;
+  flex: 1 1 320px;
+  min-width: 320px;
   min-height: 500px;
+
   background: var(--column-background);
   border: 1px solid var(--column-border);
   border-radius: var(--radius-large);
   padding: 1rem;
+
   transition: box-shadow var(--transition-speed);
 }
 
@@ -73,8 +94,10 @@
   justify-content: center;
   align-items: center;
   height: 150px;
+
   color: var(--text-secondary);
   font-style: italic;
+
   border: 2px dashed var(--column-border);
   border-radius: var(--radius-medium);
 }
@@ -126,15 +149,19 @@
 
 .task-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: nowrap;
   margin-top: 1rem;
 }
 
 .task-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .task-meta span {
@@ -144,7 +171,9 @@
 
 .task-actions {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ===========================
@@ -254,6 +283,8 @@
 .task-category {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -387,9 +418,11 @@
 .edit-task-button,
 .delete-task-button {
   border-radius: var(--radius-small);
-  padding: 6px 12px;
+  padding: 5px 9px;
   cursor: pointer;
+  font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -438,6 +471,9 @@
 .badge-low {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -460,6 +496,11 @@
 }
 
 .completed-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
   color: #15803d;
   background: #dcfce7;
   padding: 4px 10px;
@@ -614,9 +655,11 @@
   }
 
   .task-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 1rem;
   }
 
   .task-card h3 {

@@ -2,7 +2,11 @@ import type { TaskStatus } from "./Task";
 
 const allowedTransitions: Record<TaskStatus, TaskStatus[]> = {
   todo: ["in-progress"],
-  "in-progress": ["done"],
+
+  "in-progress": ["in-review"],
+
+  "in-review": ["done"],
+
   done: [],
 };
 
@@ -17,5 +21,5 @@ export function getMoveErrorMessage(
   currentStatus: TaskStatus,
   newStatus: TaskStatus,
 ): string {
-  return `Cannot move task from ${currentStatus} to ${newStatus}`;
+  return `Cannot move task from ${currentStatus} to ${newStatus}. `;
 }

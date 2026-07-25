@@ -191,6 +191,8 @@ Completed:
 
 ![TaskFlow Version 1.0](./screenshots/taskflow-v1-board.png)
 
+---
+
 ## Version 1.1 - Task Management Enhancement
 
 Completed:
@@ -209,6 +211,22 @@ Completed:
 - Subtask deletion
 
 ![TaskFlow Version 1.1](./screenshots/taskflow-board.png)
+
+---
+
+## Version 1.2 - Workflow Improvements
+
+Completed:
+
+- Added **In Review** workflow stage
+- Expanded workflow from **3** to **4** stages
+- Updated workflow validation rules
+- Improved task badge responsiveness
+- Improved task footer layout
+- Refined responsive board layout for four columns
+- Updated workflow screenshots and documentation
+
+![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
 ---
 
