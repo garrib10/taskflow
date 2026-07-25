@@ -237,6 +237,7 @@ Completed:
 - Improved task badge responsiveness
 - Improved task footer layout
 - Refined responsive board layout for four columns
+- Unified search and filtering into a streamlined board controls toolbar
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
@@ -251,7 +252,6 @@ Planned:
 - Notification expansion
 - Last updated timestamp
 - Confirm unsaved changes
-- Improved Board Control
 
 ## Version 1.5 - Productivity Features
 

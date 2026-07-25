@@ -5,14 +5,14 @@ import type { Task, TaskStatus } from "../../domain/task/Task";
 import type { BoardAction } from "../../hooks/useBoardReducer";
 import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 import Column from "../Column/Column";
-import Notification from "../Notification/Notification";
-import TaskForm from "../TaskForm/TaskForm";
-import SearchBar from "../SearchBar/SearchBar";
 import FilterControls, {
   type CategoryFilter,
   type PriorityFilter,
   type StatusFilter,
 } from "../FilterControls/FilterControls";
+import Notification from "../Notification/Notification";
+import SearchBar from "../SearchBar/SearchBar";
+import TaskForm from "../TaskForm/TaskForm";
 
 interface BoardProps {
   board: BoardType;
@@ -88,7 +88,8 @@ export default function Board({ board, dispatch }: BoardProps) {
     };
   }, []);
 
-  function handleClearFilters() {
+  function handleResetControls() {
+    setSearchTerm("");
     setPriorityFilter("all");
     setCategoryFilter("all");
     setStatusFilter("all");
@@ -222,18 +223,27 @@ export default function Board({ board, dispatch }: BoardProps) {
           </button>
         </div>
 
-        <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+        <div className="board-controls">
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
-        <FilterControls
-          priorityFilter={priorityFilter}
-          categoryFilter={categoryFilter}
-          statusFilter={statusFilter}
-          onPriorityChange={setPriorityFilter}
-          onCategoryChange={setCategoryFilter}
-          onStatusChange={setStatusFilter}
-          onClearFilters={handleClearFilters}
-          hasActiveFilters={hasActiveFilters}
-        />
+          <FilterControls
+            priorityFilter={priorityFilter}
+            categoryFilter={categoryFilter}
+            statusFilter={statusFilter}
+            onPriorityChange={setPriorityFilter}
+            onCategoryChange={setCategoryFilter}
+            onStatusChange={setStatusFilter}
+          />
+
+          <button
+            type="button"
+            className="reset-controls-button"
+            onClick={handleResetControls}
+            disabled={!isFiltering}
+          >
+            Reset
+          </button>
+        </div>
 
         {isFiltering && (
           <p className="search-results-count" aria-live="polite">

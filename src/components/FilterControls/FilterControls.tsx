@@ -12,8 +12,6 @@ interface FilterControlsProps {
   onPriorityChange: (value: PriorityFilter) => void;
   onCategoryChange: (value: CategoryFilter) => void;
   onStatusChange: (value: StatusFilter) => void;
-  onClearFilters: () => void;
-  hasActiveFilters: boolean;
 }
 
 export default function FilterControls({
@@ -23,8 +21,6 @@ export default function FilterControls({
   onPriorityChange,
   onCategoryChange,
   onStatusChange,
-  onClearFilters,
-  hasActiveFilters,
 }: FilterControlsProps) {
   return (
     <div className="filter-controls">
@@ -82,15 +78,6 @@ export default function FilterControls({
           <option value="done">Done</option>
         </select>
       </div>
-
-      <button
-        type="button"
-        className="clear-filters-button"
-        onClick={onClearFilters}
-        disabled={!hasActiveFilters}
-      >
-        Clear Filters
-      </button>
     </div>
   );
 }
