@@ -871,6 +871,32 @@
 }
 
 /* ===========================
+   Task Form Select Row
+=========================== */
+
+.task-form-select-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.task-form-field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.task-form-field label {
+  font-weight: 600;
+}
+
+.task-form-field select {
+  width: 100%;
+}
+
+/* ===========================
    Confirmation Modal
 =========================== */
 
@@ -1024,6 +1050,11 @@ select:focus-visible {
 
   .board-container {
     padding: 0 1rem;
+  }
+
+  .task-form-select-row {
+    flex-direction: column;
+    gap: 12px;
   }
 
   .task-footer {

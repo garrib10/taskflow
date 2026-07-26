@@ -64,7 +64,7 @@ export default function TaskCard({
             <span className="completed-badge">✔ Done</span>
           ) : (
             <span className={priorityStyle.badgeClass}>
-              {priorityStyle.icon} {priorityStyle.label}
+              {priorityStyle.label}
             </span>
           )}
 

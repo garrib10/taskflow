@@ -144,7 +144,6 @@ export default function TaskForm({
     setError("");
     setShowDiscardConfirmation(false);
 
-    // Close directly because the task was successfully saved.
     onClose();
   }
 
@@ -195,34 +194,42 @@ export default function TaskForm({
             {description.trim().length}/300
           </small>
 
-          <label htmlFor="task-priority">Priority</label>
+          <div className="task-form-select-row">
+            <div className="task-form-field">
+              <label htmlFor="task-priority">Priority</label>
 
-          <select
-            id="task-priority"
-            value={priority}
-            onChange={(event) => setPriority(event.target.value as Priority)}
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+              <select
+                id="task-priority"
+                value={priority}
+                onChange={(event) =>
+                  setPriority(event.target.value as Priority)
+                }
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
 
-          <label htmlFor="task-category">Category</label>
+            <div className="task-form-field">
+              <label htmlFor="task-category">Category</label>
 
-          <select
-            id="task-category"
-            value={category}
-            onChange={(event) =>
-              setCategory(event.target.value as TaskCategory)
-            }
-          >
-            <option value="feature">Feature</option>
-            <option value="ui">UI</option>
-            <option value="bug">Bug</option>
-            <option value="testing">Testing</option>
-            <option value="refactor">Refactor</option>
-            <option value="devops">DevOps</option>
-          </select>
+              <select
+                id="task-category"
+                value={category}
+                onChange={(event) =>
+                  setCategory(event.target.value as TaskCategory)
+                }
+              >
+                <option value="feature">Feature</option>
+                <option value="ui">UI</option>
+                <option value="bug">Bug</option>
+                <option value="testing">Testing</option>
+                <option value="refactor">Refactor</option>
+                <option value="devops">DevOps</option>
+              </select>
+            </div>
+          </div>
 
           <div className="create-task-actions">
             <button type="button" onClick={handleRequestClose}>

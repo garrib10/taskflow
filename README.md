@@ -241,6 +241,7 @@ Completed:
 - Added confirmation before discarding unsaved task changes
 - Added a persistent board last-updated timestamp
 - Expanded notifications with icons, manual dismissal, and animated feedback
+- Replace the browser unsaved-changes prompt with a custom confirmation modal
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
@@ -253,7 +254,6 @@ Completed:
 Planned:
 
 - UI Polish
-- Replace the browser unsaved-changes prompt with a custom confirmation modal
 
 ## Version 1.5 - Productivity Features
 
