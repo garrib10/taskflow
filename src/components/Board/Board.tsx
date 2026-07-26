@@ -5,6 +5,7 @@ import type { Task, TaskStatus } from "../../domain/task/Task";
 import type { BoardAction } from "../../hooks/useBoardReducer";
 import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 import Column from "../Column/Column";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls, {
   type CategoryFilter,
   type PriorityFilter,
@@ -24,6 +25,9 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [taskPendingDeletion, setTaskPendingDeletion] = useState<Task | null>(
+    null,
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
@@ -215,23 +219,36 @@ export default function Board({ board, dispatch }: BoardProps) {
   }
 
   function handleDeleteTask(taskId: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this task?",
-    );
+    const task = board.columns
+      .flatMap((column) => column.tasks)
+      .find((currentTask) => currentTask.id === taskId);
 
-    if (!confirmed) {
+    if (!task) {
       return;
     }
 
-    if (taskToEdit?.id === taskId) {
+    setTaskPendingDeletion(task);
+  }
+
+  function handleCancelDeleteTask() {
+    setTaskPendingDeletion(null);
+  }
+
+  function handleConfirmDeleteTask() {
+    if (!taskPendingDeletion) {
+      return;
+    }
+
+    if (taskToEdit?.id === taskPendingDeletion.id) {
       handleCloseTaskForm();
     }
 
     dispatch({
       type: "DELETE_TASK",
-      taskId,
+      taskId: taskPendingDeletion.id,
     });
 
+    setTaskPendingDeletion(null);
     showSuccessNotification("Task deleted successfully.");
   }
 
@@ -311,6 +328,18 @@ export default function Board({ board, dispatch }: BoardProps) {
             onClose={handleCloseTaskForm}
             dispatch={dispatch}
             onSuccess={handleTaskSaved}
+          />
+        )}
+
+        {taskPendingDeletion && (
+          <ConfirmModal
+            title="Delete Task"
+            message={`Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
+            confirmText="Delete"
+            cancelText="Cancel"
+            confirmVariant="danger"
+            onConfirm={handleConfirmDeleteTask}
+            onCancel={handleCancelDeleteTask}
           />
         )}
 

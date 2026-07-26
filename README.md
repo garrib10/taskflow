@@ -253,6 +253,7 @@ Completed:
 Planned:
 
 - UI Polish
+- Replace the browser unsaved-changes prompt with a custom confirmation modal
 
 ## Version 1.5 - Productivity Features
 
@@ -270,7 +271,7 @@ Planned:
 - Task notes
 - Add warning notification type (`.notification.warning`)
 - Add info notification type (`.notification.info`)
-- Replace the browser unsaved-changes prompt with a custom confirmation modal
+- Add focus trapping and focus restoration for modal dialogs
 
 ## Version 2.0 - Advanced Workflow
 
