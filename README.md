@@ -228,32 +228,21 @@ Completed:
 Completed:
 
 - Added **In Review** workflow stage
-- Expanded workflow from **3** to **4** stages
-- Updated workflow validation rules
-- Added keyboard accessibility support
-- Added task search by title and description
-- Added task filtering by priority, category, and workflow status
-- Improved search and filter result feedback
-- Improved task badge responsiveness
-- Improved task footer layout
-- Refined responsive board layout for four columns
-- Unified search and filtering into a streamlined board controls toolbar
-- Added confirmation before discarding unsaved task changes
-- Added a persistent board last-updated timestamp
-- Expanded notifications with icons, manual dismissal, and animated feedback
-- Replace the browser unsaved-changes prompt with a custom confirmation modal
+- Added task search and multi-filtering
+- Unified search and filtering controls
+- Added keyboard accessibility improvements
+- Added confirmation for unsaved changes
+- Added a persistent last-updated timestamp
+- Expanded success and error notifications
+- Added reusable custom confirmation dialogs
+- Improved Task Form and TaskCard layouts
+- Refined responsive behavior and interaction states
 
 ![TaskFlow Version 1.2](./screenshots/taskflow-v1.2-board.png)
 
 ---
 
 # Future Roadmap
-
-## Version 1.2 - Enhanced Task Experience
-
-Planned:
-
-- UI Polish
 
 ## Version 1.5 - Productivity Features
 

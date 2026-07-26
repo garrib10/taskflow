@@ -138,6 +138,7 @@
 
 .search-input-wrapper input:focus {
   border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* ===========================
@@ -185,6 +186,7 @@
 
 .filter-group select:focus {
   border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* ===========================
@@ -327,28 +329,27 @@
 .task-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: nowrap;
+  gap: 12px;
   margin-top: 1rem;
 }
 
 .task-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
+  gap: 8px;
+  flex: 1;
   min-width: 0;
 }
 
 .task-meta span {
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .task-actions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -520,7 +521,7 @@
   font-size: 0.75rem;
   color: #6b7280;
   margin-top: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   user-select: none;
 }
 
@@ -574,6 +575,23 @@
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 1rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.create-task-modal input:hover,
+.create-task-modal textarea:hover,
+.create-task-modal select:hover {
+  border-color: #94a3b8;
+}
+
+.create-task-modal input:focus,
+.create-task-modal textarea:focus,
+.create-task-modal select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .create-task-modal textarea {
