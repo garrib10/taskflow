@@ -5,7 +5,14 @@ import type { Task, TaskStatus } from "../../domain/task/Task";
 import type { BoardAction } from "../../hooks/useBoardReducer";
 import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 import Column from "../Column/Column";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import FilterControls, {
+  type CategoryFilter,
+  type PriorityFilter,
+  type StatusFilter,
+} from "../FilterControls/FilterControls";
 import Notification from "../Notification/Notification";
+import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
 
 interface BoardProps {
@@ -18,9 +25,68 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [taskPendingDeletion, setTaskPendingDeletion] = useState<Task | null>(
+    null,
+  );
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const errorTimeoutRef = useRef<number | null>(null);
   const successTimeoutRef = useRef<number | null>(null);
+
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const isSearching = normalizedSearchTerm.length > 0;
+
+  const hasActiveFilters =
+    priorityFilter !== "all" ||
+    categoryFilter !== "all" ||
+    statusFilter !== "all";
+
+  const isFiltering = isSearching || hasActiveFilters;
+
+  const formattedLastUpdated = board.lastUpdated.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  const filteredColumns = board.columns.map((column) => ({
+    ...column,
+    tasks: column.tasks.filter((task) => {
+      const titleMatches = task.title
+        .toLowerCase()
+        .includes(normalizedSearchTerm);
+
+      const descriptionMatches = (task.description ?? "")
+        .toLowerCase()
+        .includes(normalizedSearchTerm);
+
+      const searchMatches = !isSearching || titleMatches || descriptionMatches;
+
+      const priorityMatches =
+        priorityFilter === "all" || task.priority === priorityFilter;
+
+      const categoryMatches =
+        categoryFilter === "all" || task.category === categoryFilter;
+
+      const statusMatches =
+        statusFilter === "all" || task.status === statusFilter;
+
+      return (
+        searchMatches && priorityMatches && categoryMatches && statusMatches
+      );
+    }),
+  }));
+
+  const matchingTaskCount = filteredColumns.reduce(
+    (total, column) => total + column.tasks.length,
+    0,
+  );
 
   useEffect(() => {
     return () => {
@@ -33,6 +99,69 @@ export default function Board({ board, dispatch }: BoardProps) {
       }
     };
   }, []);
+
+  function handleCloseErrorNotification() {
+    setErrorMessage(null);
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+  }
+
+  function handleCloseSuccessNotification() {
+    setSuccessMessage(null);
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+      successTimeoutRef.current = null;
+    }
+  }
+
+  function showErrorNotification(message: string) {
+    setSuccessMessage(null);
+    setErrorMessage(message);
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+      successTimeoutRef.current = null;
+    }
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+    }
+
+    errorTimeoutRef.current = window.setTimeout(() => {
+      setErrorMessage(null);
+      errorTimeoutRef.current = null;
+    }, 3000);
+  }
+
+  function showSuccessNotification(message: string) {
+    setErrorMessage(null);
+    setSuccessMessage(message);
+
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+
+    if (successTimeoutRef.current) {
+      clearTimeout(successTimeoutRef.current);
+    }
+
+    successTimeoutRef.current = window.setTimeout(() => {
+      setSuccessMessage(null);
+      successTimeoutRef.current = null;
+    }, 3000);
+  }
+
+  function handleResetControls() {
+    setSearchTerm("");
+    setPriorityFilter("all");
+    setCategoryFilter("all");
+    setStatusFilter("all");
+  }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -57,17 +186,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     }
 
     if (!canMoveTask(currentTask.status, newStatus)) {
-      setSuccessMessage(null);
-      setErrorMessage(getMoveErrorMessage(currentTask.status, newStatus));
-
-      if (errorTimeoutRef.current) {
-        clearTimeout(errorTimeoutRef.current);
-      }
-
-      errorTimeoutRef.current = window.setTimeout(() => {
-        setErrorMessage(null);
-      }, 3000);
-
+      showErrorNotification(getMoveErrorMessage(currentTask.status, newStatus));
       return;
     }
 
@@ -77,7 +196,7 @@ export default function Board({ board, dispatch }: BoardProps) {
       newStatus,
     });
 
-    setErrorMessage(null);
+    handleCloseErrorNotification();
   }
 
   function handleCreateTask() {
@@ -96,67 +215,112 @@ export default function Board({ board, dispatch }: BoardProps) {
   }
 
   function handleTaskSaved(message: string) {
-    setErrorMessage(null);
-    setSuccessMessage(message);
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-
-    successTimeoutRef.current = window.setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    showSuccessNotification(message);
   }
 
   function handleDeleteTask(taskId: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this task?",
-    );
+    const task = board.columns
+      .flatMap((column) => column.tasks)
+      .find((currentTask) => currentTask.id === taskId);
 
-    if (!confirmed) {
+    if (!task) {
       return;
     }
 
-    if (taskToEdit?.id === taskId) {
+    setTaskPendingDeletion(task);
+  }
+
+  function handleCancelDeleteTask() {
+    setTaskPendingDeletion(null);
+  }
+
+  function handleConfirmDeleteTask() {
+    if (!taskPendingDeletion) {
+      return;
+    }
+
+    if (taskToEdit?.id === taskPendingDeletion.id) {
       handleCloseTaskForm();
     }
 
     dispatch({
       type: "DELETE_TASK",
-      taskId,
+      taskId: taskPendingDeletion.id,
     });
 
-    setErrorMessage(null);
-    setSuccessMessage("Task deleted successfully.");
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-
-    successTimeoutRef.current = window.setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    setTaskPendingDeletion(null);
+    showSuccessNotification("Task deleted successfully.");
   }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="board-container">
-        {errorMessage && <Notification message={errorMessage} type="error" />}
+        {errorMessage && (
+          <Notification
+            message={errorMessage}
+            type="error"
+            onClose={handleCloseErrorNotification}
+          />
+        )}
 
         {successMessage && (
-          <Notification message={successMessage} type="success" />
+          <Notification
+            message={successMessage}
+            type="success"
+            onClose={handleCloseSuccessNotification}
+          />
         )}
 
         <div className="board-header">
           <div>
             <h1>TaskFlow</h1>
             <p>Rule-Based Workflow Board</p>
+
+            <p className="last-updated">
+              Last updated:{" "}
+              <time dateTime={board.lastUpdated.toISOString()}>
+                {formattedLastUpdated}
+              </time>
+            </p>
           </div>
 
-          <button className="create-task-button" onClick={handleCreateTask}>
+          <button
+            type="button"
+            className="create-task-button"
+            onClick={handleCreateTask}
+          >
             + Create Task
           </button>
         </div>
+
+        <div className="board-controls">
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+
+          <FilterControls
+            priorityFilter={priorityFilter}
+            categoryFilter={categoryFilter}
+            statusFilter={statusFilter}
+            onPriorityChange={setPriorityFilter}
+            onCategoryChange={setCategoryFilter}
+            onStatusChange={setStatusFilter}
+          />
+
+          <button
+            type="button"
+            className="reset-controls-button"
+            onClick={handleResetControls}
+            disabled={!isFiltering}
+          >
+            Reset
+          </button>
+        </div>
+
+        {isFiltering && (
+          <p className="search-results-count" aria-live="polite">
+            {matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"}{" "}
+            found
+          </p>
+        )}
 
         {showTaskForm && (
           <TaskForm
@@ -167,14 +331,27 @@ export default function Board({ board, dispatch }: BoardProps) {
           />
         )}
 
+        {taskPendingDeletion && (
+          <ConfirmModal
+            title="Delete Task"
+            message={`Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
+            confirmText="Delete"
+            cancelText="Cancel"
+            confirmVariant="danger"
+            onConfirm={handleConfirmDeleteTask}
+            onCancel={handleCancelDeleteTask}
+          />
+        )}
+
         <div className="board">
-          {board.columns.map((column) => (
+          {filteredColumns.map((column) => (
             <Column
               key={column.id}
               column={column}
               dispatch={dispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
+              isFiltering={isFiltering}
             />
           ))}
         </div>

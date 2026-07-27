@@ -10,6 +10,7 @@ interface ColumnProps {
   dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
+  isFiltering: boolean;
 }
 
 export default function Column({
@@ -17,6 +18,7 @@ export default function Column({
   dispatch,
   onEdit,
   onDelete,
+  isFiltering,
 }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
@@ -33,7 +35,9 @@ export default function Column({
       </div>
 
       {sortedTasks.length === 0 ? (
-        <div className="empty-column">No tasks</div>
+        <div className="empty-column">
+          {isFiltering ? "No matching tasks" : "No tasks"}
+        </div>
       ) : (
         sortedTasks.map((task) => (
           <TaskCard

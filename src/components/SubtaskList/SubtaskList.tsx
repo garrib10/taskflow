@@ -30,7 +30,7 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    // Prevent drag behavior while typing
+    // Prevent drag behavior while typing.
     event.stopPropagation();
 
     if (event.key === "Enter") {
@@ -70,6 +70,7 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
         />
 
         <button
+          type="button"
           className="add-subtask-button"
           onPointerDown={(event) => event.stopPropagation()}
           onMouseDown={(event) => event.stopPropagation()}

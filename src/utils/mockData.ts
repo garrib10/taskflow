@@ -3,6 +3,7 @@ import type { Board } from "../domain/board/Board";
 export const initialBoard: Board = {
   id: "board-1",
   name: "TaskFlow Board",
+  lastUpdated: new Date(),
   columns: [
     {
       id: "todo",
@@ -71,6 +72,26 @@ export const initialBoard: Board = {
         },
       ],
     },
+
+    // New workflow stage added in v1.2
+    {
+      id: "in-review",
+      title: "In Review",
+      tasks: [
+        {
+          id: "task-9",
+          title: "Review Authentication Implementation",
+          description:
+            "Review authentication changes, verify security requirements, and confirm implementation meets project standards before completion.",
+          priority: "high",
+          category: "testing",
+          status: "in-review",
+          createdAt: new Date(),
+          subtasks: [],
+        },
+      ],
+    },
+
     {
       id: "done",
       title: "Done",

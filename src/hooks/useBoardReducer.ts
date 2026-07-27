@@ -44,10 +44,17 @@ export type BoardAction =
       subtaskId: string;
     };
 
+function withUpdatedTimestamp(board: Board): Board {
+  return {
+    ...board,
+    lastUpdated: new Date(),
+  };
+}
+
 function boardReducer(state: Board, action: BoardAction): Board {
   switch (action.type) {
     case "CREATE_TASK": {
-      return {
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) =>
           column.id === "todo"
@@ -58,10 +65,20 @@ function boardReducer(state: Board, action: BoardAction): Board {
             : column,
         ),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "UPDATE_TASK": {
-      return {
+      const taskExists = state.columns.some((column) =>
+        column.tasks.some((task) => task.id === action.task.id),
+      );
+
+      if (!taskExists) {
+        return state;
+      }
+
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) => ({
           ...column,
@@ -70,20 +87,40 @@ function boardReducer(state: Board, action: BoardAction): Board {
           ),
         })),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "DELETE_TASK": {
-      return {
+      const taskExists = state.columns.some((column) =>
+        column.tasks.some((task) => task.id === action.taskId),
+      );
+
+      if (!taskExists) {
+        return state;
+      }
+
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) => ({
           ...column,
           tasks: column.tasks.filter((task) => task.id !== action.taskId),
         })),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "ADD_SUBTASK": {
-      return {
+      const taskExists = state.columns.some((column) =>
+        column.tasks.some((task) => task.id === action.taskId),
+      );
+
+      if (!taskExists) {
+        return state;
+      }
+
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) => ({
           ...column,
@@ -100,10 +137,26 @@ function boardReducer(state: Board, action: BoardAction): Board {
           ),
         })),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "TOGGLE_SUBTASK": {
-      return {
+      const subtaskExists = state.columns.some((column) =>
+        column.tasks.some(
+          (task) =>
+            task.id === action.taskId &&
+            (task.subtasks ?? []).some(
+              (subtask) => subtask.id === action.subtaskId,
+            ),
+        ),
+      );
+
+      if (!subtaskExists) {
+        return state;
+      }
+
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) => ({
           ...column,
@@ -121,10 +174,26 @@ function boardReducer(state: Board, action: BoardAction): Board {
           ),
         })),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "DELETE_SUBTASK": {
-      return {
+      const subtaskExists = state.columns.some((column) =>
+        column.tasks.some(
+          (task) =>
+            task.id === action.taskId &&
+            (task.subtasks ?? []).some(
+              (subtask) => subtask.id === action.subtaskId,
+            ),
+        ),
+      );
+
+      if (!subtaskExists) {
+        return state;
+      }
+
+      const updatedBoard: Board = {
         ...state,
         columns: state.columns.map((column) => ({
           ...column,
@@ -135,6 +204,8 @@ function boardReducer(state: Board, action: BoardAction): Board {
           ),
         })),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     case "MOVE_TASK": {
@@ -162,7 +233,7 @@ function boardReducer(state: Board, action: BoardAction): Board {
         return state;
       }
 
-      return {
+      const updatedBoard: Board = {
         ...state,
         columns: columnsWithoutTask.map((column) =>
           column.id === action.newStatus
@@ -173,6 +244,8 @@ function boardReducer(state: Board, action: BoardAction): Board {
             : column,
         ),
       };
+
+      return withUpdatedTimestamp(updatedBoard);
     }
 
     default:

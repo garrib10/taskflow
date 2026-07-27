@@ -3,7 +3,8 @@ import type { TaskCategory } from "./taskCategory";
 /** union type for task priority and status */
 
 export type Priority = "low" | "medium" | "high";
-export type TaskStatus = "todo" | "in-progress" | "done";
+
+export type TaskStatus = "todo" | "in-progress" | "in-review" | "done";
 
 /**
  * Individual checklist item inside a Task
