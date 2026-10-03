@@ -25,10 +25,10 @@ export default function TaskForm({
   const initialPriority: Priority = task?.priority ?? "medium";
   const initialCategory: TaskCategory = task?.category ?? "feature";
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<Priority>("medium");
-  const [category, setCategory] = useState<TaskCategory>("feature");
+  const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState(initialDescription);
+  const [priority, setPriority] = useState<Priority>(initialPriority);
+  const [category, setCategory] = useState<TaskCategory>(initialCategory);
   const [error, setError] = useState("");
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
 
@@ -37,15 +37,6 @@ export default function TaskForm({
     description !== initialDescription ||
     priority !== initialPriority ||
     category !== initialCategory;
-
-  useEffect(() => {
-    setTitle(initialTitle);
-    setDescription(initialDescription);
-    setPriority(initialPriority);
-    setCategory(initialCategory);
-    setError("");
-    setShowDiscardConfirmation(false);
-  }, [initialTitle, initialDescription, initialPriority, initialCategory]);
 
   const handleRequestClose = useCallback(() => {
     if (!hasUnsavedChanges) {
