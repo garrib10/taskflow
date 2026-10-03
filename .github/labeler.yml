@@ -1,0 +1,22 @@
+# Label rules for actions/labeler (v5+ syntax).
+# Every label used here must already exist in the repository.
+
+enhancement:
+  - head-branch: ["^feature/"]
+
+bug:
+  - head-branch: ["^fix/"]
+
+documentation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: ["**/*.md", "docs/**"]
+      - head-branch: ["^docs/"]
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ["package.json", "package-lock.json"]
+
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**"]
