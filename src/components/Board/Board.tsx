@@ -324,6 +324,7 @@ export default function Board({ board, dispatch }: BoardProps) {
 
         {showTaskForm && (
           <TaskForm
+            key={taskToEdit?.id ?? "new"}
             task={taskToEdit}
             onClose={handleCloseTaskForm}
             dispatch={dispatch}
