@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
-import type { Task, TaskStatus } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { Task } from "../../domain/task/Task";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
 import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
-import FilterControls, {
+import FilterControls from "../FilterControls/FilterControls";
+import {
+  filterBoardColumns,
+  createDefaultBoardFilters,
   type CategoryFilter,
   type PriorityFilter,
   type StatusFilter,
-} from "../FilterControls/FilterControls";
+} from "../../domain/board/boardFilters";
+import { isTaskStatus } from "../../utils/typeGuards";
 import Notification from "../Notification/Notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
@@ -55,33 +59,12 @@ export default function Board({ board, dispatch }: BoardProps) {
     minute: "2-digit",
   });
 
-  const filteredColumns = board.columns.map((column) => ({
-    ...column,
-    tasks: column.tasks.filter((task) => {
-      const titleMatches = task.title
-        .toLowerCase()
-        .includes(normalizedSearchTerm);
-
-      const descriptionMatches = (task.description ?? "")
-        .toLowerCase()
-        .includes(normalizedSearchTerm);
-
-      const searchMatches = !isSearching || titleMatches || descriptionMatches;
-
-      const priorityMatches =
-        priorityFilter === "all" || task.priority === priorityFilter;
-
-      const categoryMatches =
-        categoryFilter === "all" || task.category === categoryFilter;
-
-      const statusMatches =
-        statusFilter === "all" || task.status === statusFilter;
-
-      return (
-        searchMatches && priorityMatches && categoryMatches && statusMatches
-      );
-    }),
-  }));
+  const filteredColumns = filterBoardColumns(board, {
+    searchTerm,
+    priorityFilter,
+    categoryFilter,
+    statusFilter,
+  });
 
   const matchingTaskCount = filteredColumns.reduce(
     (total, column) => total + column.tasks.length,
@@ -157,10 +140,11 @@ export default function Board({ board, dispatch }: BoardProps) {
   }
 
   function handleResetControls() {
-    setSearchTerm("");
-    setPriorityFilter("all");
-    setCategoryFilter("all");
-    setStatusFilter("all");
+    const defaults = createDefaultBoardFilters();
+    setSearchTerm(defaults.searchTerm);
+    setPriorityFilter(defaults.priorityFilter);
+    setCategoryFilter(defaults.categoryFilter);
+    setStatusFilter(defaults.statusFilter);
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -171,7 +155,10 @@ export default function Board({ board, dispatch }: BoardProps) {
     }
 
     const taskId = active.id.toString();
-    const newStatus = over.id.toString() as TaskStatus;
+    if (!isTaskStatus(over.id)) {
+      return;
+    }
+    const newStatus = over.id;
 
     const currentTask = board.columns
       .flatMap((column) => column.tasks)
@@ -194,6 +181,7 @@ export default function Board({ board, dispatch }: BoardProps) {
       type: "MOVE_TASK",
       taskId,
       newStatus,
+      updatedAt: new Date(),
     });
 
     handleCloseErrorNotification();
@@ -246,6 +234,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     dispatch({
       type: "DELETE_TASK",
       taskId: taskPendingDeletion.id,
+      updatedAt: new Date(),
     });
 
     setTaskPendingDeletion(null);

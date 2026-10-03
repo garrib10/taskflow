@@ -1,4 +1,5 @@
 import type { TaskStatus } from "./Task";
+import { isTaskStatus } from "../../utils/typeGuards";
 
 const allowedTransitions: Record<TaskStatus, TaskStatus[]> = {
   todo: ["in-progress"],
@@ -11,10 +12,14 @@ const allowedTransitions: Record<TaskStatus, TaskStatus[]> = {
 };
 
 export function canMoveTask(
-  currentStatus: TaskStatus,
-  newStatus: TaskStatus,
+  currentStatus: unknown,
+  newStatus: unknown,
 ): boolean {
-  return allowedTransitions[currentStatus].includes(newStatus);
+  return (
+    isTaskStatus(currentStatus) &&
+    isTaskStatus(newStatus) &&
+    allowedTransitions[currentStatus].includes(newStatus)
+  );
 }
 
 export function getMoveErrorMessage(

@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import { priorityStyles } from "../../domain/task/priorityStyles";
 import { categoryStyles } from "../../domain/task/categoryStyles";
 import SubtaskList from "../SubtaskList/SubtaskList";

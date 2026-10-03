@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Priority, Task } from "../../domain/task/Task";
 import type { TaskCategory } from "../../domain/task/taskCategory";
-import { createTask, updateTask } from "../../domain/task/taskActions";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import { createTask } from "../../domain/task/taskActions";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 
 interface TaskFormProps {
@@ -109,13 +109,14 @@ export default function TaskForm({
     if (isEditing && task) {
       dispatch({
         type: "UPDATE_TASK",
-        task: updateTask(
-          task,
-          trimmedTitle,
-          trimmedDescription,
+        taskId: task.id,
+        edits: {
+          title: trimmedTitle,
+          description: trimmedDescription,
           priority,
           category,
-        ),
+        },
+        updatedAt: new Date(),
       });
 
       onSuccess("Task updated successfully.");
@@ -123,6 +124,7 @@ export default function TaskForm({
       dispatch({
         type: "CREATE_TASK",
         task: createTask(trimmedTitle, trimmedDescription, priority, category),
+        updatedAt: new Date(),
       });
 
       onSuccess("Task created successfully.");

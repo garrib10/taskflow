@@ -4,7 +4,9 @@ import type { TaskCategory } from "./taskCategory";
 
 export type Priority = "low" | "medium" | "high";
 
-export type TaskStatus = "todo" | "in-progress" | "in-review" | "done";
+export const taskStatuses = ["todo", "in-progress", "in-review", "done"] as const;
+
+export type TaskStatus = (typeof taskStatuses)[number];
 
 /**
  * Individual checklist item inside a Task
@@ -20,7 +22,7 @@ export interface Subtask {
 export interface Task {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   priority: Priority;
   category: TaskCategory;
   status: TaskStatus;
@@ -30,3 +32,6 @@ export interface Task {
   // Tasks can have zero or more subtasks
   subtasks: Subtask[];
 }
+
+/** Fields that a task form may edit; identity and workflow remain reducer-owned. */
+export type TaskEdits = Pick<Task, "title" | "description" | "priority" | "category">;
