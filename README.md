@@ -287,3 +287,25 @@ Build for production:
 ```bash
 npm run build
 ```
+
+### Testing and validation
+
+Use Node.js 24.15 or newer within the Node 24 release line for the testing tools (CI uses Node 24).
+
+```bash
+npm test
+npm run test:watch
+npm run typecheck
+npm run lint
+npm run build
+```
+
+- `npm test` runs the suite once and exits; use this command in automation.
+- `npm run test:watch` reruns affected tests while developing; stop it with Ctrl+C.
+- `npm run typecheck` checks application, test, and tooling TypeScript without building the production bundle. It uses the existing compiler settings; strict checking is separate v1.5 work.
+- `npm run lint` checks the existing ESLint rules, including test files.
+- `npm run build` validates TypeScript and creates the production application in `dist/`.
+
+Vitest uses `vitest.config.ts`, which reuses the Vite React configuration, runs `src/**/*.test.ts` and `src/**/*.test.tsx` in jsdom, and loads `src/test/setup.ts` for jest-dom matchers and cleanup. Import test APIs explicitly from `vitest`; no test globals, shared render wrapper, application mocks, or browser polyfills are configured. Components currently need no shared providers, so tests render them directly with React Testing Library.
+
+The initial tests verify forward workflow validation and notification rendering/dismissal. Comprehensive domain, reducer, persistence, form, accessibility, and integration coverage belongs to the remaining v1.5 issues.
