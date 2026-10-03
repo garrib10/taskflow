@@ -72,6 +72,8 @@ The project was designed to demonstrate modern React development practices, incl
 
 ## Project Architecture
 
+The [v1.5 source audit and quality baseline](docs/v1.5-audit-and-baseline.md) records verified findings, issue mappings, browser measurements, approved scope, and pending manual checks.
+
 TaskFlow separates UI components, domain logic, and application state management to create a maintainable and scalable React application.
 
 ```text
