@@ -59,7 +59,7 @@ it('routes a keyboard drop through workflow validation, announces it and restore
  drop(child.id,'done');expect(updates()).toHaveTextContent('Cannot move task from in-progress to done.');expect(within(screen.getByRole('region',{name:'in-progress (1)'})).getByRole('button',{name:'Open task Child work'})).toHaveFocus();
 });
 it('blocks parent completion from a keyboard drop and announces repeated identical failures', () => {
- render(<Harness tasks={[{...parent,status:'in-review'},child]} />);drop(parent.id,'done');expect(updates()).toHaveTextContent('Finish these children');const first=updates().firstChild;drop(parent.id,'done');expect(updates().firstChild).not.toBe(first);expect(screen.getByRole('button',{name:'Open task Parent work'})).toHaveFocus();expect(screen.getAllByRole('button',{name:'Open task Parent work'})).toHaveLength(1);
+ render(<Harness tasks={[{...parent,status:'in-review'},child]} />);drop(parent.id,'done');expect(updates()).toHaveTextContent('Finish these children');expect(screen.getByText(/^Warning: Finish these children/)).toBeInTheDocument();expect(screen.queryByRole('alert')).not.toBeInTheDocument();const first=updates().firstChild;drop(parent.id,'done');expect(updates().firstChild).not.toBe(first);expect(screen.getByRole('button',{name:'Open task Parent work'})).toHaveFocus();expect(screen.getAllByRole('button',{name:'Open task Parent work'})).toHaveLength(1);
 });
 it('does not strand focus when a move hides the task under a status filter', async () => {
  const user=userEvent.setup();render(<Harness />);await user.selectOptions(screen.getByLabelText('Status'),'todo');screen.getByRole('button',{name:'Open task Child work'}).focus();drop(child.id,'in-progress');expect(screen.getByLabelText('Search:')).toHaveFocus();

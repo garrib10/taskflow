@@ -1,22 +1,29 @@
 import "./styles/controls.css";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Board from "./components/Board/Board";
 import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
 import Notification from "./components/Notification/Notification";
+import { useNotification } from "./notifications/useNotification";
 import { useBoardReducer } from "./hooks/useBoardReducer";
 
 function App() {
   const [board, dispatch, persistence] = useBoardReducer();
   const [showReload, setShowReload] = useState(false);
-  const [dismissedNotice, setDismissedNotice] = useState<typeof persistence.notice>(null);
   const notice = persistence.notice;
+  const { notification, dismiss } = useNotification(notice);
+  const retryTrigger = useRef<HTMLButtonElement | null>(null);
+  useLayoutEffect(() => {
+    const trigger = retryTrigger.current;
+    retryTrigger.current = null;
+    if (trigger && !trigger.isConnected) document.querySelector<HTMLElement>("[data-focus-fallback]")?.focus();
+  }, [notice]);
 
   return <main>
-    {notice && notice !== dismissedNotice && <Notification message={notice.message} type={notice.type} onClose={() => setDismissedNotice(notice)} />}
-    {notice?.type === "error" && (
+    {notification && <Notification key={notification.id} notification={notification} onClose={() => dismiss(notification.id)} />}
+    {notice?.recovery && (
       <section className="board-controls" aria-label="Board storage">
         <p>{notice.message}</p>
-        {notice.canRetry && <button type="button" className="edit-task-button" onClick={persistence.retrySave}>Retry saving</button>}
+        {notice.recovery === "retry" && <button type="button" className="edit-task-button" onClick={event => { retryTrigger.current = event.currentTarget; persistence.retrySave(); }}>Retry saving</button>}
         <button type="button" className="edit-task-button" onClick={() => setShowReload(true)}>Reload saved board</button>
       </section>
     )}

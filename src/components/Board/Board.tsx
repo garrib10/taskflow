@@ -1,5 +1,5 @@
 import "./Board.css";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
@@ -18,6 +18,8 @@ import {
 } from "../../domain/board/boardFilters";
 import { isTaskStatus } from "../../utils/typeGuards";
 import Notification from "../Notification/Notification";
+import { useNotification } from "../../notifications/useNotification";
+import { operationVariant, type NotificationVariant } from "../../notifications/notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
 
@@ -49,8 +51,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     if (pendingFocus.current.length) { const ids = pendingFocus.current; pendingFocus.current = []; if (!document.querySelector('[role="dialog"]:not([inert])')) focusTargets(ids); }
   });
   function dismissFocus() { pendingFocus.current = lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"]; }
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { notification, show, dismiss } = useNotification();
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskPendingDeletion, setTaskPendingDeletion] = useState<Task | null>(
@@ -61,9 +62,6 @@ export default function Board({ board, dispatch }: BoardProps) {
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-
-  const errorTimeoutRef = useRef<number | null>(null);
-  const successTimeoutRef = useRef<number | null>(null);
 
   const normalizedSearchTerm = searchTerm.trim().toLowerCase();
   const isSearching = normalizedSearchTerm.length > 0;
@@ -96,76 +94,13 @@ export default function Board({ board, dispatch }: BoardProps) {
   );
   const pendingChildren = taskPendingDeletion ? getChildren(board, taskPendingDeletion.id) : [];
 
-  useEffect(() => {
-    return () => {
-      if (errorTimeoutRef.current) {
-        clearTimeout(errorTimeoutRef.current);
-      }
-
-      if (successTimeoutRef.current) {
-        clearTimeout(successTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  function handleCloseErrorNotification() {
-    dismissFocus();
-    setErrorMessage(null);
-
-    if (errorTimeoutRef.current) {
-      clearTimeout(errorTimeoutRef.current);
-      errorTimeoutRef.current = null;
-    }
-  }
-
-  function handleCloseSuccessNotification() {
-    dismissFocus();
-    setSuccessMessage(null);
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-      successTimeoutRef.current = null;
-    }
-  }
-
-  function showErrorNotification(message: string) {
-    setSuccessMessage(null);
-    setErrorMessage(message);
+  function showFeedback(variant: NotificationVariant, message: string) {
+    show(variant, message);
     announce(message);
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-      successTimeoutRef.current = null;
-    }
-
-    if (errorTimeoutRef.current) {
-      clearTimeout(errorTimeoutRef.current);
-    }
-
-    errorTimeoutRef.current = window.setTimeout(() => {
-      setErrorMessage(null);
-      errorTimeoutRef.current = null;
-    }, 3000);
   }
 
-  function showSuccessNotification(message: string) {
-    setErrorMessage(null);
-    setSuccessMessage(message);
-    announce(message);
-
-    if (errorTimeoutRef.current) {
-      clearTimeout(errorTimeoutRef.current);
-      errorTimeoutRef.current = null;
-    }
-
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-
-    successTimeoutRef.current = window.setTimeout(() => {
-      setSuccessMessage(null);
-      successTimeoutRef.current = null;
-    }, 3000);
+  function showFailure(failure: BoardOperationError) {
+    showFeedback(operationVariant(failure), failure.message);
   }
 
   function handleResetControls() {
@@ -188,7 +123,7 @@ export default function Board({ board, dispatch }: BoardProps) {
 
   function dispatchFromCard(action: BoardAction): BoardOperationError | null {
     const failure = tryDispatch(action);
-    if (failure) showErrorNotification(failure.message);
+    if (failure) showFailure(failure);
     return failure;
   }
 
@@ -229,8 +164,8 @@ export default function Board({ board, dispatch }: BoardProps) {
     });
 
     pendingFocus.current = [`task-${taskId}`, "task-search"];
-    if (failure) showErrorNotification(failure.message);
-    else showSuccessNotification(`Moved "${currentTask.title}" to ${board.columns.find(column => column.id === newStatus)?.title}.`);
+    if (failure) showFailure(failure);
+    else showFeedback("success", `Moved "${currentTask.title}" to ${board.columns.find(column => column.id === newStatus)?.title}.`);
   }
 
   function handleCreateTask() {
@@ -250,7 +185,7 @@ export default function Board({ board, dispatch }: BoardProps) {
 
   function handleTaskSaved(message: string, taskId?: string) {
     if (taskId) pendingFocus.current = [`task-${taskId}`, "task-search"];
-    showSuccessNotification(message);
+    showFeedback("success", message);
   }
 
   function handleDeleteTask(taskId: string) {
@@ -283,7 +218,7 @@ export default function Board({ board, dispatch }: BoardProps) {
       taskId: taskPendingDeletion.id,
       updatedAt: new Date(),
     });
-    if (failure) { showErrorNotification(failure.message); return; }
+    if (failure) { showFailure(failure); return; }
 
     const columnElement = document.getElementById(`task-${taskPendingDeletion.id}`)?.closest(".column");
     const cards = Array.from(columnElement?.querySelectorAll<HTMLElement>("[data-task-title]") ?? []).map(node => node.closest(".task-card")?.id).filter((id): id is string => !!id);
@@ -291,7 +226,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     const column = board.columns.find(column => column.tasks.some(task => task.id === taskPendingDeletion.id));
     pendingFocus.current = [cards[index + 1], cards[index - 1], `column-${column?.id}-title`].filter((id): id is string => !!id);
     setTaskPendingDeletion(null);
-    showSuccessNotification(pendingChildren.length > 0 ? `Deleted parent "${taskPendingDeletion.title}"; children kept as independent tasks.` : `Deleted "${taskPendingDeletion.title}".`);
+    showFeedback("success", pendingChildren.length > 0 ? `Deleted parent "${taskPendingDeletion.title}"; children kept as independent tasks.` : `Deleted "${taskPendingDeletion.title}".`);
   }
 
   const titleFor = (id: string | number) => board.columns.flatMap(column => column.tasks).find(task => task.id === String(id))?.title ?? "Task";
@@ -307,23 +242,13 @@ export default function Board({ board, dispatch }: BoardProps) {
       onDragCancel={({ active }) => { announce(`Movement of "${titleFor(active.id)}" cancelled.`); focusTargets([`task-${active.id}`, "task-search"]); }} accessibility={{ restoreFocus: false, announcements, screenReaderInstructions: { draggable: "Press Space or Enter to pick up a task. Use Left and Right to select a workflow column. Press Space or Enter to drop, or Escape or Tab to cancel." } }}>
       <div className="visually-hidden" data-live-region role="status" aria-label="Board updates" aria-atomic="true"><span key={announcement.id}>{announcement.message}</span></div>
       <div className="board-container" onFocusCapture={event => { const task = (event.target as HTMLElement).closest(".task-card"); if (task) lastTaskFocus.current = task.id; }}>
-        {errorMessage && (
+        {notification && (
           <Notification
+            key={notification.id}
+            notification={notification}
             onFocusLost={() => focusTargets(lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"])}
             announce={false}
-            message={errorMessage}
-            type="error"
-            onClose={handleCloseErrorNotification}
-          />
-        )}
-
-        {successMessage && (
-          <Notification
-            onFocusLost={() => focusTargets(lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"])}
-            announce={false}
-            message={successMessage}
-            type="success"
-            onClose={handleCloseSuccessNotification}
+            onClose={() => { dismissFocus(); dismiss(notification.id); }}
           />
         )}
 

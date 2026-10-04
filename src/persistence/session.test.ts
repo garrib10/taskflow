@@ -36,7 +36,7 @@ describe("explicit reload conflict policy", () => {
     session.save(local);
     expect(storage.setItem).not.toHaveBeenCalled();
     expect(local.columns[0]?.tasks[0]?.title).toBe("Local draft");
-    expect(session.notice).toMatchObject({ canRetry: false, type: "error" });
+    expect(session.notice).toMatchObject({ recovery: "reload", variant: "warning" });
     expect(session.observe(STORAGE_KEY, raw("b", "External work"), null)).toBe(false);
   });
   it.each(["{", JSON.stringify({ schemaVersion: 999 }), null])("rejects invalid/future/removal external state without replacing memory: %j", (external) => {
@@ -94,14 +94,14 @@ describe("recovery without silent data loss", () => {
     session.save(makeBoard());
     expect(storage.setItem).not.toHaveBeenCalled();
     expect(storage.getItem(STORAGE_KEY)).toBe(value);
-    expect(session.notice?.type).toBe("error");
+    expect(session.notice?.variant).toBe(value.includes("schemaVersion") ? "error" : "warning");
   });
   it("initial read failure never writes sample data", () => {
     const storage = { getItem: () => { throw new Error("Unavailable"); }, setItem: vi.fn() };
     const session = new PersistenceSession(() => storage);
     session.save(makeBoard());
     expect(storage.setItem).not.toHaveBeenCalled();
-    expect(session.notice?.canRetry).toBe(false);
+    expect(session.notice?.recovery).toBe("reload");
   });
   it("missing data uses the initial board, then saves once", () => {
     const { storage } = target(null);
@@ -119,10 +119,10 @@ describe("recovery without silent data loss", () => {
     const session = new PersistenceSession(() => storage);
     const local = makeBoard([makeTask({ title: "Unsaved work" })]);
     session.save(local);
-    expect(session.notice?.canRetry).toBe(true);
+    expect(session.notice?.recovery).toBe("retry");
     write.mockImplementation(originalWrite ?? (() => {}));
     session.save(local);
-    expect(session.notice).toBeNull();
+    expect(session.notice).toMatchObject({ variant: "success", recovery: null, message: "Changes in this tab are now saved." });
     expect(JSON.parse(storage.getItem(STORAGE_KEY) ?? "null").board.columns[0].tasks[0].title).toBe("Unsaved work");
   });
   it("failed migration write keeps the original for safe deterministic retry", () => {
@@ -134,11 +134,23 @@ describe("recovery without silent data loss", () => {
     const session = new PersistenceSession(() => storage);
     session.save(session.board);
     expect(storage.getItem(STORAGE_KEY)).toBe(legacy);
-    expect(session.notice?.canRetry).toBe(true);
+    expect(session.notice?.recovery).toBe("retry");
     write.mockImplementation(originalWrite ?? (() => {}));
     session.save(session.board);
-    expect(session.notice?.type).toBe("success");
+    expect(session.notice?.variant).toBe("info");
     const reloaded = new PersistenceSession(() => storage);
     expect(reloaded.board.columns.flatMap((column) => column.tasks)).toHaveLength(2);
+  });
+  it("keeps a migration notice stable through routine saves so its timer is not reset", () => {
+    const { storage } = target(JSON.stringify(makeBoard()));
+    const session = new PersistenceSession(() => storage);
+    session.save(session.board);
+    const migrated = session.notice;
+    expect(migrated).toMatchObject({ variant: "info", dismissal: "automatic", durationMs: 6000, recovery: null });
+    session.save(makeBoard([makeTask({ title: "Changed after upgrade" })]));
+    expect(session.notice).toBe(migrated);
+    const reloaded = new PersistenceSession(() => storage);
+    reloaded.save(reloaded.board);
+    expect(reloaded.notice).toBeNull();
   });
 });

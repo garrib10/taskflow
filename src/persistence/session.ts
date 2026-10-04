@@ -1,13 +1,18 @@
+import { createNotification, type NotificationVariant, type TaskNotification } from "../notifications/notification";
 import type { Board } from "../domain/board/Board";
 import { initialBoard } from "../utils/mockData";
 import { browserStorage, decodeBoard, loadBoard, saveBoard, STORAGE_KEY, type BoardStorage, type LoadResult } from "../utils/storage";
 
-export interface PersistenceNotice { message: string; type: "error" | "success"; canRetry: boolean }
-const blockedMessage = (result: LoadResult): string => {
-  if (result.kind === "future") return "This saved board needs a newer TaskFlow version. Your saved data is untouched. Saving is paused.";
-  if (result.kind === "unavailable") return "Browser storage is unavailable. Changes stay in this tab and may be lost when it closes. Saving is paused.";
-  return "Your saved board could not be restored safely. The original is untouched. You can work in this tab, but saving is paused.";
-};
+export type PersistenceNotice = TaskNotification & { recovery: "retry" | "reload" | null };
+function notice(variant: NotificationVariant, message: string, recovery: PersistenceNotice["recovery"]): PersistenceNotice {
+  return { ...createNotification(variant, message), recovery };
+}
+function blockedNotice(result: LoadResult): PersistenceNotice {
+  if (result.kind === "future") return notice("error", "This saved board needs a newer TaskFlow version. An empty workspace is open; your saved data is untouched. Saving is paused.", "reload");
+  if (result.kind === "unavailable") return notice("error", "Browser storage is unavailable. An empty workspace is open. Changes stay in this tab and may be lost when it closes. Saving is paused.", "reload");
+  if (result.kind === "migration-failed") return notice("error", "Your older saved board could not be upgraded safely. An empty workspace is open; the original is untouched. Saving is paused.", "reload");
+  return notice("warning", "Your saved board is invalid and could not be restored safely. An empty workspace is open; the original is untouched. You can work in this tab, but saving is paused.", "reload");
+}
 
 /** No automatic replacement or merge. External changes pause saving until reload.
  * The local board stays usable. Known raw bytes (plus the revision inside them)
@@ -42,7 +47,7 @@ export class PersistenceSession {
       if (loaded.kind === "current") this.lastSavedBoard = this.board;
     } else {
       this.paused = true;
-      this.notice = { message: blockedMessage(loaded), type: "error", canRetry: false };
+      this.notice = blockedNotice(loaded);
     }
   }
 
@@ -53,9 +58,11 @@ export class PersistenceSession {
       case "saved":
         this.knownRaw = result.raw;
         this.lastSavedBoard = board;
-        this.notice = this.migrationPending
-          ? { message: "Your saved board was upgraded. Checklist items are now linked subtasks.", type: "success", canRetry: false }
-          : null;
+        if (this.migrationPending) {
+          this.notice = notice("info", "Your saved board was upgraded to the current format. Any legacy checklist items now use linked subtasks.", null);
+        } else if (this.notice?.recovery === "retry") {
+          this.notice = notice("success", "Changes in this tab are now saved.", null);
+        }
         this.migrationPending = false;
         break;
       case "conflict":
@@ -63,11 +70,11 @@ export class PersistenceSession {
         break;
       case "invalid-board":
         this.paused = true;
-        this.notice = { message: "This board could not be saved safely. Your previous saved board is untouched. Changes remain in this tab.", type: "error", canRetry: false };
+        this.notice = notice("error", "This board could not be saved safely. Your previous saved board is untouched. Changes remain in this tab.", "reload");
         break;
       case "unavailable":
       case "save-failed":
-        this.notice = { message: "TaskFlow could not confirm that your changes were saved. Keep this tab open. Your work remains available here; try saving again.", type: "error", canRetry: true };
+        this.notice = notice("error", "TaskFlow could not confirm that your changes were saved. Keep this tab open. Your work remains available here; try saving again.", "retry");
         break;
     }
     this.notify();
@@ -85,10 +92,9 @@ export class PersistenceSession {
   private pauseForExternal(external: LoadResult): void {
     this.paused = true;
     const valid = external.kind === "current" || external.kind === "migrated" || external.kind === "missing";
-    this.notice = { message: valid
+    this.notice = notice(valid ? "warning" : "error", valid
       ? "Another tab changed or removed the saved board. Your work remains in this tab. Saving is paused; reload the saved board to continue."
-      : "The saved board changed and could not be restored safely. Your work remains in this tab and the stored data is untouched. Saving is paused.",
-      type: "error", canRetry: false };
+      : "The saved board changed and could not be restored safely. Your work remains in this tab and the stored data is untouched. Saving is paused.", "reload");
   }
 }
 
