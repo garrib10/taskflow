@@ -3,17 +3,20 @@ import type { Priority, Task } from "../../domain/task/Task";
 import type { TaskCategory } from "../../domain/task/taskCategory";
 import { createTask } from "../../domain/task/taskActions";
 import type { BoardAction } from "../../domain/board/boardReducer";
+import type { BoardOperationError } from "../../domain/board/boardValidation";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 
 interface TaskFormProps {
   task?: Task | null;
+  parent?: Task | null;
   onClose: () => void;
-  dispatch: React.Dispatch<BoardAction>;
+  dispatch: (action: BoardAction) => BoardOperationError | null;
   onSuccess: (message: string) => void;
 }
 
 export default function TaskForm({
   task,
+  parent,
   onClose,
   dispatch,
   onSuccess,
@@ -22,8 +25,8 @@ export default function TaskForm({
 
   const initialTitle = task?.title ?? "";
   const initialDescription = task?.description ?? "";
-  const initialPriority: Priority = task?.priority ?? "medium";
-  const initialCategory: TaskCategory = task?.category ?? "feature";
+  const initialPriority: Priority = task?.priority ?? parent?.priority ?? "medium";
+  const initialCategory: TaskCategory = task?.category ?? parent?.category ?? "feature";
 
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
@@ -107,7 +110,7 @@ export default function TaskForm({
     }
 
     if (isEditing && task) {
-      dispatch({
+      const failure = dispatch({
         type: "UPDATE_TASK",
         taskId: task.id,
         edits: {
@@ -118,16 +121,24 @@ export default function TaskForm({
         },
         updatedAt: new Date(),
       });
+      if (failure) {
+        setError(failure.message);
+        return;
+      }
 
       onSuccess("Task updated successfully.");
     } else {
-      dispatch({
-        type: "CREATE_TASK",
-        task: createTask(trimmedTitle, trimmedDescription, priority, category),
-        updatedAt: new Date(),
-      });
+      const newTask = createTask(trimmedTitle, trimmedDescription, priority, category);
+      const updatedAt = new Date();
+      const failure = dispatch(parent
+        ? { type: "CREATE_CHILD_TASK", parentId: parent.id, task: newTask, updatedAt }
+        : { type: "CREATE_TASK", task: newTask, updatedAt });
+      if (failure) {
+        setError(failure.message);
+        return;
+      }
 
-      onSuccess("Task created successfully.");
+      onSuccess(parent ? "Child task created successfully." : "Task created successfully.");
     }
 
     setTitle("");
@@ -143,15 +154,17 @@ export default function TaskForm({
   return (
     <>
       <div
-        className="create-task-modal"
+        className={`create-task-modal${parent ? " parent-child-form" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="task-form-title"
       >
         <form onSubmit={handleSubmit}>
           <h2 id="task-form-title">
-            {isEditing ? "Edit Task" : "Create New Task"}
+            {isEditing ? "Edit Task" : parent ? "Create Child Task" : "Create New Task"}
           </h2>
+
+          {parent && <p>Parent: {parent.title}</p>}
 
           {error && (
             <p className="form-error" role="alert">
@@ -230,7 +243,7 @@ export default function TaskForm({
             </button>
 
             <button type="submit">
-              {isEditing ? "Save Changes" : "Create Task"}
+              {isEditing ? "Save Changes" : parent ? "Create Child" : "Create Task"}
             </button>
           </div>
         </form>

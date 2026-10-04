@@ -27,6 +27,7 @@ The project was designed to demonstrate modern React development practices, incl
 - Filter tasks by Priority, Category, and Status
 - Create, edit, and delete tasks
 - Subtasks with checklist support
+- Linked child tasks with independent workflow stages, parent progress, and relationship management
 - Custom confirmation dialogs for destructive actions and unsaved changes
 - Success and error notification system
 - Last updated timestamp with LocalStorage persistence
@@ -73,6 +74,8 @@ The project was designed to demonstrate modern React development practices, incl
 ## Project Architecture
 
 The [v1.5 source audit and quality baseline](docs/v1.5-audit-and-baseline.md) records verified findings, issue mappings, browser measurements, approved scope, and pending manual checks.
+
+The [linked parent and child task guide](docs/v1.5-parent-child-tasks.md) explains relationship rules, board controls, parent deletion, and legacy checklist compatibility pending #66.
 
 TaskFlow separates UI components, domain logic, and application state management to create a maintainable and scalable React application.
 

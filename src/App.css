@@ -1134,3 +1134,55 @@ select:focus-visible {
     width: 100%;
   }
 }
+/* Linked tasks share the existing cards and form; expanded lists stay compact. */
+.task-relationships {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.parent-context {
+  margin: 0.5rem 0;
+}
+
+.relationship-link {
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  color: #1d4ed8;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.relationship-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.child-task-list summary,
+.subtask-container summary {
+  cursor: pointer;
+}
+
+.child-task-list ul {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-left: 1.2rem;
+}
+
+.child-task-list li {
+  margin: 0.5rem 0;
+}
+
+.child-task-list li .edit-task-button {
+  margin-left: 0.5rem;
+}
+
+.parent-child-form form {
+  max-height: 90dvh;
+  overflow-y: auto;
+}
