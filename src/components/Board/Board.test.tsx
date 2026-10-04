@@ -42,32 +42,67 @@ function simulateDrop(taskId: string, destination: string) {
 }
 
 describe("linked task board interactions", () => {
+  it("lists subtasks oldest first across workflow columns and keeps that order after a move", async () => {
+    const user = userEvent.setup();
+    const older = makeTask({ id: "older", title: "First created", parentId: parent.id, status: "done", createdAt: new Date("2026-01-01T00:00:00Z") });
+    const newer = makeTask({ id: "newer", title: "Second created", parentId: parent.id, createdAt: new Date("2026-01-02T00:00:00Z") });
+    render(<Harness initialBoard={makeBoard([parent, newer, older])} />);
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    const section = within(screen.getByRole("region", { name: "Subtasks" }));
+    expect(section.getAllByRole("button").map((button) => button.getAttribute("aria-label") ?? button.textContent))
+      .toEqual(["Open subtask First created", "Open subtask Second created", "Add SubTask"]);
+    simulateDrop(newer.id, "in-progress");
+    expect(section.getAllByRole("listitem").map((row) => row.textContent)).toEqual(["First created", "Second created"]);
+    await user.click(section.getByRole("button", { name: "Open subtask Second created" }));
+    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("In Progress");
+  });
+
+  it("opens independent, parent, and subtask editors from board titles, including keyboard activation", async () => {
+    const user = userEvent.setup();
+    const independent = makeTask({ id: "independent", title: "Independent work" });
+    render(<Harness initialBoard={makeBoard([parent, child, independent])} />);
+    for (const title of ["Independent work", "Parent work"]) {
+      await user.click(card(title).getByRole("button", { name: `Open task ${title}` }));
+      expect(within(screen.getByRole("dialog", { name: "Edit Task" })).getByLabelText("Title")).toHaveValue(title);
+      await user.click(screen.getByRole("button", { name: "Cancel" }));
+    }
+    card("Child work").getByRole("button", { name: "Open task Child work" }).focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("Parent: Parent work");
+  });
+
   it("creates a child from its parent with inherited defaults, independent card, and progress", async () => {
     const user = userEvent.setup();
     render(<Harness />);
-    screen.getByRole("button", { name: "Add child to Parent work" }).focus();
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    screen.getByRole("button", { name: "Add SubTask" }).focus();
     await user.keyboard("{Enter}");
-    expect(screen.getByRole("dialog", { name: "Create Child Task" })).toHaveTextContent("Parent: Parent work");
-    expect(screen.getByLabelText("Priority", { selector: "#task-priority" })).toHaveValue("high");
-    expect(screen.getByLabelText("Category", { selector: "#task-category" })).toHaveValue("bug");
-    await user.type(screen.getByLabelText("Title"), "New linked child");
-    await user.type(screen.getByLabelText("Description"), "Independent child description");
-    await user.click(screen.getByRole("button", { name: "Create Child" }));
-    expect(card("New linked child").getByRole("button", { name: "Show parent Parent work" })).toBeInTheDocument();
-    expect(card("Parent work").getByText("Parent · 0/1 children complete")).toBeInTheDocument();
+    const subtaskForm = within(screen.getByRole("dialog", { name: "Add SubTask" }));
+    expect(screen.getByRole("dialog", { name: "Add SubTask" })).toHaveTextContent("Parent: Parent work");
+    expect(subtaskForm.getByLabelText("Priority")).toHaveValue("high");
+    expect(subtaskForm.getByLabelText("Category")).toHaveValue("bug");
+    await user.type(subtaskForm.getByLabelText("Title"), "New linked child");
+    await user.type(subtaskForm.getByLabelText("Description"), "Independent child description");
+    await user.click(screen.getByRole("button", { name: "Create SubTask" }));
+    expect(card("New linked child").queryByText(/Child of:/)).not.toBeInTheDocument();
+    expect(card("New linked child").queryByRole("button", { name: /Manage parent/i })).not.toBeInTheDocument();
+    expect(card("Parent work").getByRole("progressbar")).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toHaveTextContent("New linked child");
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(2);
   });
 
   it("opens and edits a child from the parent list without losing context", async () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
-    await user.click(card("Parent work").getByText("Parent · 0/1 children complete"));
-    await user.click(screen.getByRole("button", { name: "Edit child Child work" }));
-    await user.clear(screen.getByLabelText("Title"));
-    await user.type(screen.getByLabelText("Title"), "Edited child");
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    await user.click(screen.getByRole("button", { name: "Open subtask Child work" }));
+    const editor = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
+    expect(editor.getByRole("button", { name: "Open parent Parent work" })).toBeInTheDocument();
+    await user.clear(editor.getByLabelText("Title"));
+    await user.type(editor.getByLabelText("Title"), "Edited child");
     await user.click(screen.getByRole("button", { name: "Save Changes" }));
-    expect(card("Edited child").getByRole("button", { name: "Show parent Parent work" })).toBeInTheDocument();
-    expect(card("Parent work").getByText("Parent · 0/1 children complete")).toBeInTheDocument();
+    expect(card("Edited child").getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(card("Parent work").getByRole("progressbar")).toBeInTheDocument();
   });
 
   it("parent editing preserves linked children", async () => {
@@ -77,14 +112,18 @@ describe("linked task board interactions", () => {
     await user.clear(screen.getByLabelText("Title"));
     await user.type(screen.getByLabelText("Title"), "Renamed parent");
     await user.click(screen.getByRole("button", { name: "Save Changes" }));
-    expect(card("Child work").getByRole("button", { name: "Show parent Renamed parent" })).toBeInTheDocument();
-    expect(card("Renamed parent").getByText("Parent · 0/1 children complete")).toBeInTheDocument();
+    expect(card("Renamed parent").getByRole("progressbar")).toHaveAttribute("aria-valuemax", "1");
+    await user.click(card("Child work").getByRole("button", { name: "Edit" }));
+    expect(screen.getByRole("button", { name: "Open parent Renamed parent" })).toBeInTheDocument();
   });
 
   it("shows completion progress and completed child context", () => {
     render(<Harness initialBoard={makeBoard([parent, { ...child, status: "done" }])} />);
-    expect(card("Parent work").getByText("Parent · 1/1 children complete")).toBeInTheDocument();
-    expect(card("Child work").getByText("· Complete")).toBeInTheDocument();
+    expect(card("Parent work").getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+    expect(card("Parent work").getByText("100%")).toBeInTheDocument();
+    expect(card("Child work").getByText("✔ Done")).toBeInTheDocument();
+    expect(card("Child work").queryByText(/Child of:/)).not.toBeInTheDocument();
+    expect(card("Child work").queryByRole("button", { name: /Manage parent/i })).not.toBeInTheDocument();
   });
 
   it("requires an explicit parent-delete decision, supports cancel, and preserves children", async () => {
@@ -93,12 +132,15 @@ describe("linked task board interactions", () => {
     await user.click(card("Parent work").getByRole("button", { name: "Delete" }));
     expect(screen.getByRole("dialog", { name: "Delete Parent Task" })).toHaveTextContent("All children will be kept as independent tasks");
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(card("Child work").getByRole("button", { name: "Show parent Parent work" })).toBeInTheDocument();
+    expect(card("Child work").getByRole("button", { name: "Edit" })).toBeInTheDocument();
     await user.click(card("Parent work").getByRole("button", { name: "Delete" }));
     await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Children" }));
     expect(screen.queryByRole("heading", { name: "Parent work", level: 3 })).not.toBeInTheDocument();
     expect(card("Child work").queryByText(/Child of:/)).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(1);
+    await user.click(card("Child work").getByRole("button", { name: "Edit" }));
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Open parent/ })).not.toBeInTheDocument();
   });
 
   it("deleting a child retains its parent and removes derived progress", async () => {
@@ -107,13 +149,15 @@ describe("linked task board interactions", () => {
     await user.click(card("Child work").getByRole("button", { name: "Delete" }));
     await user.click(within(screen.getByRole("dialog", { name: "Delete Task" })).getByRole("button", { name: "Delete" }));
     expect(screen.queryByRole("heading", { name: "Child work", level: 3 })).not.toBeInTheDocument();
-    expect(card("Parent work").queryByText(/children complete/)).not.toBeInTheDocument();
+    expect(card("Parent work").queryByRole("progressbar")).not.toBeInTheDocument();
   });
 
   it("reassigns and detaches via keyboard-accessible relationship controls", async () => {
     const user = userEvent.setup();
     const other = makeTask({ id: "other", title: "Other parent" });
     render(<Harness initialBoard={makeBoard([parent, child, other])} />);
+    await user.click(card("Child work").getByRole("button", { name: "Edit" }));
+    await user.type(screen.getByLabelText("Title"), " draft");
     const manage = screen.getByRole("button", { name: "Manage parent of Child work" });
     manage.focus();
     await user.keyboard("{Enter}");
@@ -123,24 +167,28 @@ describe("linked task board interactions", () => {
     const save = screen.getByRole("button", { name: "Save Relationship" });
     save.focus();
     await user.keyboard("{Enter}");
-    expect(card("Child work").getByRole("button", { name: "Show parent Other parent" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open parent Other parent" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Title")).toHaveValue("Child work draft");
     await user.click(screen.getByRole("button", { name: "Manage parent of Child work" }));
     await user.selectOptions(screen.getByLabelText("Parent", { selector: "select" }), "");
     await user.click(screen.getByRole("button", { name: "Save Relationship" }));
-    expect(card("Child work").queryByText(/Child of:/)).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Open parent/ })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Title")).toHaveValue("Child work draft");
   });
 
-  it("shows parent context while filtered and locates the hidden parent without changing relationships", async () => {
+  it("opens the hidden parent from the subtask editor while preserving filters", async () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     await user.type(screen.getByLabelText("Search:"), "Child work");
     expect(screen.queryByRole("heading", { name: "Parent work", level: 3 })).not.toBeInTheDocument();
-    const locate = screen.getByRole("button", { name: "Show parent Parent work" });
+    await user.click(card("Child work").getByRole("button", { name: "Edit" }));
+    const locate = screen.getByRole("button", { name: "Open parent Parent work" });
     locate.focus();
     await user.keyboard("{Enter}");
-    expect(screen.getByLabelText("Search:")).toHaveValue("");
-    expect(screen.getByRole("heading", { name: "Parent work", level: 3 })).toBeInTheDocument();
-    expect(card("Child work").getByRole("button", { name: "Show parent Parent work" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Search:")).toHaveValue("Child work");
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toHaveTextContent("Child work");
+    expect(card("Child work").getByRole("button", { name: "Edit" })).toBeInTheDocument();
   });
 
   it("reports blocked parent completion with the unfinished child's title", () => {
@@ -151,16 +199,16 @@ describe("linked task board interactions", () => {
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(2);
   });
 
-  it("keeps progress when children are hidden and locates a child from the expanded list", async () => {
+  it("keeps progress when children are hidden and opens them from the parent editor", async () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     await user.type(screen.getByLabelText("Search:"), "Parent work");
     expect(screen.queryByRole("heading", { name: "Child work", level: 3 })).not.toBeInTheDocument();
-    await user.click(screen.getByText("Parent · 0/1 children complete"));
-    await user.click(screen.getByRole("button", { name: "Show child Child work" }));
-    expect(screen.getByLabelText("Search:")).toHaveValue("");
-    expect(screen.getByRole("heading", { name: "Child work", level: 3 })).toBeInTheDocument();
-    expect(card("Child work").getByRole("button", { name: "Child work" })).toHaveFocus();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "1");
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    await user.click(screen.getByRole("button", { name: "Open subtask Child work" }));
+    expect(screen.getByLabelText("Search:")).toHaveValue("Parent work");
+    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("Parent: Parent work");
   });
 
   it("unknown drag destinations are ignored and a valid child move keeps context", () => {
@@ -169,7 +217,7 @@ describe("linked task board interactions", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     simulateDrop(child.id, "in-progress");
     expect(screen.getByRole("heading", { name: "in-progress (1)", level: 2 })).toBeInTheDocument();
-    expect(card("Child work").getByRole("button", { name: "Show parent Parent work" })).toBeInTheDocument();
+    expect(card("Child work").getByRole("button", { name: "Edit" })).toBeInTheDocument();
   });
 
   it("completed parents offer no child creation and legacy checklist data remains readable", async () => {
@@ -180,5 +228,110 @@ describe("linked task board interactions", () => {
     expect(screen.getByText("Legacy item")).toBeInTheDocument();
     expect(screen.getByRole("checkbox")).toBeChecked();
     expect(screen.queryByPlaceholderText("Add subtask...")).not.toBeInTheDocument();
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    expect(screen.queryByRole("button", { name: "Add SubTask" })).not.toBeInTheDocument();
   });
+  it("preserves an unsaved parent draft while creating and editing subtasks", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    const parentForm = within(screen.getByRole("dialog", { name: "Edit Task" }));
+    await user.clear(parentForm.getByLabelText("Title"));
+    await user.type(parentForm.getByLabelText("Title"), "Unsaved parent draft");
+    await user.click(parentForm.getByRole("button", { name: "Add SubTask" }));
+    let subtaskForm = within(screen.getByRole("dialog", { name: "Add SubTask" }));
+    await user.type(subtaskForm.getByLabelText("Title"), "Subtask created in editor");
+    await user.type(subtaskForm.getByLabelText("Description"), "A real linked task");
+    await user.click(subtaskForm.getByRole("button", { name: "Create SubTask" }));
+    let returnedForm = within(screen.getByRole("dialog", { name: "Edit Task" }));
+    expect(returnedForm.getByLabelText("Title")).toHaveValue("Unsaved parent draft");
+    expect(returnedForm.getByRole("region", { name: "Subtasks" })).toHaveTextContent("0 of 1");
+    await user.click(returnedForm.getByRole("button", { name: "Open subtask Subtask created in editor" }));
+    subtaskForm = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
+    expect(subtaskForm.getByRole("button", { name: "Open parent Parent work" })).toBeInTheDocument();
+    expect(subtaskForm.queryByRole("button", { name: "Add SubTask" })).not.toBeInTheDocument();
+    await user.clear(subtaskForm.getByLabelText("Title"));
+    await user.type(subtaskForm.getByLabelText("Title"), "Edited subtask from editor");
+    await user.click(subtaskForm.getByRole("button", { name: "Save Changes" }));
+    returnedForm = within(screen.getByRole("dialog", { name: "Edit Task" }));
+    expect(returnedForm.getByLabelText("Title")).toHaveValue("Unsaved parent draft");
+    expect(returnedForm.getByRole("button", { name: "Open subtask Edited subtask from editor" })).toBeInTheDocument();
+    await user.click(returnedForm.getByRole("button", { name: "Save Changes" }));
+    await user.click(card("Edited subtask from editor").getByRole("button", { name: "Edit" }));
+    expect(screen.getByRole("button", { name: "Open parent Unsaved parent draft" })).toBeInTheDocument();
+  });
+
+  it("shows all subtasks and completed progress inside a filtered parent's editor", async () => {
+    const user = userEvent.setup();
+    const completed = makeTask({ id: "done-child", title: "Completed subtask", parentId: parent.id, status: "done" });
+    render(<Harness initialBoard={makeBoard([parent, child, completed])} />);
+    await user.type(screen.getByLabelText("Search:"), "Parent work");
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    const editor = within(screen.getByRole("dialog", { name: "Edit Task" }));
+    expect(card("Parent work").getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+    expect(card("Parent work").getByRole("progressbar")).toHaveAttribute("aria-valuemax", "2");
+    expect(card("Parent work").getByText("50%")).toBeInTheDocument();
+    expect(editor.getByRole("region", { name: "Subtasks" })).toHaveTextContent("1 of 2");
+    expect(editor.getByRole("button", { name: "Open subtask Child work" })).toBeInTheDocument();
+    expect(editor.getByRole("button", { name: "Open subtask Completed subtask" })).toBeInTheDocument();
+    await user.click(editor.getByRole("button", { name: "Open subtask Completed subtask" }));
+    const subtaskEditor = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
+    expect(subtaskEditor.getByText("Done")).toBeInTheDocument();
+    await user.click(subtaskEditor.getByRole("button", { name: "Open parent Parent work" }));
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+  });
+
+  it("keeps a saved subtask when the parent draft is discarded", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    await user.type(screen.getByLabelText("Title"), " unsaved");
+    await user.click(screen.getByRole("button", { name: "Add SubTask" }));
+    const subtaskForm = within(screen.getByRole("dialog", { name: "Add SubTask" }));
+    await user.type(subtaskForm.getByLabelText("Title"), "Saved subtask");
+    await user.type(subtaskForm.getByLabelText("Description"), "Saved independently");
+    await user.click(subtaskForm.getByRole("button", { name: "Create SubTask" }));
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(card("Saved subtask").getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(card("Parent work").getByRole("progressbar")).toBeInTheDocument();
+  });
+
+  it("shows a parent link in a directly opened subtask editor and protects unsaved edits on navigation", async () => {
+    const user = userEvent.setup();
+    render(<Harness initialBoard={makeBoard([parent, child])} />);
+    await user.click(card("Child work").getByRole("button", { name: "Edit" }));
+    const editor = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
+    expect(editor.getByText("To Do")).toBeInTheDocument();
+    await user.type(editor.getByLabelText("Title"), " draft");
+    await user.click(editor.getByRole("button", { name: "Open parent Parent work" }));
+    expect(screen.getByRole("dialog", { name: "Discard Changes?" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Keep Editing" }));
+    expect(editor.getByLabelText("Title")).toHaveValue("Child work draft");
+    await user.click(editor.getByRole("button", { name: "Open parent Parent work" }));
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toHaveTextContent("Subtasks");
+  });
+
+  it("cancels subtask creation back to the parent and handles Escape only in the active editor", async () => {
+    const user = userEvent.setup();
+    render(<Harness initialBoard={makeBoard([parent, child])} />);
+    await user.click(card("Parent work").getByRole("button", { name: "Edit" }));
+    await user.type(screen.getByLabelText("Title"), " draft");
+    await user.click(screen.getByRole("button", { name: "Add SubTask" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Add SubTask" })).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Title")).toHaveValue("Parent work draft");
+    await user.click(screen.getByRole("button", { name: "Open subtask Child work" }));
+    await user.type(within(screen.getByRole("dialog", { name: "Edit SubTask" })).getByLabelText("Title"), " draft");
+    await user.keyboard("{Escape}");
+    expect(screen.getAllByRole("dialog", { name: "Discard Changes?" })).toHaveLength(1);
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+    expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Title")).toHaveValue("Parent work draft");
+    expect(card("Child work").getByRole("heading", { name: "Child work" })).toBeInTheDocument();
+  });
+
 });

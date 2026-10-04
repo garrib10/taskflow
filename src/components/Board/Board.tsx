@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
 import { validateBoardAction, type BoardOperationError } from "../../domain/board/boardValidation";
-import { findTask, getChildren } from "../../domain/board/taskRelationships";
+import { getChildren } from "../../domain/board/taskRelationships";
 import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
@@ -19,7 +19,6 @@ import { isTaskStatus } from "../../utils/typeGuards";
 import Notification from "../Notification/Notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
-import TaskRelationshipForm from "../TaskRelationshipForm/TaskRelationshipForm";
 
 interface BoardProps {
   board: BoardType;
@@ -27,13 +26,14 @@ interface BoardProps {
 }
 
 export default function Board({ board, dispatch }: BoardProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor),
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
-  const [parentForCreation, setParentForCreation] = useState<Task | null>(null);
-  const [relationshipTaskId, setRelationshipTaskId] = useState<string | null>(null);
-  const [taskToLocate, setTaskToLocate] = useState<{ id: string } | null>(null);
   const [taskPendingDeletion, setTaskPendingDeletion] = useState<Task | null>(
     null,
   );
@@ -75,15 +75,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     (total, column) => total + column.tasks.length,
     0,
   );
-  const relationshipTask = relationshipTaskId === null ? null : findTask(board, relationshipTaskId);
   const pendingChildren = taskPendingDeletion ? getChildren(board, taskPendingDeletion.id) : [];
-
-  useEffect(() => {
-    if (taskToLocate === null) return;
-    const card = document.getElementById(`task-${taskToLocate.id}`);
-    card?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
-    card?.querySelector<HTMLElement>(".task-card-header")?.focus();
-  }, [taskToLocate]);
 
   useEffect(() => {
     return () => {
@@ -171,17 +163,6 @@ export default function Board({ board, dispatch }: BoardProps) {
     return null;
   }
 
-  function handleLocateTask(taskId: string) {
-    handleResetControls();
-    setTaskToLocate({ id: taskId });
-  }
-
-  function handleCreateChild(parent: Task) {
-    setTaskToEdit(null);
-    setParentForCreation(parent);
-    setShowTaskForm(true);
-  }
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
@@ -219,19 +200,16 @@ export default function Board({ board, dispatch }: BoardProps) {
 
   function handleCreateTask() {
     setTaskToEdit(null);
-    setParentForCreation(null);
     setShowTaskForm(true);
   }
 
   function handleEditTask(task: Task) {
     setTaskToEdit(task);
-    setParentForCreation(null);
     setShowTaskForm(true);
   }
 
   function handleCloseTaskForm() {
     setTaskToEdit(null);
-    setParentForCreation(null);
     setShowTaskForm(false);
   }
 
@@ -276,7 +254,7 @@ export default function Board({ board, dispatch }: BoardProps) {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="board-container">
         {errorMessage && (
           <Notification
@@ -348,22 +326,12 @@ export default function Board({ board, dispatch }: BoardProps) {
         {showTaskForm && (
           <TaskForm
             key={taskToEdit?.id ?? "new"}
+            board={board}
             task={taskToEdit}
-            parent={parentForCreation}
             onClose={handleCloseTaskForm}
             dispatch={tryDispatch}
             onSuccess={handleTaskSaved}
-          />
-        )}
-
-        {relationshipTask && (
-          <TaskRelationshipForm
-            key={relationshipTask.id}
-            board={board}
-            task={relationshipTask}
-            dispatch={tryDispatch}
-            onClose={() => setRelationshipTaskId(null)}
-            onSuccess={showSuccessNotification}
+            onOpenTask={handleEditTask}
           />
         )}
 
@@ -390,9 +358,6 @@ export default function Board({ board, dispatch }: BoardProps) {
               dispatch={tryDispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
-              onCreateChild={handleCreateChild}
-              onManageParent={(task) => setRelationshipTaskId(task.id)}
-              onLocateTask={handleLocateTask}
               isFiltering={isFiltering}
             />
           ))}

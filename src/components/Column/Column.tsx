@@ -12,9 +12,6 @@ interface ColumnProps {
   dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
-  onCreateChild: (parent: Task) => void;
-  onManageParent: (task: Task) => void;
-  onLocateTask: (taskId: string) => void;
   isFiltering: boolean;
 }
 
@@ -24,9 +21,6 @@ export default function Column({
   dispatch,
   onEdit,
   onDelete,
-  onCreateChild,
-  onManageParent,
-  onLocateTask,
   isFiltering,
 }: ColumnProps) {
   const { setNodeRef } = useDroppable({
@@ -56,9 +50,6 @@ export default function Column({
             dispatch={dispatch}
             onEdit={onEdit}
             onDelete={onDelete}
-            onCreateChild={onCreateChild}
-            onManageParent={onManageParent}
-            onLocateTask={onLocateTask}
           />
         ))
       )}

@@ -1134,14 +1134,37 @@ select:focus-visible {
     width: 100%;
   }
 }
-/* Linked tasks share the existing cards and form; expanded lists stay compact. */
-.task-relationships {
-  font-size: 0.85rem;
-  overflow-wrap: anywhere;
+/* Linked task progress stays compact; relationship details live in the editor. */
+.task-progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 4px 0 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
 }
-
-.parent-context {
-  margin: 0.5rem 0;
+.task-progress-count, .task-progress-percentage { white-space: nowrap; }
+.task-progress-track {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  min-width: 24px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.task-progress-segment {
+  flex: 1;
+  min-width: 0;
+  background: #dbeafe;
+}
+.task-progress-segment.is-complete {
+  background: #3b82f6;
 }
 
 .relationship-link {
@@ -1156,33 +1179,163 @@ select:focus-visible {
   cursor: pointer;
 }
 
-.relationship-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 0.5rem;
-}
-
-.child-task-list summary,
-.subtask-container summary {
-  cursor: pointer;
-}
-
-.child-task-list ul {
-  max-height: 200px;
-  overflow-y: auto;
-  padding-left: 1.2rem;
-}
-
-.child-task-list li {
-  margin: 0.5rem 0;
-}
-
-.child-task-list li .edit-task-button {
-  margin-left: 0.5rem;
-}
+.subtask-container summary { cursor: pointer; }
 
 .parent-child-form form {
   max-height: 90dvh;
   overflow-y: auto;
+}
+
+.task-editor-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.task-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid #16a34a;
+  border-radius: 999px;
+  color: #166534;
+  background: #f0fdf4;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.task-status-pill.is-complete {
+  border-color: #7c3aed;
+  color: #6d28d9;
+  background: #f5f3ff;
+}
+
+.editor-parent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #93c5fd;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #6b7280;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.editor-parent-pill:hover { border-color: #60a5fa; background: #dbeafe; }
+.editor-parent-pill:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; }
+.parent-pill-icon { flex-shrink: 0; color: #3b82f6; }
+.parent-pill-icon.is-complete { color: #60a5fa; }
+.parent-pill-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.editor-manage-parent {
+  justify-self: start;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: #f9fafb;
+  color: #4b5563;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.editor-manage-parent:hover { background: #f3f4f6; }
+
+.task-editor-subtasks {
+  padding: 12px;
+  border: 1px solid var(--column-border);
+  border-radius: var(--radius-small);
+}
+
+.task-editor-subtasks summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.subtask-progress {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 1px 9px;
+  border: 1px solid var(--column-border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.editor-subtask-list {
+  max-height: 200px;
+  padding: 0;
+  margin: 12px 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.editor-subtask-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--column-border);
+}
+
+.subtask-status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+  font-size: 1.25rem;
+}
+
+.subtask-status-icon.is-complete {
+  border-radius: 50%;
+  background: #3b82f6;
+  color: #fff;
+}
+
+.subtask-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+}
+
+.task-title-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.task-title-link:hover,
+.task-title-link:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.subtask-title:hover,
+.subtask-title:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.add-editor-subtask {
+  padding: 8px 12px;
+}
+
+@media (max-width: 600px) {
+  .editor-subtask-list li {
+    flex-wrap: wrap;
+  }
 }
