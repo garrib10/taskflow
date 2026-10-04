@@ -1,9 +1,13 @@
 import type { Board } from "./Board";
 import type { Subtask, Task, TaskEdits, TaskStatus } from "../task/Task";
 import { deleteSubtask, moveTask, toggleSubtask, updateTask } from "../task/taskActions";
+import { validateBoardAction } from "./boardValidation";
 
 export type BoardAction = (
   | { type: "CREATE_TASK"; task: Task }
+  | { type: "CREATE_CHILD_TASK"; parentId: string; task: Task }
+  | { type: "SET_PARENT"; taskId: string; parentId: string | null }
+  | { type: "DELETE_PARENT_TASK"; taskId: string }
   | { type: "UPDATE_TASK"; taskId: string; edits: TaskEdits }
   | { type: "DELETE_TASK"; taskId: string }
   | { type: "MOVE_TASK"; taskId: string; newStatus: TaskStatus }
@@ -13,18 +17,23 @@ export type BoardAction = (
 ) & { updatedAt: Date };
 
 export function boardReducer(state: Board, action: BoardAction): Board {
-  if (action.type === "CREATE_TASK") {
+  if (validateBoardAction(state, action)) return state;
+
+  if (action.type === "CREATE_TASK" || action.type === "CREATE_CHILD_TASK") {
     const destination = state.columns.find((column) => column.id === "todo");
     const duplicate = state.columns.some((column) =>
       column.tasks.some((task) => task.id === action.task.id),
     );
     if (!destination || duplicate || action.task.status !== "todo") return state;
+    const task = action.type === "CREATE_CHILD_TASK"
+      ? { ...action.task, parentId: action.parentId }
+      : action.task;
     return {
       ...state,
       lastUpdated: action.updatedAt,
       columns: state.columns.map((column) =>
         column === destination
-          ? { ...column, tasks: [...column.tasks, action.task] }
+          ? { ...column, tasks: [...column.tasks, task] }
           : column,
       ),
     };
@@ -35,6 +44,21 @@ export function boardReducer(state: Board, action: BoardAction): Board {
   );
   const currentTask = source?.tasks.find((task) => task.id === action.taskId);
   if (!source || !currentTask) return state;
+
+  if (action.type === "DELETE_PARENT_TASK") {
+    return {
+      ...state,
+      lastUpdated: action.updatedAt,
+      columns: state.columns.map((column) => ({
+        ...column,
+        tasks: column.tasks
+          .filter((task) => task.id !== action.taskId)
+          .map((task) => task.parentId === action.taskId
+            ? { ...task, parentId: undefined }
+            : task),
+      })),
+    };
+  }
 
   if (action.type === "MOVE_TASK") {
     const destination = state.columns.find((column) => column.id === action.newStatus);
@@ -77,6 +101,9 @@ export function boardReducer(state: Board, action: BoardAction): Board {
 
   let updatedTask: Task;
   switch (action.type) {
+    case "SET_PARENT":
+      updatedTask = { ...currentTask, parentId: action.parentId ?? undefined };
+      break;
     case "UPDATE_TASK":
       updatedTask = updateTask(currentTask, action.edits);
       break;

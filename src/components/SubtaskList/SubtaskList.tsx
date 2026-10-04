@@ -7,9 +7,10 @@ import SubtaskItem from "../SubtaskItem/SubtaskItem";
 interface SubtaskListProps {
   task: Task;
   dispatch: React.Dispatch<BoardAction>;
+  allowCreate?: boolean;
 }
 
-export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
+export default function SubtaskList({ task, dispatch, allowCreate = true }: SubtaskListProps) {
   const [newSubtask, setNewSubtask] = useState("");
 
   const subtasks = task.subtasks ?? [];
@@ -60,7 +61,7 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
         <p className="no-subtasks">No subtasks yet.</p>
       )}
 
-      <div className="subtask-input-container">
+      {allowCreate && <div className="subtask-input-container">
         <input
           type="text"
           placeholder="Add subtask..."
@@ -83,7 +84,7 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
         >
           Add
         </button>
-      </div>
+      </div>}
     </div>
   );
 }

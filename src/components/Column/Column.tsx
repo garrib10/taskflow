@@ -1,5 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
 import type { Column as ColumnType } from "../../domain/board/Board";
+import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
 import { sortTasksByPriority } from "../../domain/task/taskPriority";
@@ -7,6 +8,7 @@ import TaskCard from "../TaskCard/TaskCard";
 
 interface ColumnProps {
   column: ColumnType;
+  board: Board;
   dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
@@ -15,6 +17,7 @@ interface ColumnProps {
 
 export default function Column({
   column,
+  board,
   dispatch,
   onEdit,
   onDelete,
@@ -43,6 +46,7 @@ export default function Column({
           <TaskCard
             key={task.id}
             task={task}
+            board={board}
             dispatch={dispatch}
             onEdit={onEdit}
             onDelete={onDelete}

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
-import { canMoveTask, getMoveErrorMessage } from "../../domain/task/taskRules";
+import { validateBoardAction, type BoardOperationError } from "../../domain/board/boardValidation";
+import { getChildren } from "../../domain/board/taskRelationships";
 import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
@@ -25,6 +26,10 @@ interface BoardProps {
 }
 
 export default function Board({ board, dispatch }: BoardProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor),
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -70,6 +75,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     (total, column) => total + column.tasks.length,
     0,
   );
+  const pendingChildren = taskPendingDeletion ? getChildren(board, taskPendingDeletion.id) : [];
 
   useEffect(() => {
     return () => {
@@ -147,6 +153,16 @@ export default function Board({ board, dispatch }: BoardProps) {
     setStatusFilter(defaults.statusFilter);
   }
 
+  function tryDispatch(action: BoardAction): BoardOperationError | null {
+    const failure = validateBoardAction(board, action);
+    if (failure) {
+      showErrorNotification(failure.message);
+      return failure;
+    }
+    dispatch(action);
+    return null;
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
@@ -172,19 +188,14 @@ export default function Board({ board, dispatch }: BoardProps) {
       return;
     }
 
-    if (!canMoveTask(currentTask.status, newStatus)) {
-      showErrorNotification(getMoveErrorMessage(currentTask.status, newStatus));
-      return;
-    }
-
-    dispatch({
+    const failure = tryDispatch({
       type: "MOVE_TASK",
       taskId,
       newStatus,
       updatedAt: new Date(),
     });
 
-    handleCloseErrorNotification();
+    if (!failure) handleCloseErrorNotification();
   }
 
   function handleCreateTask() {
@@ -231,18 +242,19 @@ export default function Board({ board, dispatch }: BoardProps) {
       handleCloseTaskForm();
     }
 
-    dispatch({
-      type: "DELETE_TASK",
+    const failure = tryDispatch({
+      type: pendingChildren.length > 0 ? "DELETE_PARENT_TASK" : "DELETE_TASK",
       taskId: taskPendingDeletion.id,
       updatedAt: new Date(),
     });
+    if (failure) return;
 
     setTaskPendingDeletion(null);
-    showSuccessNotification("Task deleted successfully.");
+    showSuccessNotification(pendingChildren.length > 0 ? "Parent deleted; children kept as independent tasks." : "Task deleted successfully.");
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="board-container">
         {errorMessage && (
           <Notification
@@ -314,18 +326,22 @@ export default function Board({ board, dispatch }: BoardProps) {
         {showTaskForm && (
           <TaskForm
             key={taskToEdit?.id ?? "new"}
+            board={board}
             task={taskToEdit}
             onClose={handleCloseTaskForm}
-            dispatch={dispatch}
+            dispatch={tryDispatch}
             onSuccess={handleTaskSaved}
+            onOpenTask={handleEditTask}
           />
         )}
 
         {taskPendingDeletion && (
           <ConfirmModal
-            title="Delete Task"
-            message={`Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
-            confirmText="Delete"
+            title={pendingChildren.length > 0 ? "Delete Parent Task" : "Delete Task"}
+            message={pendingChildren.length > 0
+              ? `Delete "${taskPendingDeletion.title}" and detach its ${pendingChildren.length} children? All children will be kept as independent tasks. This action cannot be undone.`
+              : `Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
+            confirmText={pendingChildren.length > 0 ? "Delete Parent and Detach Children" : "Delete"}
             cancelText="Cancel"
             confirmVariant="danger"
             onConfirm={handleConfirmDeleteTask}
@@ -338,7 +354,8 @@ export default function Board({ board, dispatch }: BoardProps) {
             <Column
               key={column.id}
               column={column}
-              dispatch={dispatch}
+              board={board}
+              dispatch={tryDispatch}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
               isFiltering={isFiltering}

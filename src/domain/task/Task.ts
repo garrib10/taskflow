@@ -28,8 +28,10 @@ export interface Task {
   status: TaskStatus;
   createdAt: Date;
 
-  // Optional feature:
-  // Tasks can have zero or more subtasks
+  /** Only children own a link; parent progress is derived from board tasks. */
+  parentId?: Task["id"];
+
+  // Legacy checklist data stays intact until the versioned migration in #66.
   subtasks: Subtask[];
 }
 
