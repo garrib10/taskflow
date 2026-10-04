@@ -9,8 +9,10 @@ it("round-trips linked tasks and legacy checklist data without conversion or los
   const child = makeTask({ id: "child", parentId: parent.id, status: "done" });
   const board = makeBoard([parent, child]);
   try {
-    saveBoard(board);
-    const restored = loadBoard();
+    expect(saveBoard(board, previous).kind).toBe("saved");
+    const loaded = loadBoard();
+    if (loaded.kind !== "current") throw new Error("Board was not restored");
+    const restored = loaded.board;
     expect(restored).toEqual(board);
     if (!restored) throw new Error("Board was not restored");
     expect(getParent(restored, child)).toEqual(parent);

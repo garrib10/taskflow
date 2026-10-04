@@ -1,15 +1,22 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
 import { boardReducer } from "../domain/board/boardReducer";
-import { initialBoard } from "../utils/mockData";
-import { loadBoard, saveBoard } from "../utils/storage";
+import { PersistenceSession, listenForBoardChanges } from "../persistence/session";
 
 export function useBoardReducer() {
-  const startingBoard = loadBoard() ?? initialBoard;
-  const [board, dispatch] = useReducer(boardReducer, startingBoard);
+  // Hydrate once per mount, never on each render. Initialization does not write.
+  const [session] = useState(() => new PersistenceSession());
+  const [board, dispatch] = useReducer(boardReducer, session.board);
+  const notice = useSyncExternalStore(session.subscribe, session.getSnapshot);
 
   useEffect(() => {
-    saveBoard(board);
-  }, [board]);
+    session.save(board);
+  }, [board, session]);
 
-  return [board, dispatch] as const;
+  useEffect(() => listenForBoardChanges(session, window), [session]);
+
+  function retrySave() {
+    session.save(board);
+  }
+
+  return [board, dispatch, { notice, retrySave }] as const;
 }
