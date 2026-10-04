@@ -1,3 +1,4 @@
+import "./TaskCard.css";
 import { useDraggable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
 import type { Board } from "../../domain/board/Board";

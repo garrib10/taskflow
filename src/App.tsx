@@ -1,4 +1,4 @@
-import "./App.css";
+import "./styles/controls.css";
 import { useState } from "react";
 import Board from "./components/Board/Board";
 import ConfirmModal from "./components/ConfirmModal/ConfirmModal";

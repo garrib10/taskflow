@@ -1,3 +1,4 @@
+import "../../styles/task-dialog.css";
 import { useEffect, useState } from "react";
 import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
