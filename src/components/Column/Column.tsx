@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import type { Column as ColumnType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import { sortTasksByPriority } from "../../domain/task/taskPriority";
 import TaskCard from "../TaskCard/TaskCard";
 

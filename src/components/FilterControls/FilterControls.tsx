@@ -1,9 +1,9 @@
-import type { Priority, TaskStatus } from "../../domain/task/Task";
-import type { TaskCategory } from "../../domain/task/taskCategory";
-
-export type PriorityFilter = "all" | Priority;
-export type CategoryFilter = "all" | TaskCategory;
-export type StatusFilter = "all" | TaskStatus;
+import type {
+  PriorityFilter,
+  CategoryFilter,
+  StatusFilter,
+} from "../../domain/board/boardFilters";
+import { isTaskStatus } from "../../utils/typeGuards";
 
 interface FilterControlsProps {
   priorityFilter: PriorityFilter;
@@ -67,9 +67,12 @@ export default function FilterControls({
         <select
           id="status-filter"
           value={statusFilter}
-          onChange={(event) =>
-            onStatusChange(event.target.value as StatusFilter)
-          }
+          onChange={(event) => {
+            const value = event.target.value;
+            if (value === "all" || isTaskStatus(value)) {
+              onStatusChange(value);
+            }
+          }}
         >
           <option value="all">All statuses</option>
           <option value="todo">To Do</option>

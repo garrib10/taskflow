@@ -1,5 +1,5 @@
 import type { Subtask } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 
 interface SubtaskItemProps {
   taskId: string;
@@ -17,6 +17,7 @@ export default function SubtaskItem({
       type: "TOGGLE_SUBTASK",
       taskId,
       subtaskId: subtask.id,
+      updatedAt: new Date(),
     });
   }
 
@@ -25,6 +26,7 @@ export default function SubtaskItem({
       type: "DELETE_SUBTASK",
       taskId,
       subtaskId: subtask.id,
+      updatedAt: new Date(),
     });
   }
 

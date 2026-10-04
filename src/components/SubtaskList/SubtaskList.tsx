@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { createSubtask } from "../../domain/task/taskActions";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import SubtaskItem from "../SubtaskItem/SubtaskItem";
 
 interface SubtaskListProps {
@@ -23,7 +24,8 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
     dispatch({
       type: "ADD_SUBTASK",
       taskId: task.id,
-      title: trimmedSubtask,
+      subtask: createSubtask(trimmedSubtask),
+      updatedAt: new Date(),
     });
 
     setNewSubtask("");
