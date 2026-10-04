@@ -25,7 +25,7 @@ it("focuses one named warning summary when a parent completes while child creati
   board = makeBoard([{ ...parent, status: "done" }]);
   view.rerender(<TaskForm board={board} parent={parent} dispatch={dispatch} onClose={close} onSuccess={success} onOpenTask={() => {}} />);
   await user.click(screen.getByRole("button", { name: "Create SubTask" }));
-  const warning = screen.getByRole("group", { name: 'Warning: "Parent work" is complete. An unfinished child cannot be linked to it.' });
+  const warning = screen.getByRole("group", { name: 'Warning: "Parent work" is complete. An unfinished subtask cannot be linked to it.' });
   expect(warning).toHaveFocus();
   expect(screen.queryByRole("status")).not.toBeInTheDocument();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();

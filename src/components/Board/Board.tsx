@@ -226,7 +226,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     const column = board.columns.find(column => column.tasks.some(task => task.id === taskPendingDeletion.id));
     pendingFocus.current = [cards[index + 1], cards[index - 1], `column-${column?.id}-title`].filter((id): id is string => !!id);
     setTaskPendingDeletion(null);
-    showFeedback("success", pendingChildren.length > 0 ? `Deleted parent "${taskPendingDeletion.title}"; children kept as independent tasks.` : `Deleted "${taskPendingDeletion.title}".`);
+    showFeedback("success", pendingChildren.length > 0 ? `Deleted parent "${taskPendingDeletion.title}"; subtasks kept as independent tasks.` : `Deleted "${taskPendingDeletion.title}".`);
   }
 
   const titleFor = (id: string | number) => board.columns.flatMap(column => column.tasks).find(task => task.id === String(id))?.title ?? "Task";
@@ -319,9 +319,9 @@ export default function Board({ board, dispatch }: BoardProps) {
           <ConfirmModal
             title={pendingChildren.length > 0 ? "Delete Parent Task" : "Delete Task"}
             message={pendingChildren.length > 0
-              ? `Delete "${taskPendingDeletion.title}" and detach its ${pendingChildren.length} children? All children will be kept as independent tasks. This action cannot be undone.`
+              ? `Delete "${taskPendingDeletion.title}" and detach its ${pendingChildren.length} ${pendingChildren.length === 1 ? "subtask" : "subtasks"}? All subtasks will be kept as independent tasks. This action cannot be undone.`
               : `Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
-            confirmText={pendingChildren.length > 0 ? "Delete Parent and Detach Children" : "Delete"}
+            confirmText={pendingChildren.length > 0 ? "Delete Parent and Detach Subtasks" : "Delete"}
             cancelText="Cancel"
             confirmVariant="danger"
             onConfirm={handleConfirmDeleteTask}

@@ -170,7 +170,7 @@ describe("completion and filtering", () => {
   it("blocks completion with unfinished children and names the blocking work", () => {
     const board = makeBoard([parent, child]);
     const action: BoardAction = { type: "MOVE_TASK", taskId: parent.id, newStatus: "done", updatedAt };
-    expect(validateBoardAction(board, action)).toEqual({ code: "incomplete-children", message: 'Finish these children before completing "Parent": Child.' });
+    expect(validateBoardAction(board, action)).toEqual({ code: "incomplete-children", message: 'Finish these subtasks before completing "Parent": Child.' });
     expect(boardReducer(board, action)).toBe(board);
   });
 

@@ -47,7 +47,7 @@ export default function TaskRelationshipForm({
       <form onSubmit={handleSubmit}>
         <h2 id={`${id}-title`}>Manage Parent</h2>
         <p id={`${id}-task`}>Task: {task.title}</p>
-        <p id={`${id}-description`}>Detaching keeps the task and all its work. A child can have one parent.</p>
+        <p id={`${id}-description`}>Detaching keeps the task and all its work. A subtask can have one parent.</p>
         {notification && <Notification key={notification.id} notification={notification}
           messageId={`${id}-error`} announce={false} onClose={() => dismiss(notification.id)}
           onFocusLost={() => document.getElementById(`${id}-parent`)?.focus()} />}
