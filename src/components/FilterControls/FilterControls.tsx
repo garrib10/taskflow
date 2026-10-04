@@ -29,6 +29,7 @@ export default function FilterControls({
         <label htmlFor="priority-filter">Priority</label>
 
         <select
+          aria-controls="taskflow-board"
           id="priority-filter"
           value={priorityFilter}
           onChange={(event) =>
@@ -46,6 +47,7 @@ export default function FilterControls({
         <label htmlFor="category-filter">Category</label>
 
         <select
+          aria-controls="taskflow-board"
           id="category-filter"
           value={categoryFilter}
           onChange={(event) =>
@@ -66,6 +68,7 @@ export default function FilterControls({
         <label htmlFor="status-filter">Status</label>
 
         <select
+          aria-controls="taskflow-board"
           id="status-filter"
           value={statusFilter}
           onChange={(event) => {

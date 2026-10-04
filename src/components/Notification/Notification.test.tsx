@@ -18,7 +18,7 @@ it("renders an error notification and lets the user request dismissal", async ()
   expect(screen.getByRole("alert")).toBeInTheDocument();
   expect(screen.getByRole("alert")).toHaveTextContent("Cannot move this task.");
 
-  await user.click(screen.getByRole("button", { name: "Dismiss notification" }));
+  await user.click(screen.getByRole("button", { name: "Dismiss notification: Cannot move this task." }));
 
   expect(onClose).toHaveBeenCalledTimes(1);
 });

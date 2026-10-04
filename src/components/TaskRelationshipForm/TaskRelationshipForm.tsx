@@ -1,9 +1,11 @@
 import "../../styles/task-dialog.css";
-import { useEffect, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
 import { validateParentAssignment, type BoardOperationError } from "../../domain/board/boardValidation";
+
+import { useModalFocus } from "../../accessibility/useModalFocus";
 
 interface TaskRelationshipFormProps {
   board: Board;
@@ -21,13 +23,10 @@ export default function TaskRelationshipForm({
   const candidates = board.columns.flatMap((column) => column.tasks)
     .filter((candidate) => !validateParentAssignment(board, task, candidate.id));
 
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
+  const id = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useModalFocus(dialogRef, onClose);
+  useLayoutEffect(() => { if (error) document.getElementById(`${id}-parent`)?.focus(); }, [error, id]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,19 +35,19 @@ export default function TaskRelationshipForm({
       setError(failure.message);
       return;
     }
-    onSuccess(parentId ? "Parent relationship updated." : "Child detached as an independent task.");
+    onSuccess(parentId ? `Updated parent of "${task.title}" to "${candidates.find(candidate => candidate.id === parentId)?.title}".` : `Detached "${task.title}" as an independent task.`);
     onClose();
   }
 
   return (
-    <div className="create-task-modal parent-child-form" role="dialog" aria-modal="true" aria-labelledby="relationship-title">
+    <div ref={dialogRef} tabIndex={-1} className="create-task-modal parent-child-form" role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} aria-describedby={`${id}-task ${id}-description`}>
       <form onSubmit={handleSubmit}>
-        <h2 id="relationship-title">Manage Parent</h2>
-        <p>Task: {task.title}</p>
-        <p>Detaching keeps the task and all its work. A child can have one parent.</p>
-        {error && <p className="form-error" role="alert">{error}</p>}
-        <label htmlFor="task-parent">Parent</label>
-        <select id="task-parent" autoFocus value={parentId} onChange={(event) => setParentId(event.target.value)}>
+        <h2 id={`${id}-title`}>Manage Parent</h2>
+        <p id={`${id}-task`}>Task: {task.title}</p>
+        <p id={`${id}-description`}>Detaching keeps the task and all its work. A child can have one parent.</p>
+        {error && <p id={`${id}-error`} className="form-error">{error}</p>}
+        <label htmlFor={`${id}-parent`}>Parent</label>
+        <select id={`${id}-parent`} data-initial-focus aria-invalid={!!error || undefined} aria-describedby={error ? `${id}-error` : `${id}-description`} value={parentId} onChange={(event) => setParentId(event.target.value)}>
           <option value="">No parent (independent task)</option>
           {candidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.title}</option>)}
         </select>

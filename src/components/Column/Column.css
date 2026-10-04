@@ -59,3 +59,9 @@
     min-height: auto;
   }
 }
+
+.column-header h2:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: var(--radius-small);
+}
