@@ -25,6 +25,7 @@ export default function TaskCard({
 }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
+    data: { status: task.status },
   });
 
   const dragStyle = transform
@@ -46,9 +47,9 @@ export default function TaskCard({
       className={`task-card ${priorityStyle.borderClass}`}
     >
       {/* Drag Handle Area */}
-      <div className="task-card-header" {...listeners} {...attributes}>
+      <div className="task-card-header" data-task-drag={task.id} {...listeners} {...attributes} role="group" aria-label={`Move task ${task.title}, ${board.columns.find(column => column.id === task.status)?.title}`}>
         <h3>
-          <button type="button" className="task-title-link" aria-label={`Open task ${task.title}`}
+          <button type="button" className="task-title-link" data-task-title aria-label={`Open task ${task.title}`}
             onKeyDown={(event) => event.stopPropagation()}
             onClick={(event) => {
               event.stopPropagation();
@@ -106,12 +107,13 @@ export default function TaskCard({
         <div className="task-actions">
           <button
             type="button"
-            className="edit-task-button"
+            className="edit-task-button" aria-label={`Edit ${task.title}`}
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
             onClick={(event) => {
               event.stopPropagation();
+              event.currentTarget.focus();
               onEdit(task);
             }}
           >
@@ -120,12 +122,13 @@ export default function TaskCard({
 
           <button
             type="button"
-            className="delete-task-button"
+            className="delete-task-button" aria-label={`Delete ${task.title}`}
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
             onClick={(event) => {
               event.stopPropagation();
+              event.currentTarget.focus();
               onDelete(task.id);
             }}
           >

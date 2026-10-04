@@ -31,9 +31,9 @@ export default function Column({
   const sortedTasks = sortTasksByPriority(column.tasks);
 
   return (
-    <div ref={setNodeRef} className="column">
+    <section ref={setNodeRef} className="column" aria-labelledby={`column-${column.id}-title`}>
       <div className="column-header">
-        <h2>
+        <h2 id={`column-${column.id}-title`} tabIndex={-1}>
           {column.title} ({column.tasks.length})
         </h2>
       </div>
@@ -54,6 +54,6 @@ export default function Column({
           />
         ))
       )}
-    </div>
+    </section>
   );
 }

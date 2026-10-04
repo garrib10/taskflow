@@ -64,6 +64,7 @@ export default function SubtaskList({ task, dispatch, allowCreate = true }: Subt
 
       {allowCreate && <div className="subtask-input-container">
         <input
+          aria-label={`Add checklist item to ${task.title}`}
           type="text"
           placeholder="Add subtask..."
           value={newSubtask}

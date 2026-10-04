@@ -1,6 +1,6 @@
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
 import type { Board } from "../../domain/board/Board";
 import { findTask, getChildren, getChildProgress, getParent } from "../../domain/board/taskRelationships";
@@ -11,13 +11,17 @@ import type { BoardOperationError } from "../../domain/board/boardValidation";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import TaskRelationshipForm from "../TaskRelationshipForm/TaskRelationshipForm";
 
+import { useModalFocus } from "../../accessibility/useModalFocus";
+import { priorityStyles } from "../../domain/task/priorityStyles";
+import { categoryStyles } from "../../domain/task/categoryStyles";
+
 interface TaskFormProps {
   board: Board;
   task?: Task | null;
   parent?: Task | null;
   onClose: () => void;
   dispatch: (action: BoardAction) => BoardOperationError | null;
-  onSuccess: (message: string) => void;
+  onSuccess: (message: string, taskId?: string) => void;
   onOpenTask: (task: Task) => void;
 }
 
@@ -45,12 +49,15 @@ export default function TaskForm({
     : [];
   const progress = task ? getChildProgress(board, task.id) : { total: 0, completed: 0 };
   const isSubtask = parent != null || currentTask?.parentId !== undefined;
-  const fieldPrefix = isSubtask ? "subtask" : "task";
+  const fieldPrefix = useId();
   const [subtaskEditor, setSubtaskEditor] = useState<
     { type: "create" } | { type: "edit"; task: Task } | null
   >(null);
   const [showRelationshipForm, setShowRelationshipForm] = useState(false);
   const [taskToOpen, setTaskToOpen] = useState<Task | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const [validationAttempt, setValidationAttempt] = useState(0);
+  const [invalidField, setInvalidField] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const initialTitle = task?.title ?? "";
@@ -80,26 +87,14 @@ export default function TaskForm({
     setShowDiscardConfirmation(true);
   }, [hasUnsavedChanges, onClose]);
 
-  useEffect(() => {
-    function handleEscapeKey(event: KeyboardEvent) {
-      if (event.key !== "Escape" || showDiscardConfirmation || subtaskEditor || showRelationshipForm) {
-        return;
-      }
-
-      event.preventDefault();
-      handleRequestClose();
+  useModalFocus(dialogRef, handleRequestClose, !subtaskEditor && !showRelationshipForm && !showDiscardConfirmation);
+  useLayoutEffect(() => {
+    if (error) {
+      const target = invalidField ? document.getElementById(`${fieldPrefix}-${invalidField}`) : document.getElementById(`${fieldPrefix}-error`);
+      target?.focus();
     }
-
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [handleRequestClose, showDiscardConfirmation, subtaskEditor, showRelationshipForm]);
-
-  useEffect(() => {
-    if (!subtaskEditor && !showRelationshipForm) formRef.current?.querySelector<HTMLInputElement>("input[name=title]")?.focus();
-  }, [subtaskEditor, showRelationshipForm]);
+  }, [error, invalidField, fieldPrefix, validationAttempt]);
+  function fail(field: string | null, message: string) { setValidationAttempt(value => value + 1); setInvalidField(field); setError(message); }
 
   function handleOpenTask(nextTask: Task) {
     if (hasUnsavedChanges) {
@@ -129,34 +124,38 @@ export default function TaskForm({
     event.preventDefault();
 
     setError("");
+    setInvalidField(null);
 
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
 
     if (!trimmedTitle) {
-      setError("Task title is required.");
+      fail("title", "Task title is required.");
       return;
     }
 
     if (trimmedTitle.length < 3) {
-      setError("Task title must be at least 3 characters long.");
+      fail("title", "Task title must be at least 3 characters long.");
       return;
     }
 
     if (trimmedTitle.length > 150) {
-      setError("Task title cannot exceed 150 characters.");
+      fail("title", "Task title cannot exceed 150 characters.");
       return;
     }
 
     if (!trimmedDescription) {
-      setError("Task description is required.");
+      fail("description", "Task description is required.");
       return;
     }
 
     if (trimmedDescription.length > 300) {
-      setError("Task description cannot exceed 300 characters.");
+      fail("description", "Task description cannot exceed 300 characters.");
       return;
     }
+
+    if (!Object.hasOwn(priorityStyles, priority)) { fail("priority", "Choose a valid priority."); return; }
+    if (!Object.hasOwn(categoryStyles, category)) { fail("category", "Choose a valid category."); return; }
 
     if (isEditing && task) {
       const failure = dispatch({
@@ -171,11 +170,11 @@ export default function TaskForm({
         updatedAt: new Date(),
       });
       if (failure) {
-        setError(failure.message);
+        fail(null, failure.message);
         return;
       }
 
-      onSuccess("Task updated successfully.");
+      onSuccess(`Updated "${trimmedTitle}".`, task.id);
     } else {
       const newTask = createTask(trimmedTitle, trimmedDescription, priority, category);
       const updatedAt = new Date();
@@ -183,11 +182,11 @@ export default function TaskForm({
         ? { type: "CREATE_CHILD_TASK", parentId: parent.id, task: newTask, updatedAt }
         : { type: "CREATE_TASK", task: newTask, updatedAt });
       if (failure) {
-        setError(failure.message);
+        fail(null, failure.message);
         return;
       }
 
-      onSuccess(parent ? "Subtask created successfully." : "Task created successfully.");
+      onSuccess(parent ? `Created subtask "${trimmedTitle}" for "${parent.title}".` : `Created "${trimmedTitle}".`, newTask.id);
     }
 
     setTitle("");
@@ -204,12 +203,14 @@ export default function TaskForm({
     <>
       <div hidden={subtaskEditor !== null || showRelationshipForm}>
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         className="create-task-modal parent-child-form"
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${fieldPrefix}-form-title`}
       >
-        <form ref={formRef} onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit} noValidate>
           <h2 id={`${fieldPrefix}-form-title`}>
             {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
           </h2>
@@ -233,7 +234,7 @@ export default function TaskForm({
           )}
 
           {error && (
-            <p className="form-error" role="alert">
+            <p id={`${fieldPrefix}-error`} className="form-error" tabIndex={-1}>
               {error}
             </p>
           )}
@@ -247,24 +248,30 @@ export default function TaskForm({
             placeholder="Task title"
             maxLength={150}
             value={title}
-            autoFocus
+            data-initial-focus
+            required
+            aria-invalid={invalidField === "title" || undefined}
+            aria-describedby={`${fieldPrefix}-title-count${invalidField === "title" ? ` ${fieldPrefix}-error` : ""}`}
             onChange={(event) => setTitle(event.target.value)}
           />
 
-          <small className="character-count">{title.trim().length}/150</small>
+          <small id={`${fieldPrefix}-title-count`} className="character-count">{title.trim().length}/150</small>
 
           <label htmlFor={`${fieldPrefix}-description`}>Description</label>
 
           <textarea
             id={`${fieldPrefix}-description`}
             name="description"
+            required
+            aria-invalid={invalidField === "description" || undefined}
+            aria-describedby={`${fieldPrefix}-description-count${invalidField === "description" ? ` ${fieldPrefix}-error` : ""}`}
             placeholder="Task description"
             maxLength={300}
             value={description}
             onChange={(event) => setDescription(event.target.value)}
           />
 
-          <small className="character-count">
+          <small id={`${fieldPrefix}-description-count`} className="character-count">
             {description.trim().length}/300
           </small>
 
@@ -274,6 +281,8 @@ export default function TaskForm({
 
               <select
                 id={`${fieldPrefix}-priority`}
+                aria-invalid={invalidField === "priority" || undefined}
+                aria-describedby={invalidField === "priority" ? `${fieldPrefix}-error` : undefined}
                 value={priority}
                 onChange={(event) =>
                   setPriority(event.target.value as Priority)
@@ -290,6 +299,8 @@ export default function TaskForm({
 
               <select
                 id={`${fieldPrefix}-category`}
+                aria-invalid={invalidField === "category" || undefined}
+                aria-describedby={invalidField === "category" ? `${fieldPrefix}-error` : undefined}
                 value={category}
                 onChange={(event) =>
                   setCategory(event.target.value as TaskCategory)
@@ -333,14 +344,14 @@ export default function TaskForm({
                   ))}
                 </ul>
                 {currentTask.status !== "done" && (
-                  <button type="button" className="edit-task-button add-editor-subtask" onClick={() => setSubtaskEditor({ type: "create" })}>
+                  <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask?.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>
                     Add SubTask
                   </button>
                 )}
               </details>
             </section>
           ) : currentTask.status !== "done" ? (
-            <button type="button" className="edit-task-button add-editor-subtask" onClick={() => setSubtaskEditor({ type: "create" })}>
+            <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask?.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>
               Add SubTask
             </button>
           ) : null)}
