@@ -1,0 +1,231 @@
+/* Task cards, badges, linked child progress and drag focus. */
+.task-card {
+  background: var(--card-background);
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-small);
+  transition:
+    transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* The header owns drag interaction; card buttons and checklist inputs remain independent. */
+
+.task-card-header {
+  cursor: grab;
+  user-select: none;
+}
+
+.task-card-header:active {
+  cursor: grabbing;
+}
+
+.task-card-header h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.task-description {
+  color: var(--text-secondary);
+  margin: 0.75rem 0 1rem;
+}
+
+.task-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-meta span {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.task-category {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.category-feature {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.category-ui {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.category-bug {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.category-testing {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.category-refactor {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.category-devops {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.priority-high {
+  border-left: 6px solid var(--priority-high);
+}
+
+.priority-medium {
+  border-left: 6px solid var(--priority-medium);
+}
+
+.priority-low {
+  border-left: 6px solid var(--priority-low);
+}
+
+.badge-high,
+.badge-medium,
+.badge-low {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-high {
+  color: var(--priority-high);
+  background: #fee2e2;
+}
+
+.badge-medium {
+  color: var(--priority-medium);
+  background: #fef3c7;
+}
+
+.badge-low {
+  color: var(--priority-low);
+  background: #dcfce7;
+}
+
+.completed-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.task-card-header:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: var(--radius-small);
+}
+
+@media (max-width: 600px) {
+  .task-footer {
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .task-card h3 {
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+.task-progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 4px 0 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+.task-progress-count, .task-progress-percentage { white-space: nowrap; }
+.task-progress-track {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  min-width: 24px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.task-progress-segment {
+  flex: 1;
+  min-width: 0;
+  background: #dbeafe;
+}
+.task-progress-segment.is-complete {
+  background: #3b82f6;
+}
+
+.task-title-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.task-title-link:hover,
+.task-title-link:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+}

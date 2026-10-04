@@ -1,3 +1,4 @@
+import "./ConfirmModal.css";
 import { useEffect, useRef } from "react";
 
 interface ConfirmModalProps {

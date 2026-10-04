@@ -1,3 +1,4 @@
+import "./SearchBar.css";
 interface SearchBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;

@@ -1,3 +1,4 @@
+import "./Column.css";
 import { useDroppable } from "@dnd-kit/core";
 import type { Column as ColumnType } from "../../domain/board/Board";
 import type { Board } from "../../domain/board/Board";

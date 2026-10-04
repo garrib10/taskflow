@@ -1,3 +1,4 @@
+import "./Notification.css";
 interface NotificationProps {
   message: string;
   type?: "success" | "error";

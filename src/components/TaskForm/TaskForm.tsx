@@ -1,3 +1,5 @@
+import "../../styles/task-dialog.css";
+import "./TaskForm.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
 import type { Board } from "../../domain/board/Board";

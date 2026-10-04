@@ -1,3 +1,4 @@
+import "./Board.css";
 import { useEffect, useRef, useState } from "react";
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";

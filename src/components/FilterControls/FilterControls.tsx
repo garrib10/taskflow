@@ -1,3 +1,4 @@
+import "./FilterControls.css";
 import type {
   PriorityFilter,
   CategoryFilter,

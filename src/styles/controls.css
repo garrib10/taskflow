@@ -1,0 +1,53 @@
+/* Controls shared by the board, task editor and storage recovery UI. Imported once by App. */
+.board-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 1rem 1.25rem;
+
+  background: white;
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-small);
+}
+
+.edit-task-button,
+.delete-task-button {
+  border-radius: var(--radius-small);
+  padding: 5px 9px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.edit-task-button {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.edit-task-button:hover {
+  background: #bfdbfe;
+}
+
+.delete-task-button {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.delete-task-button:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 600px) {
+  .board-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
