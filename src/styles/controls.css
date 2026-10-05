@@ -16,6 +16,8 @@
 
 .edit-task-button,
 .delete-task-button {
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-small);
   padding: 5px 9px;
   cursor: pointer;
@@ -23,6 +25,10 @@
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edit-task-button, .delete-task-button { transition: none; }
 }
 
 .edit-task-button {

@@ -1,5 +1,7 @@
 /* Task cards, badges, linked child progress and drag focus. */
 .task-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
   background: var(--card-background);
   margin-bottom: 1rem;
   padding: 1rem;
@@ -38,6 +40,7 @@
 
 .task-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   margin-top: 1rem;
@@ -45,9 +48,10 @@
 
 .task-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  flex: 1;
+  flex: 1 1 100px;
   min-width: 0;
 }
 
@@ -174,10 +178,6 @@
 
   .task-card h3 {
     font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 }
 .task-progress-panel {
@@ -192,11 +192,12 @@
   color: #6b7280;
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
+  flex-wrap: wrap;
 }
 .task-progress-count, .task-progress-percentage { white-space: nowrap; }
 .task-progress-track {
   display: flex;
-  flex: 1;
+  flex: 1 1 24px;
   gap: 2px;
   min-width: 24px;
   height: 8px;
@@ -213,6 +214,8 @@
 }
 
 .task-title-link {
+  min-height: 44px;
+  max-width: 100%;
   padding: 0;
   border: none;
   background: transparent;
@@ -222,6 +225,11 @@
   cursor: pointer;
   overflow-wrap: anywhere;
   text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card { transition: none; }
+  .task-card:hover { transform: none; }
 }
 
 .task-title-link:hover,

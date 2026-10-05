@@ -12,6 +12,20 @@ const parent = makeTask({ id: 'parent', title: 'Parent work', priority: 'high' }
 const child = makeTask({ id: 'child', title: 'Child work', parentId: parent.id });
 function Harness({ tasks = [parent, child] }: { tasks?: ReturnType<typeof makeTask>[] }) { const [board, dispatch] = useReducer(boardReducer, makeBoard(tasks)); return <Board board={board} dispatch={dispatch} />; }
 const updates = () => screen.getByRole('status', { name: 'Board updates' });
+it('makes the scrolling workflow region keyboard reachable without removing contextual task controls', async () => {
+ const user = userEvent.setup();
+ const title = 'LongTaskName'.repeat(12);
+ render(<Harness tasks={[{ ...parent, title }]} />);
+ const workflow = screen.getByRole('region', { name: 'Workflow columns' });
+ expect(workflow).toHaveAttribute('tabindex', '0');
+ workflow.focus();
+ expect(workflow).toHaveFocus();
+ await user.tab();
+ expect(within(workflow).getByRole('group', { name: `Move task ${title}, todo` })).toHaveFocus();
+ expect(within(workflow).getByRole('button', { name: `Open task ${title}` })).toHaveTextContent(title);
+ expect(within(workflow).getByRole('button', { name: `Edit ${title}` })).toBeInTheDocument();
+ expect(within(workflow).getByRole('button', { name: `Delete ${title}` })).toBeInTheDocument();
+});
 it('exposes required fields, counts and field errors; repeat failures still focus the first invalid field', async () => {
  const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'+ Create Task'}));
  const form=within(screen.getByRole('dialog',{name:'Create New Task'}));const title=form.getByLabelText('Title'),description=form.getByLabelText('Description');

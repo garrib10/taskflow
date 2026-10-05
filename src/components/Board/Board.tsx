@@ -329,7 +329,8 @@ export default function Board({ board, dispatch }: BoardProps) {
           />
         )}
 
-        <div className="board" id="taskflow-board">
+        <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>
+        <div className="board" id="taskflow-board" role="region" aria-label="Workflow columns" tabIndex={0}>
           {filteredColumns.map((column) => (
             <Column
               key={column.id}
