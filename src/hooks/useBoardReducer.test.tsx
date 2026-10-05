@@ -16,7 +16,7 @@ it("hydrates once per mount and exposes failed saves while reducer work stays us
   expect(storage.setItem).not.toHaveBeenCalled();
   act(() => result.current[1]({ type: "CREATE_TASK", task: makeTask({ id: "new-task", title: "Unsaved new task" }), updatedAt: new Date() }));
   expect(result.current[0].columns.flatMap((column) => column.tasks)).toHaveLength(2);
-  expect(result.current[2].notice?.canRetry).toBe(true);
+  expect(result.current[2].notice?.recovery).toBe("retry");
   expect(storage.getItem.mock.calls.length).toBe(readsAfterMount + 1);
 });
 it("pauses for external changes and removes listeners on unmount", () => {

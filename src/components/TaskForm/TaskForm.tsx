@@ -11,6 +11,9 @@ import type { BoardOperationError } from "../../domain/board/boardValidation";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import TaskRelationshipForm from "../TaskRelationshipForm/TaskRelationshipForm";
 
+import Notification from "../Notification/Notification";
+import { useNotification } from "../../notifications/useNotification";
+import { operationVariant } from "../../notifications/notification";
 import { useModalFocus } from "../../accessibility/useModalFocus";
 import { priorityStyles } from "../../domain/task/priorityStyles";
 import { categoryStyles } from "../../domain/task/categoryStyles";
@@ -70,6 +73,7 @@ export default function TaskForm({
   const [priority, setPriority] = useState<Priority>(initialPriority);
   const [category, setCategory] = useState<TaskCategory>(initialCategory);
   const [error, setError] = useState("");
+  const { notification, show, dismiss } = useNotification();
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
 
   const hasUnsavedChanges =
@@ -125,6 +129,7 @@ export default function TaskForm({
 
     setError("");
     setInvalidField(null);
+    if (notification) dismiss(notification.id);
 
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
@@ -170,6 +175,7 @@ export default function TaskForm({
         updatedAt: new Date(),
       });
       if (failure) {
+        show(operationVariant(failure), failure.message);
         fail(null, failure.message);
         return;
       }
@@ -182,6 +188,7 @@ export default function TaskForm({
         ? { type: "CREATE_CHILD_TASK", parentId: parent.id, task: newTask, updatedAt }
         : { type: "CREATE_TASK", task: newTask, updatedAt });
       if (failure) {
+        show(operationVariant(failure), failure.message);
         fail(null, failure.message);
         return;
       }
@@ -233,11 +240,16 @@ export default function TaskForm({
             </div>
           )}
 
-          {error && (
+          {error && (notification ? (
+            <Notification key={notification.id} notification={notification}
+              id={`${fieldPrefix}-error`} messageId={`${fieldPrefix}-error-message`} tabIndex={-1} announce={false}
+              onClose={() => { dismiss(notification.id); setError(""); setInvalidField(null); }}
+              onFocusLost={() => document.getElementById(`${fieldPrefix}-title`)?.focus()} />
+          ) : (
             <p id={`${fieldPrefix}-error`} className="form-error" tabIndex={-1}>
               {error}
             </p>
-          )}
+          ))}
 
           <label htmlFor={`${fieldPrefix}-title`}>Title</label>
 

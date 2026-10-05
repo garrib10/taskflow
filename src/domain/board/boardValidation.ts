@@ -39,10 +39,10 @@ export function validateParentAssignment(
     ancestor = ancestor.parentId === undefined ? null : findTask(board, ancestor.parentId);
   }
   if (parent.parentId !== undefined || getChildren(board, child.id).length > 0) {
-    return error("hierarchy-depth", "Only one parent/child level is supported. A child cannot also be a parent.");
+    return error("hierarchy-depth", "Only one parent/subtask level is supported. A subtask cannot also be a parent.");
   }
   if (parent.status === "done" && child.status !== "done") {
-    return error("completed-parent", `"${parent.title}" is complete. An unfinished child cannot be linked to it.`);
+    return error("completed-parent", `"${parent.title}" is complete. An unfinished subtask cannot be linked to it.`);
   }
   return null;
 }
@@ -54,7 +54,7 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
       return error("duplicate-id", "A task with that ID already exists.");
     }
     if (action.task.status !== "todo" || action.task.parentId !== undefined) {
-      return error("invalid-creation", "New tasks must start in To Do; relationships use a child creation action.");
+      return error("invalid-creation", "New tasks must start in To Do; relationships use a subtask creation action.");
     }
     if (!board.columns.some((column) => column.id === "todo")) {
       return error("missing-column", "The To Do column is unavailable.");
@@ -92,20 +92,20 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
       }
       const incomplete = getChildren(board, task.id).filter((child) => child.status !== "done");
       if (action.newStatus === "done" && incomplete.length > 0) {
-        return error("incomplete-children", `Finish these children before completing "${task.title}": ${incomplete.map((child) => child.title).join(", ")}.`);
+        return error("incomplete-children", `Finish these subtasks before completing "${task.title}": ${incomplete.map((child) => child.title).join(", ")}.`);
       }
       if (task.parentId !== undefined && action.newStatus !== "done" && findTask(board, task.parentId)?.status === "done") {
-        return error("completed-parent", "An unfinished child cannot belong to a completed parent.");
+        return error("completed-parent", "An unfinished subtask cannot belong to a completed parent.");
       }
       return null;
     }
     case "DELETE_TASK":
       return getChildren(board, task.id).length > 0
-        ? error("parent-delete-confirmation", "Confirm parent deletion and explicitly detach its children first.")
+        ? error("parent-delete-confirmation", "Confirm parent deletion and explicitly detach its subtasks first.")
         : null;
     case "DELETE_PARENT_TASK":
       return getChildren(board, task.id).length === 0
-        ? error("not-parent", "This task has no linked children. Use ordinary task deletion.")
+        ? error("not-parent", "This task has no linked subtasks. Use ordinary task deletion.")
         : null;
     case "ADD_SUBTASK":
       return board.columns.some((column) => column.tasks.some((item) =>

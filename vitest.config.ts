@@ -6,6 +6,8 @@ export default mergeConfig(
   defineConfig({
     test: {
       environment: "jsdom",
+      // Bound jsdom contention as component coverage grows; retain per-file isolation and default timeouts.
+      maxWorkers: 2,
       globals: false,
       setupFiles: ["./src/test/setup.ts"],
       include: ["src/**/*.test.{ts,tsx}"],

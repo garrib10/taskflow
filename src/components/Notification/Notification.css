@@ -1,4 +1,4 @@
-/* Success/error notification, dismiss focus and animation. */
+/* Typed outcome feedback, dismiss focus and animation. */
 .notification {
   display: flex;
   align-items: center;
@@ -28,6 +28,18 @@
   border: 1px solid #fecaca;
 }
 
+.notification.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.notification.info {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
 .notification-icon {
   display: inline-flex;
   align-items: center;
@@ -49,9 +61,18 @@
   background: #fecaca;
 }
 
+.notification.warning .notification-icon {
+  background: #fde68a;
+}
+
+.notification.info .notification-icon {
+  background: #dbeafe;
+}
+
 .notification-message {
   flex: 1;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .notification-close-button {
@@ -92,5 +113,11 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification {
+    animation: none;
   }
 }

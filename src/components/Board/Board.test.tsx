@@ -130,11 +130,11 @@ describe("linked task board interactions", () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     await user.click(card("Parent work").getByRole("button", { name: "Delete Parent work" }));
-    expect(screen.getByRole("dialog", { name: "Delete Parent Task" })).toHaveTextContent("All children will be kept as independent tasks");
+    expect(screen.getByRole("dialog", { name: "Delete Parent Task" })).toHaveTextContent("All subtasks will be kept as independent tasks");
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(card("Child work").getByRole("button", { name: "Edit Child work" })).toBeInTheDocument();
     await user.click(card("Parent work").getByRole("button", { name: "Delete Parent work" }));
-    await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Children" }));
+    await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Subtasks" }));
     expect(screen.queryByRole("heading", { name: "Parent work", level: 3 })).not.toBeInTheDocument();
     expect(card("Child work").queryByText(/Child of:/)).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(1);
@@ -194,7 +194,7 @@ describe("linked task board interactions", () => {
   it("reports blocked parent completion with the unfinished child's title", () => {
     render(<Harness initialBoard={makeBoard([{ ...parent, status: "in-review" }, child])} />);
     simulateDrop(parent.id, "done");
-    expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Finish these children before completing "Parent work": Child work.');
+    expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Finish these subtasks before completing "Parent work": Child work.');
     expect(screen.getByRole("heading", { name: "in-review (1)", level: 2 })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(2);
   });
