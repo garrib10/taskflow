@@ -37,3 +37,19 @@ TaskFlow uses a staged Git workflow to keep development work separate from the p
 ## Production Rule
 
 The `main` branch is the Vercel production branch. Changes should reach `main` only after validation through `develop` and `staging`.
+
+## Quality checks before promotion
+
+Frontend CI runs on pull requests into `develop`, `staging`, and `main`, and on
+pushes to those three branches. Its existing required **Lint and build** job now
+includes lint, strict TypeScript, unit/component/integration tests, production
+build, and the desktop/mobile Chromium smoke suite. **Dependency review** remains
+an existing required PR check. Keeping these names preserves the current branch
+rules; browser or integration failures fail the required frontend job.
+
+Review the Vercel deployment status and its exact commit preview before merging.
+Normal free-plan previews are used for feature branches, `develop`, and `staging`;
+`main` is the production branch. Deployment protection may require signing in to
+Vercel to inspect a preview. A successful deployment status alone does not prove
+that its application works in a browser. No automated promotion or paid
+pre-production environment is configured by the integration-testing work.

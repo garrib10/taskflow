@@ -15,7 +15,11 @@
 | Check | Status | Reason / notes |
 | --- | --- | --- |
 | `npm run lint` | | |
+| `npm run typecheck` | | |
+| `npm test` | | |
 | `npm run build` | | |
+| `npm run test:e2e` | | |
+| Frontend CI and Vercel Preview | | |
 | Ran locally (`npm run dev`) | | |
 | Production preview (`npm run preview`) | | |
 | Responsive / mobile layout | | |
