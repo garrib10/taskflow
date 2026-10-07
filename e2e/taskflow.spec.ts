@@ -31,6 +31,12 @@ async function move(page: Page, title: string, direction = "ArrowRight") {
   await handle.focus();
   await page.keyboard.press("Space");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`Picked up "${title}"`);
+  // Pickup is announced before dnd-kit attaches its next-key listener and measures
+  // columns. Let the browser complete rendering before the next user input.
+  await expect(handle).toHaveAttribute("aria-pressed", "true");
+  await page.evaluate(() => new Promise<void>(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  }));
   await page.keyboard.press(direction);
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Destination:");
   await page.keyboard.press("Space");
