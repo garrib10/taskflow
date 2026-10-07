@@ -30,6 +30,7 @@
   margin: 0;
   text-align: center;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .empty-column {
@@ -55,9 +56,14 @@
 @media (max-width: 600px) {
   .column {
     width: 100%;
+    min-width: 0;
     flex: 1;
     min-height: auto;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column { transition: none; }
 }
 
 .column-header h2:focus-visible {

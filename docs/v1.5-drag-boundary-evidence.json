@@ -1,0 +1,640 @@
+{
+  "before": [
+    {
+      "width": 1440,
+      "before": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 749,
+          "right": 1049
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 4237,
+        "clientWidth": 1408,
+        "scrollLeft": 2597,
+        "card": {
+          "left": 1356,
+          "right": 1656
+        },
+        "columns": {
+          "left": -2581,
+          "right": -1173
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 749,
+          "right": 1049
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      }
+    },
+    {
+      "width": 1024,
+      "before": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 0,
+        "card": {
+          "left": 705,
+          "right": 991
+        },
+        "columns": {
+          "left": 16,
+          "right": 1344
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 4220,
+        "clientWidth": 992,
+        "scrollLeft": 2991,
+        "card": {
+          "left": 959,
+          "right": 1245
+        },
+        "columns": {
+          "left": -2975,
+          "right": -1647
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 336,
+        "card": {
+          "left": 369,
+          "right": 655
+        },
+        "columns": {
+          "left": -320,
+          "right": 1008
+        },
+        "stage": "In Review (1)"
+      }
+    },
+    {
+      "width": 768,
+      "before": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 239,
+        "card": {
+          "left": 466,
+          "right": 752
+        },
+        "columns": {
+          "left": -223,
+          "right": 1105
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 4172,
+        "clientWidth": 736,
+        "scrollLeft": 3199,
+        "card": {
+          "left": 703,
+          "right": 989
+        },
+        "columns": {
+          "left": -3183,
+          "right": -1855
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 592,
+        "card": {
+          "left": 113,
+          "right": 399
+        },
+        "columns": {
+          "left": -576,
+          "right": 752
+        },
+        "stage": "In Review (1)"
+      }
+    },
+    {
+      "width": 375,
+      "before": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 375,
+        "pageWidth": 3138,
+        "scrollWidth": 3122,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 291,
+          "right": 600
+        },
+        "columns": {
+          "left": -2522,
+          "right": -2179
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      }
+    }
+  ],
+  "afterReducedMotion": [
+    {
+      "width": 1440,
+      "before": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 749,
+          "right": 1049
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 1124,
+          "right": 1424
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 1107,
+          "right": 1407
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 1024,
+      "before": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 0,
+        "card": {
+          "left": 705,
+          "right": 991
+        },
+        "columns": {
+          "left": 16,
+          "right": 1344
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 336,
+        "card": {
+          "left": 722,
+          "right": 1008
+        },
+        "columns": {
+          "left": -320,
+          "right": 1008
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 336,
+        "card": {
+          "left": 705,
+          "right": 991
+        },
+        "columns": {
+          "left": -320,
+          "right": 1008
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 768,
+      "before": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 239,
+        "card": {
+          "left": 466,
+          "right": 752
+        },
+        "columns": {
+          "left": -223,
+          "right": 1105
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 592,
+        "card": {
+          "left": 466,
+          "right": 752
+        },
+        "columns": {
+          "left": -576,
+          "right": 752
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 592,
+        "card": {
+          "left": 449,
+          "right": 735
+        },
+        "columns": {
+          "left": -576,
+          "right": 752
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 375,
+      "before": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 50,
+          "right": 359
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      }
+    }
+  ],
+  "afterOrdinaryMotion": [
+    {
+      "width": 1440,
+      "before": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 749,
+          "right": 1049
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 1124,
+          "right": 1424
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1440,
+        "pageWidth": 1440,
+        "scrollWidth": 1408,
+        "clientWidth": 1408,
+        "scrollLeft": 0,
+        "card": {
+          "left": 1107,
+          "right": 1407
+        },
+        "columns": {
+          "left": 16,
+          "right": 1424
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 1024,
+      "before": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 0,
+        "card": {
+          "left": 705,
+          "right": 991
+        },
+        "columns": {
+          "left": 16,
+          "right": 1344
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 336,
+        "card": {
+          "left": 722,
+          "right": 1008
+        },
+        "columns": {
+          "left": -320,
+          "right": 1008
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 1024,
+        "pageWidth": 1024,
+        "scrollWidth": 1328,
+        "clientWidth": 992,
+        "scrollLeft": 336,
+        "card": {
+          "left": 705,
+          "right": 991
+        },
+        "columns": {
+          "left": -320,
+          "right": 1008
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 768,
+      "before": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 239,
+        "card": {
+          "left": 466,
+          "right": 752
+        },
+        "columns": {
+          "left": -223,
+          "right": 1105
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 592,
+        "card": {
+          "left": 466,
+          "right": 752
+        },
+        "columns": {
+          "left": -576,
+          "right": 752
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 768,
+        "pageWidth": 768,
+        "scrollWidth": 1328,
+        "clientWidth": 736,
+        "scrollLeft": 592,
+        "card": {
+          "left": 449,
+          "right": 735
+        },
+        "columns": {
+          "left": -576,
+          "right": 752
+        },
+        "stage": "Done (1)"
+      }
+    },
+    {
+      "width": 375,
+      "before": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      },
+      "during": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 50,
+          "right": 359
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      },
+      "after": {
+        "width": 375,
+        "pageWidth": 375,
+        "scrollWidth": 343,
+        "clientWidth": 343,
+        "scrollLeft": 0,
+        "card": {
+          "left": 33,
+          "right": 342
+        },
+        "columns": {
+          "left": 16,
+          "right": 359
+        },
+        "stage": "In Review (1)"
+      }
+    }
+  ],
+  "keyboard": {
+    "results": [
+      "1440 repeated last-column keys do not expand the board",
+      "1440 forward keyboard drop reaches Done",
+      "1440 drop restores task title focus",
+      "1440 invalid reverse keyboard drop stays Done and reports error",
+      "1440 Escape retains stage and restores focus",
+      "768 repeated last-column keys do not expand the board",
+      "768 forward keyboard drop reaches Done",
+      "768 drop restores task title focus",
+      "768 invalid reverse keyboard drop stays Done and reports error",
+      "768 Escape retains stage and restores focus",
+      "375 repeated last-column keys do not expand the board",
+      "375 forward keyboard drop reaches Done",
+      "375 drop restores task title focus",
+      "375 invalid reverse keyboard drop stays Done and reports error",
+      "375 Escape retains stage and restores focus",
+      "Actual 200% zoom keyboard movement preserves bounds and reaches Done"
+    ]
+  }
+}

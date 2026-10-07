@@ -1,6 +1,6 @@
 import "./Board.css";
 import { useLayoutEffect, useRef, useState } from "react";
-import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements } from "@dnd-kit/core";
+import { DndContext, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements, type Modifier } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
@@ -25,6 +25,7 @@ import TaskForm from "../TaskForm/TaskForm";
 
 import { keyboardCoordinates } from "../../accessibility/keyboardCoordinates";
 import { canFocus } from "../../accessibility/useModalFocus";
+import { restrictDragToColumns } from "./dragBounds";
 
 interface BoardProps {
   board: BoardType;
@@ -32,8 +33,13 @@ interface BoardProps {
 }
 
 export default function Board({ board, dispatch }: BoardProps) {
+  const boardElement = useRef<HTMLDivElement>(null);
+  const restrictToBoard: Modifier = ({ transform, draggingNodeRect }) =>
+    restrictDragToColumns(transform, draggingNodeRect,
+      Array.from(boardElement.current?.children ?? []).map(column => column.getBoundingClientRect()));
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: keyboardCoordinates, scrollBehavior: "auto", keyboardCodes: { start: ["Space", "Enter"], end: ["Space", "Enter"], cancel: ["Escape", "Tab"] } }),
   );
   const pendingFocus = useRef<string[]>([]);
@@ -236,7 +242,7 @@ export default function Board({ board, dispatch }: BoardProps) {
     onDragEnd: () => undefined, onDragCancel: () => undefined,
   };
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}
+    <DndContext sensors={sensors} modifiers={[restrictToBoard]} onDragEnd={handleDragEnd}
       onDragStart={({ active }) => announce(`Picked up "${titleFor(active.id)}". Use Left and Right to select a column; Space or Enter to drop; Escape or Tab to cancel.`)}
       onDragOver={({ active, over }) => { if (over && over.id !== active.data.current?.status) announce(`Destination: ${board.columns.find(column => column.id === over.id)?.title}.`); }}
       onDragCancel={({ active }) => { announce(`Movement of "${titleFor(active.id)}" cancelled.`); focusTargets([`task-${active.id}`, "task-search"]); }} accessibility={{ restoreFocus: false, announcements, screenReaderInstructions: { draggable: "Press Space or Enter to pick up a task. Use Left and Right to select a workflow column. Press Space or Enter to drop, or Escape or Tab to cancel." } }}>
@@ -329,7 +335,8 @@ export default function Board({ board, dispatch }: BoardProps) {
           />
         )}
 
-        <div className="board" id="taskflow-board">
+        <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>
+        <div ref={boardElement} className="board" id="taskflow-board" role="region" aria-label="Workflow columns" tabIndex={0}>
           {filteredColumns.map((column) => (
             <Column
               key={column.id}

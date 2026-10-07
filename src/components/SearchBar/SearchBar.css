@@ -4,7 +4,7 @@
   align-items: center;
   gap: 10px;
   flex: 1 1 420px;
-  min-width: 280px;
+  min-width: min(280px, 100%);
   max-width: 650px;
 }
 
@@ -34,7 +34,7 @@
 .search-input-wrapper input {
   width: 100%;
   min-width: 0;
-  min-height: 42px;
+  min-height: 44px;
   padding: 9px 12px 9px 40px;
   border: 1px solid var(--column-border);
   border-radius: var(--radius-small);
@@ -61,6 +61,7 @@
 
 @media (max-width: 600px) {
   .search-bar {
+    flex: 0 1 auto;
     align-items: stretch;
     flex-direction: column;
     width: 100%;
@@ -71,4 +72,8 @@
   .search-input-wrapper {
     width: 100%;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-input-wrapper input { transition: none; }
 }

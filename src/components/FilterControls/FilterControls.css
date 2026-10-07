@@ -1,16 +1,19 @@
 /* Board filter groups and controls. */
 .filter-controls {
+  min-width: 0;
+  flex-shrink: 0;
+  max-width: 100%;
   display: flex;
   align-items: flex-end;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: 150px;
+  min-width: min(150px, 100%);
 }
 
 .filter-group label {
@@ -21,7 +24,7 @@
 
 .filter-group select {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 9px 34px 9px 12px;
   border: 1px solid var(--column-border);
   border-radius: var(--radius-small);
@@ -32,6 +35,10 @@
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-group select { transition: none; }
 }
 
 .filter-group select:hover {
