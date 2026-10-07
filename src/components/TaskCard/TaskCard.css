@@ -40,9 +40,9 @@
 
 .task-footer {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-top: 1rem;
 }
 
@@ -50,7 +50,7 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1 0 auto;
   min-width: 0;
 }
@@ -59,13 +59,18 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 4px 6px;
 }
 
 .task-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
   margin-left: auto;
+}
+
+.task-actions button {
+  padding-inline: 6px;
 }
 
 .task-category {
@@ -173,12 +178,17 @@
 @media (max-width: 600px) {
   .task-footer {
     justify-content: space-between;
-    gap: 16px;
   }
 
   .task-card h3 {
     font-size: 1rem;
   }
+}
+
+@media (max-width: 360px) {
+  .task-footer { gap: 6px; }
+  .task-meta, .task-actions { gap: 4px; }
+  .task-meta span, .task-actions button { padding-inline: 4px; }
 }
 .task-progress-panel {
   display: flex;
