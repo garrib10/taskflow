@@ -48,10 +48,10 @@
 
 .task-meta {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
-  flex: 1 1 100px;
+  flex: 1 0 auto;
   min-width: 0;
 }
 
