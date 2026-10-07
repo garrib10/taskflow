@@ -29,3 +29,7 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
+
+# Browser test reports and failure artifacts
+playwright-report/
+test-results/

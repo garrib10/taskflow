@@ -314,3 +314,38 @@ npm run build
 Vitest uses `vitest.config.ts`, which reuses the Vite React configuration, runs `src/**/*.test.ts` and `src/**/*.test.tsx` in jsdom, and loads `src/test/setup.ts` for jest-dom matchers and cleanup. Import test APIs explicitly from `vitest`; no test globals, shared render wrapper, application mocks, or browser polyfills are configured. Components currently need no shared providers, so tests render them directly with React Testing Library.
 
 Tests cover workflow transitions and status guards, priority scoring and stable ordering, search and filtering, atomic and deterministic reducer operations, stale editing, and notification rendering/dismissal. See the [state safety contracts](docs/v1.5-state-safety.md) for action ownership and deferred persistence compatibility work. Comprehensive persistence, form, accessibility, and integration coverage belongs to the remaining v1.5 issues.
+
+### Integration and browser quality checks
+
+The full application integration journeys live in `src/App.*.test.tsx` and run with
+`npm test`. They use real application state and persistence; jsdom drag tests mock
+only browser geometry. Domain edge cases remain in the existing unit tests.
+
+Install the Chromium browser once after `npm ci`:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Playwright starts Vite at `http://127.0.0.1:4173` and reuses an existing server there
+outside CI. Each test has isolated browser storage. Three smoke journeys run at
+1280 × 720 and 390 × 844 in Chromium. Workflow movement uses the supported keyboard
+interaction; this suite does not replace physical touch or screen-reader review.
+Failure screenshots and traces are ignored by Git. Open the HTML report with
+`npm run test:e2e:report`.
+
+To check an accessible preview origin without starting a local server:
+
+```bash
+PLAYWRIGHT_BASE_URL=https://your-preview.vercel.app npm run test:e2e
+```
+
+A protected Vercel preview requires authenticated owner review; the suite does not
+store credentials or bypass deployment protection.
+
+Frontend CI runs `npm ci`, lint, strict typecheck, `npm test -- --run`, build, and
+`npm run test:e2e:ci` (after installing Chromium with its Linux dependencies).
+The existing required job remains named **Lint and build**. See
+[the integration and CI review](docs/v1.5-integration-ci.md) for coverage, results,
+branch checks, preview evidence, and deferred release QA.
