@@ -695,5 +695,88 @@
       "name": "Legacy checklist migration and repeat reload without duplication",
       "status": "Pass"
     }
-  ]
+  ],
+  "safari": {
+    "testedCommit": "e6db7f3885c1cee0433673f9de8e9a539ff6f68b",
+    "url": "http://127.0.0.1:4187/",
+    "browser": "Safari",
+    "version": "27.0",
+    "isolation": "SafariDriver isolated automation window; synthetic TaskFlow data only",
+    "checks": [
+      {
+        "name": "Load and empty board",
+        "status": "Pass"
+      },
+      {
+        "name": "Create normal task",
+        "status": "Pass"
+      },
+      {
+        "name": "Edit task fields",
+        "status": "Pass"
+      },
+      {
+        "name": "Native keyboard valid movement",
+        "status": "Pass"
+      },
+      {
+        "name": "Invalid movement leaves storage unchanged; keyboard dismissal",
+        "status": "Pass"
+      },
+      {
+        "name": "Search, combined priority/category/status filters and Reset",
+        "status": "Pass"
+      },
+      {
+        "name": "Refresh restores fields and status",
+        "status": "Pass"
+      },
+      {
+        "name": "Keyboard dialogs, Tab containment, Escape and focus restoration",
+        "status": "Pass"
+      },
+      {
+        "name": "Delete through named confirmation and persisted removal",
+        "status": "Pass"
+      },
+      {
+        "name": "Parent/subtask creation and context; hidden-child completion guard; completion and reload",
+        "status": "Pass"
+      },
+      {
+        "name": "Actual narrow Safari window: page/dialog containment, child context and close",
+        "status": "Pass"
+      }
+    ],
+    "viewport": {
+      "outerHeight": 844,
+      "innerWidth": 390,
+      "outerWidth": 390,
+      "innerHeight": 792,
+      "pageWidth": 390
+    },
+    "observations": [
+      "Runtime error/unhandled-rejection observation covers post-load interactions; SafariDriver does not expose a complete startup console log here."
+    ],
+    "dialog": {
+      "x": 16,
+      "bottom": 776,
+      "clientWidth": 358,
+      "y": 16,
+      "scrollHeight": 806,
+      "viewportHeight": 792,
+      "scrollWidth": 358,
+      "right": 374,
+      "clientHeight": 760,
+      "viewportWidth": 390
+    },
+    "runtimeErrors": [],
+    "status": "Pass with observation",
+    "auditDate": "2026-10-07",
+    "keyboardCommands": {
+      "Space": "WebDriver U+E00D",
+      "Return": "WebDriver U+E006",
+      "observation": "Literal U+0020 produces code Unidentified in SafariDriver; symbolic Space produces code Space. No application change."
+    }
+  }
 }
