@@ -18,7 +18,9 @@ export default defineConfig({
     { name: "mobile-chromium", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL ? undefined : {
-    command: "npm run dev -- --host 127.0.0.1 --port 4173 --strictPort",
+    command: process.env.CI
+      ? "npm run preview -- --host 127.0.0.1 --port 4173 --strictPort"
+      : "npm run dev -- --host 127.0.0.1 --port 4173 --strictPort",
     url: baseURL, reuseExistingServer: !process.env.CI, timeout: 30_000,
   },
 });

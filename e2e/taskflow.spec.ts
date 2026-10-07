@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   browserFailures.set(page, failures);
   page.on("pageerror", error => failures.push(error.message));
   page.on("response", response => {
-    if (/\/assets\/.*\.(js|css)(?:\?|$)/.test(response.url()) && !response.ok()) {
+    if (/\/assets\/.*\.(js|css)(?:\?|$)/.test(response.url()) && response.status() >= 400) {
       failures.push(`Core asset ${response.status()}: ${response.url()}`);
     }
   });

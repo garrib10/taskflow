@@ -328,7 +328,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Playwright starts Vite at `http://127.0.0.1:4173` and reuses an existing server there
+Playwright starts Vite dev locally (production preview in CI) at `http://127.0.0.1:4173` and reuses an existing server there
 outside CI. Each test has isolated browser storage. Three smoke journeys run at
 1280 × 720 and 390 × 844 in Chromium. Workflow movement uses the supported keyboard
 interaction; this suite does not replace physical touch or screen-reader review.
