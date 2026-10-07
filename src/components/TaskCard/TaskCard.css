@@ -71,6 +71,43 @@
 
 .task-actions button {
   padding-inline: 6px;
+  position: relative;
+  isolation: isolate;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+}
+
+/* Slim visible buttons retain the full 44px target supplied by shared controls. */
+.task-actions button::before {
+  content: "";
+  position: absolute;
+  inset: 6px 0;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid var(--task-action-border);
+  border-radius: inherit;
+  background: var(--task-action-background);
+}
+
+.task-actions .edit-task-button {
+  --task-action-border: #bfdbfe;
+  --task-action-background: #eff6ff;
+}
+
+.task-actions .delete-task-button {
+  --task-action-border: #fecaca;
+  --task-action-background: #fff1f2;
+}
+
+.task-actions .edit-task-button:hover {
+  --task-action-background: #dbeafe;
+  background: transparent;
+}
+
+.task-actions .delete-task-button:hover {
+  --task-action-background: #fee2e2;
+  background: transparent;
 }
 
 .task-category {
