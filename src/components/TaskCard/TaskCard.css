@@ -22,6 +22,8 @@
 .task-card-header {
   cursor: grab;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .task-card-header:active {

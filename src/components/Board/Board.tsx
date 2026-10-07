@@ -1,6 +1,6 @@
 import "./Board.css";
 import { useLayoutEffect, useRef, useState } from "react";
-import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements, type Modifier } from "@dnd-kit/core";
+import { DndContext, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements, type Modifier } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
@@ -38,7 +38,8 @@ export default function Board({ board, dispatch }: BoardProps) {
     restrictDragToColumns(transform, draggingNodeRect,
       Array.from(boardElement.current?.children ?? []).map(column => column.getBoundingClientRect()));
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: keyboardCoordinates, scrollBehavior: "auto", keyboardCodes: { start: ["Space", "Enter"], end: ["Space", "Enter"], cancel: ["Escape", "Tab"] } }),
   );
   const pendingFocus = useRef<string[]>([]);
