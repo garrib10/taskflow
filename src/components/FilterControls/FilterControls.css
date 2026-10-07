@@ -1,10 +1,12 @@
 /* Board filter groups and controls. */
 .filter-controls {
   min-width: 0;
+  flex-shrink: 0;
+  max-width: 100%;
   display: flex;
   align-items: flex-end;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .filter-group {
