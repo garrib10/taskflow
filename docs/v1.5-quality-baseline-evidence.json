@@ -1,0 +1,699 @@
+{
+  "testedCommit": "e6db7f3885c1cee0433673f9de8e9a539ff6f68b",
+  "date": "2026-10-07",
+  "url": "http://127.0.0.1:4187/",
+  "browser": "154.0.8037.98",
+  "os": "macOS 15.8.1 (24H32)",
+  "node": "24.21.0",
+  "npm": "11.19.0",
+  "lighthouse": "13.5.0",
+  "lighthouseRuns": [
+    {
+      "profile": "mobile",
+      "run": 1,
+      "fetchTime": "2026-10-07T12:14:22.995Z",
+      "scores": {
+        "performance": 90,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1505.5335,
+        "largest-contentful-paint": 1887.30025,
+        "total-blocking-time": 144.383375,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 7431.18300199903
+      },
+      "reportSha256": "1d9ca139bfc578aabed22f9ee099f348919bd5529003354ceb4a7655861eaf70",
+      "warnings": []
+    },
+    {
+      "profile": "mobile",
+      "run": 2,
+      "fetchTime": "2026-10-07T12:14:41.602Z",
+      "scores": {
+        "performance": 93,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1420.6613,
+        "largest-contentful-paint": 1775.99195,
+        "total-blocking-time": 299.5,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1420.6613
+      },
+      "reportSha256": "a5cc4cde5aec5f38f1669267809701d2be655d28025717cb1edad0cdc7969b4e",
+      "warnings": []
+    },
+    {
+      "profile": "mobile",
+      "run": 3,
+      "fetchTime": "2026-10-07T12:14:54.179Z",
+      "scores": {
+        "performance": 83,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1436.0895,
+        "largest-contentful-paint": 2189.63425,
+        "total-blocking-time": 589,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1436.0895
+      },
+      "reportSha256": "90048851cb3f14712a789c26ee28c433227403d5a725fe06febc970fd8398a42",
+      "warnings": []
+    },
+    {
+      "profile": "desktop",
+      "run": 1,
+      "fetchTime": "2026-10-07T12:15:08.999Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 342.276,
+        "largest-contentful-paint": 387.414,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 388.7639185004
+      },
+      "reportSha256": "49fb3fafb7245143b9758e6651da03981d00a6b7fc2e51b1780ad52348edee93",
+      "warnings": []
+    },
+    {
+      "profile": "desktop",
+      "run": 2,
+      "fetchTime": "2026-10-07T12:15:22.321Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 360.8448,
+        "largest-contentful-paint": 414.2672,
+        "total-blocking-time": 2.5,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 430.94619999850227
+      },
+      "reportSha256": "5116b842e7aa201029867f972ed507b8fd62783d05fdf369de89cb35c48ac4fa",
+      "warnings": []
+    },
+    {
+      "profile": "desktop",
+      "run": 3,
+      "fetchTime": "2026-10-07T12:15:35.261Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 350.4138,
+        "largest-contentful-paint": 397.6207,
+        "total-blocking-time": 6,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 438.9970849992631
+      },
+      "reportSha256": "0122a6fa14ed41419696cc3a622b84b5ca9d20ae85be3d6c8f6d611283c96d4f",
+      "warnings": []
+    }
+  ],
+  "profiles": {
+    "mobile": {
+      "settings": {
+        "formFactor": "mobile",
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        },
+        "throttlingMethod": "simulate",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 412,
+          "height": 823,
+          "deviceScaleFactor": 1.75,
+          "disabled": false
+        },
+        "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+        "disableStorageReset": false
+      },
+      "medianScores": {
+        "performance": 90,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "medianMetrics": {
+        "first-contentful-paint": 1436.0895,
+        "largest-contentful-paint": 1887.30025,
+        "total-blocking-time": 299.5,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1436.0895
+      }
+    },
+    "desktop": {
+      "settings": {
+        "formFactor": "desktop",
+        "throttling": {
+          "rttMs": 40,
+          "throughputKbps": 10240,
+          "requestLatencyMs": 0,
+          "downloadThroughputKbps": 0,
+          "uploadThroughputKbps": 0,
+          "cpuSlowdownMultiplier": 1
+        },
+        "throttlingMethod": "simulate",
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        },
+        "emulatedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "disableStorageReset": false
+      },
+      "medianScores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "medianMetrics": {
+        "first-contentful-paint": 350.4138,
+        "largest-contentful-paint": 397.6207,
+        "total-blocking-time": 2.5,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 430.94619999850227
+      }
+    }
+  },
+  "viewports": [
+    {
+      "width": 320,
+      "height": 568,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 320,
+      "board": {
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "dialog": {
+        "x": 16,
+        "y": 16,
+        "width": 288,
+        "height": 536,
+        "right": 304,
+        "bottom": 552,
+        "clientHeight": 536,
+        "scrollHeight": 880,
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "notification": {
+        "x": 16,
+        "y": -2628,
+        "width": 288,
+        "height": 242.09375,
+        "right": 304,
+        "bottom": -2385.90625
+      }
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 375,
+      "board": {
+        "clientWidth": 343,
+        "scrollWidth": 343
+      },
+      "dialog": {
+        "x": 16,
+        "y": 16,
+        "width": 343,
+        "height": 635,
+        "right": 359,
+        "bottom": 651,
+        "clientHeight": 635,
+        "scrollHeight": 880,
+        "clientWidth": 343,
+        "scrollWidth": 343
+      },
+      "notification": {
+        "x": 16,
+        "y": -2283,
+        "width": 343,
+        "height": 198.875,
+        "right": 359,
+        "bottom": -2084.125
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 390,
+      "board": {
+        "clientWidth": 358,
+        "scrollWidth": 358
+      },
+      "dialog": {
+        "x": 16,
+        "y": 16,
+        "width": 358,
+        "height": 812,
+        "right": 374,
+        "bottom": 828,
+        "clientHeight": 812,
+        "scrollHeight": 880,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      },
+      "notification": {
+        "x": 16,
+        "y": -2149,
+        "width": 358,
+        "height": 177.265625,
+        "right": 374,
+        "bottom": -1971.734375
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 768,
+      "board": {
+        "clientWidth": 736,
+        "scrollWidth": 1328
+      },
+      "dialog": {
+        "x": 109,
+        "y": 141.296875,
+        "width": 550,
+        "height": 741.390625,
+        "right": 659,
+        "bottom": 882.6875,
+        "clientHeight": 741,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": 24.567588806152344,
+        "width": 736,
+        "height": 90.828125,
+        "right": 752,
+        "bottom": 115.39571380615234
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 1024,
+      "board": {
+        "clientWidth": 992,
+        "scrollWidth": 1328
+      },
+      "dialog": {
+        "x": 237,
+        "y": 16,
+        "width": 550,
+        "height": 736,
+        "right": 787,
+        "bottom": 752,
+        "clientHeight": 736,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": 24.56914520263672,
+        "width": 992,
+        "height": 90.828125,
+        "right": 1008,
+        "bottom": 115.39727020263672
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 1280,
+      "board": {
+        "clientWidth": 1248,
+        "scrollWidth": 1352
+      },
+      "dialog": {
+        "x": 365,
+        "y": 16,
+        "width": 550,
+        "height": 688,
+        "right": 915,
+        "bottom": 704,
+        "clientHeight": 688,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": 24,
+        "width": 1248,
+        "height": 90.828125,
+        "right": 1264,
+        "bottom": 114.828125
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 1440,
+      "board": {
+        "clientWidth": 1408,
+        "scrollWidth": 1408
+      },
+      "dialog": {
+        "x": 445,
+        "y": 79.296875,
+        "width": 550,
+        "height": 741.390625,
+        "right": 995,
+        "bottom": 820.6875,
+        "clientHeight": 741,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": 28.610557556152344,
+        "width": 1408,
+        "height": 70,
+        "right": 1424,
+        "bottom": 98.61055755615234
+      }
+    },
+    {
+      "width": 1280,
+      "height": 375,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 1280,
+      "board": {
+        "clientWidth": 1248,
+        "scrollWidth": 1352
+      },
+      "dialog": {
+        "x": 365,
+        "y": 16,
+        "width": 550,
+        "height": 343,
+        "right": 915,
+        "bottom": 359,
+        "clientHeight": 343,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": -348,
+        "width": 1248,
+        "height": 90.828125,
+        "right": 1264,
+        "bottom": -257.171875
+      }
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "checks": [
+        "page/card containment, populated columns and >=44px primary targets",
+        "search, combined filters and reset",
+        "long parent ellipsis, child context, dialog scrolling and Escape",
+        "visible keyboard movement focus",
+        "hidden/full-board parent completion warning, containment and keyboard dismissal",
+        "completely empty columns and page containment"
+      ],
+      "status": "Pass",
+      "pageWidth": 844,
+      "board": {
+        "clientWidth": 812,
+        "scrollWidth": 1328
+      },
+      "dialog": {
+        "x": 147,
+        "y": 16,
+        "width": 550,
+        "height": 358,
+        "right": 697,
+        "bottom": 374,
+        "clientHeight": 358,
+        "scrollHeight": 741,
+        "clientWidth": 550,
+        "scrollWidth": 550
+      },
+      "notification": {
+        "x": 16,
+        "y": -401,
+        "width": 812,
+        "height": 90.828125,
+        "right": 828,
+        "bottom": -310.171875
+      }
+    }
+  ],
+  "journeys": [
+    {
+      "name": "keyboard create/dialog labels/required errors/focus association",
+      "status": "Pass"
+    },
+    {
+      "name": "edit fields, forward move, invalid reverse, dismissal, reload persistence",
+      "status": "Pass"
+    },
+    {
+      "name": "unsaved dialog focus trap and cancellation/restore",
+      "status": "Pass"
+    },
+    {
+      "name": "delete confirmation, Cancel initial focus, persisted deletion",
+      "status": "Pass"
+    },
+    {
+      "name": "create parent and child, edit/navigation, completion blocked then permitted",
+      "status": "Pass"
+    }
+  ],
+  "reducedMotion": {
+    "status": "Pass",
+    "cardTransitions": [
+      "0s",
+      "0s",
+      "0s",
+      "0s",
+      "0s"
+    ],
+    "inputTransition": "0s"
+  },
+  "nativeZoom": {
+    "method": "Isolated Chrome native default zoom set to 2 through chrome.settingsPrivate; 1440x900 physical device metrics, mobile=false, scale=1. Not CSS/root-text scaling or pinch zoom.",
+    "status": "Pass",
+    "before": {
+      "innerWidth": 720,
+      "innerHeight": 450,
+      "dpr": 2,
+      "visualScale": 1,
+      "pageWidth": 720
+    },
+    "form": {
+      "x": 85,
+      "y": 16,
+      "right": 635,
+      "bottom": 434,
+      "scrollWidth": 550,
+      "clientWidth": 550,
+      "scrollHeight": 593,
+      "clientHeight": 418
+    },
+    "checks": [
+      "page containment",
+      "dialog containment and scrolling",
+      "keyboard open/Escape/focus restoration"
+    ]
+  },
+  "accessibility": {
+    "headings": [
+      {
+        "level": "H1",
+        "text": "TaskFlow"
+      },
+      {
+        "level": "H2",
+        "text": "To Do (0)"
+      },
+      {
+        "level": "H2",
+        "text": "In Progress (0)"
+      },
+      {
+        "level": "H2",
+        "text": "In Review (0)"
+      },
+      {
+        "level": "H2",
+        "text": "Done (2)"
+      },
+      {
+        "level": "H3",
+        "text": "Created baseline child"
+      },
+      {
+        "level": "H3",
+        "text": "Created baseline parent"
+      }
+    ],
+    "main": 1,
+    "search": "Search and filter tasks",
+    "liveRegions": [
+      {
+        "name": "Board updates",
+        "live": null,
+        "atomic": "true"
+      },
+      {
+        "name": null,
+        "live": "assertive",
+        "atomic": "true"
+      }
+    ]
+  },
+  "runtimeExceptions": [],
+  "runtimeHttpErrors": [
+    {
+      "kind": "http",
+      "status": 404,
+      "url": "http://127.0.0.1:4187/_vercel/speed-insights/script.js"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/images/quality-baseline/board-1440.png",
+      "sha256": "08dae6e1a80998c16e25298e082465a4e0ce312ce1c993919e5f21e31e4bd17e"
+    },
+    {
+      "path": "docs/images/quality-baseline/board-320.png",
+      "sha256": "3e762f092443a2bdfbbeb40c1f75ec638c020291f2b6c725d0a0fa1ed6efb9ed"
+    },
+    {
+      "path": "docs/images/quality-baseline/board-768.png",
+      "sha256": "e6cae7a0c7b2b9174e94ecfa2e568097eec1946120807eb46afda125dd967fff"
+    },
+    {
+      "path": "docs/images/quality-baseline/child-context-390.png",
+      "sha256": "fd68f8ed5ff71b617591eb3040dcf228315e5f0eb0d9ce57e03f019b664c11c6"
+    },
+    {
+      "path": "docs/images/quality-baseline/parent-editor-375.png",
+      "sha256": "8c60001a3a4ba1491b2035f9543ec6002f15c19dbeeaf443a64cd32421ec8d1b"
+    }
+  ],
+  "storageJourneys": [
+    {
+      "name": "Native two-tab conflict, paused stale write, cancelled/confirmed reload",
+      "status": "Pass"
+    },
+    {
+      "name": "Corrupt data keeps original and opens empty saving-paused workspace",
+      "status": "Pass"
+    },
+    {
+      "name": "Legacy checklist migration and repeat reload without duplication",
+      "status": "Pass"
+    }
+  ]
+}
