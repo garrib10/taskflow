@@ -1,0 +1,952 @@
+{
+  "date": "2026-10-08",
+  "sourceBase": "a9f53e7000c7a900566723aa492d17e1e971768c",
+  "preparedCandidate": "3a34f81a1968c2a8ead7b47dd6a2eeeef44d1b11",
+  "localProductionURL": "http://127.0.0.1:4189/",
+  "preview": {
+    "url": "https://taskflow-2ymgf7syx-garrib11.vercel.app",
+    "deployment": "success",
+    "applicationAccess": "redirect to Vercel login; no deployed QA or Lighthouse pass claimed"
+  },
+  "localChrome": {
+    "version": "154.0.8037.98",
+    "journeys": [
+      {
+        "name": "keyboard create/dialog labels/required errors/focus association",
+        "status": "Pass"
+      },
+      {
+        "name": "edit fields, forward move, invalid reverse, dismissal, reload persistence",
+        "status": "Pass"
+      },
+      {
+        "name": "unsaved dialog focus trap and cancellation/restore",
+        "status": "Pass"
+      },
+      {
+        "name": "delete confirmation, Cancel initial focus, persisted deletion",
+        "status": "Pass"
+      },
+      {
+        "name": "create parent and child, edit/navigation, completion blocked then permitted",
+        "status": "Pass"
+      }
+    ],
+    "viewports": [
+      {
+        "width": 320,
+        "height": 568,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 320,
+        "board": {
+          "clientWidth": 288,
+          "scrollWidth": 288
+        }
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 375,
+        "board": {
+          "clientWidth": 343,
+          "scrollWidth": 343
+        }
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 390,
+        "board": {
+          "clientWidth": 358,
+          "scrollWidth": 358
+        }
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 768,
+        "board": {
+          "clientWidth": 736,
+          "scrollWidth": 1328
+        }
+      },
+      {
+        "width": 1024,
+        "height": 768,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 1024,
+        "board": {
+          "clientWidth": 992,
+          "scrollWidth": 1328
+        }
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 1280,
+        "board": {
+          "clientWidth": 1248,
+          "scrollWidth": 1352
+        }
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 1440,
+        "board": {
+          "clientWidth": 1408,
+          "scrollWidth": 1408
+        }
+      },
+      {
+        "width": 1280,
+        "height": 375,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 1280,
+        "board": {
+          "clientWidth": 1248,
+          "scrollWidth": 1352
+        }
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "status": "Pass",
+        "checks": [
+          "page/card containment, populated columns and >=44px primary targets",
+          "search, combined filters and reset",
+          "long parent ellipsis, child context, dialog scrolling and Escape",
+          "visible keyboard movement focus",
+          "hidden/full-board parent completion warning, containment and keyboard dismissal",
+          "completely empty columns and page containment"
+        ],
+        "pageWidth": 844,
+        "board": {
+          "clientWidth": 812,
+          "scrollWidth": 1328
+        }
+      }
+    ],
+    "reducedMotion": {
+      "status": "Pass",
+      "cardTransitions": [
+        "0s",
+        "0s",
+        "0s",
+        "0s",
+        "0s"
+      ],
+      "inputTransition": "0s"
+    },
+    "exceptions": [],
+    "observedHTTPFailures": [
+      [
+        404,
+        "http://127.0.0.1:4189/_vercel/speed-insights/script.js"
+      ]
+    ]
+  },
+  "zoom": {
+    "method": "Isolated Chrome native default zoom set to 2 through chrome.settingsPrivate; 1440x900 physical device metrics, mobile=false, scale=1. Not CSS/root-text scaling or pinch zoom.",
+    "status": "Pass",
+    "before": {
+      "innerWidth": 720,
+      "innerHeight": 450,
+      "dpr": 2,
+      "visualScale": 1,
+      "pageWidth": 720
+    },
+    "form": {
+      "x": 85,
+      "y": 16,
+      "right": 635,
+      "bottom": 434,
+      "scrollWidth": 550,
+      "clientWidth": 550,
+      "scrollHeight": 593,
+      "clientHeight": 418
+    },
+    "checks": [
+      "page containment",
+      "dialog containment and scrolling",
+      "keyboard open/Escape/focus restoration"
+    ]
+  },
+  "returningUsersAndTabs": {
+    "url": "http://127.0.0.1:4189/",
+    "results": [
+      {
+        "name": "Clean first-use sample board valid: four columns, nine sample tasks, schema 2",
+        "status": "Pass"
+      },
+      {
+        "name": "Legacy v0 migrates both checklist states, preserves parent/content/defaults, repeats without rewrites/duplicates/loss/orphans, remains editable",
+        "status": "Pass"
+      },
+      {
+        "name": "Legacy v1 migrates both checklist states, preserves parent/content/defaults, repeats without rewrites/duplicates/loss/orphans, remains editable",
+        "status": "Pass"
+      },
+      {
+        "name": "corrupt JSON: empty workspace, saving paused, original unchanged across edits/reload",
+        "status": "Pass"
+      },
+      {
+        "name": "invalid legacy fields: empty workspace, saving paused, original unchanged across edits/reload",
+        "status": "Pass"
+      },
+      {
+        "name": "inconsistent completed legacy parent: empty workspace, saving paused, original unchanged across edits/reload",
+        "status": "Pass"
+      },
+      {
+        "name": "unsupported future schema: empty workspace, saving paused, original unchanged across edits/reload",
+        "status": "Pass"
+      },
+      {
+        "name": "Multiple linked children: child delete preserves others; parent cancellation preserves all; confirmed parent delete detaches surviving child",
+        "status": "Pass"
+      },
+      {
+        "name": "Native same-origin two-tab conflict: memory retained, stale write blocked, accurate warning, cancel/confirmed reload, one storage event and no write/notification loop",
+        "status": "Pass"
+      }
+    ]
+  },
+  "additionalLocalChecks": {
+    "url": "http://127.0.0.1:4189/",
+    "checks": [
+      "UI creation of two linked children; parent edits preserve links and progress across reload",
+      "High/Medium/Low priority order and stable equal-priority creation order",
+      "Description search and reset"
+    ],
+    "runtime": [
+      {
+        "type": "console",
+        "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      },
+      {
+        "type": "console",
+        "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      },
+      {
+        "type": "console",
+        "message": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "unexpectedErrors": [],
+    "status": "Pass"
+  },
+  "safari": {
+    "testedCommit": "3a34f81",
+    "url": "http://127.0.0.1:4189/",
+    "browser": "Safari",
+    "version": "27.0",
+    "checks": [
+      {
+        "name": "Load and empty board",
+        "status": "Pass"
+      },
+      {
+        "name": "Create normal task",
+        "status": "Pass"
+      },
+      {
+        "name": "Edit task fields",
+        "status": "Pass"
+      },
+      {
+        "name": "Native keyboard valid movement",
+        "status": "Pass"
+      },
+      {
+        "name": "Invalid movement leaves storage unchanged; keyboard dismissal",
+        "status": "Pass"
+      },
+      {
+        "name": "Search, combined priority/category/status filters and Reset",
+        "status": "Pass"
+      },
+      {
+        "name": "Refresh restores fields and status",
+        "status": "Pass"
+      },
+      {
+        "name": "Keyboard dialogs, Tab containment, Escape and focus restoration",
+        "status": "Pass"
+      },
+      {
+        "name": "Delete through named confirmation and persisted removal",
+        "status": "Pass"
+      },
+      {
+        "name": "Parent/subtask creation and context; hidden-child completion guard; completion and reload",
+        "status": "Pass"
+      },
+      {
+        "name": "Actual narrow Safari window: page/dialog containment, child context and close",
+        "status": "Pass"
+      }
+    ],
+    "viewport": {
+      "outerHeight": 844,
+      "innerWidth": 390,
+      "outerWidth": 390,
+      "innerHeight": 792,
+      "pageWidth": 390
+    },
+    "observations": [
+      "Runtime error/unhandled-rejection observation covers post-load interactions; SafariDriver does not expose a complete startup console log here."
+    ],
+    "dialog": {
+      "x": 16,
+      "bottom": 776,
+      "clientWidth": 358,
+      "y": 16,
+      "scrollHeight": 806,
+      "viewportHeight": 792,
+      "scrollWidth": 358,
+      "right": 374,
+      "clientHeight": 760,
+      "viewportWidth": 390
+    },
+    "runtimeErrors": [],
+    "status": "Pass with observation"
+  },
+  "firefox": "not installed; not tested",
+  "voiceOver": "Owner Chrome pass from #53 historical; fresh protected preview check pending",
+  "lighthouse": [
+    {
+      "profile": "mobile",
+      "run": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:06:48.085Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "mobile",
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 99,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1433.4027,
+        "largest-contentful-paint": 1740.1040500000001,
+        "total-blocking-time": 87,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1433.4027
+      },
+      "warnings": [],
+      "sha256": "53d4a165328bd58242dcbe4a5987e96ed6faefc735dc7282de4f9a7968586971"
+    },
+    {
+      "profile": "mobile",
+      "run": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:06:56.953Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "mobile",
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 99,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1400.1731,
+        "largest-contentful-paint": 1702.25965,
+        "total-blocking-time": 37,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1400.1731
+      },
+      "warnings": [],
+      "sha256": "3ced9f2eb056cf32aa6acc5b8fddbe31a1a1dcf2ec9899ac68420b867cef9ca8"
+    },
+    {
+      "profile": "mobile",
+      "run": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:07:05.412Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "mobile",
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 1353.3237,
+        "largest-contentful-paint": 1654.9855499999999,
+        "total-blocking-time": 39,
+        "cumulative-layout-shift": 0.03888213851761847,
+        "speed-index": 1353.3237
+      },
+      "warnings": [],
+      "sha256": "1373fdfc1d960be524f857b7346b6613e3f962ce9b71559485f956385ba3568b"
+    },
+    {
+      "profile": "desktop",
+      "run": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:08:29.780Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "desktop",
+      "screenEmulation": {
+        "mobile": false,
+        "width": 1350,
+        "height": 940,
+        "deviceScaleFactor": 1,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 325.3333,
+        "largest-contentful-paint": 407.99995,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 325.3333
+      },
+      "warnings": [],
+      "sha256": "2c207d3029c37398ba5c1a32db626aed6d81262990b793762fadf5c75e1e2c26"
+    },
+    {
+      "profile": "desktop",
+      "run": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:08:38.199Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "desktop",
+      "screenEmulation": {
+        "mobile": false,
+        "width": 1350,
+        "height": 940,
+        "deviceScaleFactor": 1,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 322.7883,
+        "largest-contentful-paint": 404.18245,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 322.7883
+      },
+      "warnings": [],
+      "sha256": "e9d93284264bda2fdf458cec50cabbe752dc46792337cbe773dbb950f8d0d696"
+    },
+    {
+      "profile": "desktop",
+      "run": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchTime": "2026-10-08T11:08:46.467Z",
+      "url": "http://127.0.0.1:4189/",
+      "formFactor": "desktop",
+      "screenEmulation": {
+        "mobile": false,
+        "width": 1350,
+        "height": 940,
+        "deviceScaleFactor": 1,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "throttlingMethod": "simulate",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "metrics": {
+        "first-contentful-paint": 334.2347,
+        "largest-contentful-paint": 375.85204999999996,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.0237037037037037,
+        "speed-index": 334.2347
+      },
+      "warnings": [],
+      "sha256": "a2bf7161b280d8e07199467a66d294293d7d1686fe4075b122c5400b067d1357"
+    }
+  ],
+  "dependencies": {
+    "highAffectedPackages": 8,
+    "runtimeOnlyAdvisories": 0,
+    "findings": [
+      {
+        "package": "brace-expansion",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": true,
+        "chains": [
+          {
+            "source": 1130734,
+            "name": "brace-expansion",
+            "dependency": "brace-expansion",
+            "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+            "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+            "severity": "high",
+            "cwe": [
+              "CWE-400",
+              "CWE-770"
+            ],
+            "cvss": {
+              "score": 7.5,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": ">=4.0.0 <5.0.9"
+          },
+          {
+            "source": 1240103,
+            "name": "brace-expansion",
+            "dependency": "brace-expansion",
+            "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+            "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+            "severity": "moderate",
+            "cwe": [
+              "CWE-400",
+              "CWE-407"
+            ],
+            "cvss": {
+              "score": 5.3,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            "range": ">=4.0.0 <5.0.12"
+          },
+          {
+            "source": 1240107,
+            "name": "brace-expansion",
+            "dependency": "brace-expansion",
+            "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+            "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+            "severity": "high",
+            "cwe": [
+              "CWE-400",
+              "CWE-674"
+            ],
+            "cvss": {
+              "score": 7.5,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": ">=4.0.0 <5.0.11"
+          },
+          {
+            "source": 1240111,
+            "name": "brace-expansion",
+            "dependency": "brace-expansion",
+            "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+            "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+            "severity": "high",
+            "cwe": [
+              "CWE-400",
+              "CWE-674"
+            ],
+            "cvss": {
+              "score": 7.5,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": ">=4.0.0 <5.0.10"
+          }
+        ]
+      },
+      {
+        "package": "braces",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": {
+          "name": "gh-pages",
+          "version": "6.1.1",
+          "isSemVerMajor": true
+        },
+        "chains": [
+          {
+            "source": 1240992,
+            "name": "braces",
+            "dependency": "braces",
+            "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+            "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+            "severity": "high",
+            "cwe": [
+              "CWE-674"
+            ],
+            "cvss": {
+              "score": 7.5,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": "<=3.0.3"
+          }
+        ]
+      },
+      {
+        "package": "fast-glob",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": {
+          "name": "gh-pages",
+          "version": "6.1.1",
+          "isSemVerMajor": true
+        },
+        "chains": [
+          "micromatch"
+        ]
+      },
+      {
+        "package": "gh-pages",
+        "severity": "high",
+        "direct": true,
+        "fixAvailable": {
+          "name": "gh-pages",
+          "version": "6.1.1",
+          "isSemVerMajor": true
+        },
+        "chains": [
+          "globby"
+        ]
+      },
+      {
+        "package": "globby",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": {
+          "name": "gh-pages",
+          "version": "6.1.1",
+          "isSemVerMajor": true
+        },
+        "chains": [
+          "fast-glob"
+        ]
+      },
+      {
+        "package": "micromatch",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": {
+          "name": "gh-pages",
+          "version": "6.1.1",
+          "isSemVerMajor": true
+        },
+        "chains": [
+          "braces"
+        ]
+      },
+      {
+        "package": "nanoid",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": true,
+        "chains": [
+          {
+            "source": 1139427,
+            "name": "nanoid",
+            "dependency": "nanoid",
+            "title": "nanoid: custom generators can loop indefinitely when size is zero",
+            "url": "https://github.com/advisories/GHSA-2v37-7h3g-55p8",
+            "severity": "high",
+            "cwe": [
+              "CWE-835"
+            ],
+            "cvss": {
+              "score": 5.9,
+              "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": "<3.3.18"
+          }
+        ]
+      },
+      {
+        "package": "source-map-js",
+        "severity": "high",
+        "direct": false,
+        "fixAvailable": true,
+        "chains": [
+          {
+            "source": 1241209,
+            "name": "source-map-js",
+            "dependency": "source-map-js",
+            "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+            "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+            "severity": "high",
+            "cwe": [
+              "CWE-1284"
+            ],
+            "cvss": {
+              "score": 7.5,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            "range": ">=1.0.0 <1.2.2"
+          }
+        ]
+      }
+    ],
+    "outdated": {
+      "@playwright/test": {
+        "current": "1.63.0",
+        "wanted": "1.64.0",
+        "latest": "1.64.0"
+      },
+      "@types/node": {
+        "current": "24.13.2",
+        "wanted": "24.19.1",
+        "latest": "26.6.4"
+      },
+      "@types/react": {
+        "current": "19.2.17",
+        "wanted": "19.3.0",
+        "latest": "19.3.0"
+      },
+      "@types/react-dom": {
+        "current": "19.2.3",
+        "wanted": "19.3.0",
+        "latest": "19.3.0"
+      },
+      "@vitejs/plugin-react": {
+        "current": "6.0.3",
+        "wanted": "6.1.2",
+        "latest": "6.1.2"
+      },
+      "eslint": {
+        "current": "10.6.0",
+        "wanted": "10.12.0",
+        "latest": "10.12.0"
+      },
+      "eslint-plugin-react-refresh": {
+        "current": "0.5.3",
+        "wanted": "0.5.7",
+        "latest": "0.5.7"
+      },
+      "globals": {
+        "current": "17.7.0",
+        "wanted": "17.13.0",
+        "latest": "17.13.0"
+      },
+      "jsdom": {
+        "current": "30.1.1",
+        "wanted": "30.1.2",
+        "latest": "30.1.2"
+      },
+      "react": {
+        "current": "19.2.7",
+        "wanted": "19.3.0",
+        "latest": "19.3.0"
+      },
+      "react-dom": {
+        "current": "19.2.7",
+        "wanted": "19.3.0",
+        "latest": "19.3.0"
+      },
+      "typescript": {
+        "current": "6.0.3",
+        "wanted": "6.0.3",
+        "latest": "7.0.2"
+      },
+      "typescript-eslint": {
+        "current": "8.63.0",
+        "wanted": "8.71.1",
+        "latest": "8.71.1"
+      },
+      "vite": {
+        "current": "8.1.3",
+        "wanted": "8.3.3",
+        "latest": "8.3.3"
+      }
+    }
+  },
+  "initialAutomation": {
+    "vitestTests": 294,
+    "vitestFiles": 25,
+    "vitestSeconds": 28.72,
+    "typecheck": "pass",
+    "lint": "pass",
+    "build": "pass",
+    "firstBrowserAttempt": {
+      "passed": 2,
+      "failed": 4,
+      "reason": "timeouts; root cause unconfirmed"
+    },
+    "ownerAuthorizedRetry": {
+      "passed": 6,
+      "seconds": 17.6
+    }
+  },
+  "releaseReady": false,
+  "pending": [
+    "Protected exact-preview workflow/returning-user/two-tab/viewport/browser QA",
+    "Deployed Lighthouse comparison",
+    "Fresh exact-preview screen-reader review",
+    "Contrast fix/disposition before publishing",
+    "Existing development-tool advisories remediation/risk disposition"
+  ],
+  "finalAutomation": {
+    "vitestTests": 294,
+    "vitestFiles": 25,
+    "vitestSeconds": 36.39,
+    "typecheck": "pass",
+    "lint": "pass",
+    "build": {
+      "result": "pass",
+      "modules": 64,
+      "milliseconds": 317,
+      "jsKB": 280.05,
+      "jsGzipKB": 87.14,
+      "cssKB": 20.71,
+      "cssGzipKB": 4.48
+    },
+    "browserSmoke": {
+      "passed": 6,
+      "seconds": 19.0,
+      "retries": 0
+    },
+    "diffCheck": "pass"
+  }
+}
