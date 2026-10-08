@@ -14,6 +14,7 @@ TaskFlow uses a staged Git workflow to keep development work separate from the p
 | `test/*`     | Testing changes                           | Preview           |
 | `refactor/*` | Code cleanup and refactoring              | Preview           |
 | `docs/*`     | Documentation changes                     | Preview           |
+| `release/*`  | Release preparation from develop          | Preview           |
 
 ## Development Workflow
 
@@ -53,3 +54,9 @@ Normal free-plan previews are used for feature branches, `develop`, and `staging
 Vercel to inspect a preview. A successful deployment status alone does not prove
 that its application works in a browser. No automated promotion or paid
 pre-production environment is configured by the integration-testing work.
+
+## v1.5 preparation boundary
+
+`release/v1.5.0-prep` prepares documentation, version metadata and QA in a draft PR to `develop` (#88–#90). It does not change `staging` or `main`, create a tag, publish a GitHub release, or deploy production. After review/merge and readiness approval, #91 handles promotion and publishing. No paid Vercel custom pre-production environment is required.
+
+LocalStorage is origin-specific. Feature previews, the staging preview and production do not transfer boards automatically, even when they run identical source. Returning-user tests use controlled fixtures on the exact tested origin.
