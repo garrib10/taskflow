@@ -783,7 +783,7 @@
     "date": "2026-10-08",
     "status": "Pass (owner-reported)",
     "screenReader": "VoiceOver",
-    "browser": "Not specified by reviewer",
+    "browser": "Google Chrome (owner-confirmed; version not reported)",
     "checks": [
       "Create Task dialog and field labels",
       "Empty submission error announcement and Title focus",
