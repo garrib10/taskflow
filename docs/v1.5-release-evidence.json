@@ -921,10 +921,10 @@
   },
   "releaseReady": false,
   "pending": [
-    "Latest-head deployed confirmation (supplied grant authorizes prepared candidate only)",
     "Fresh deployed VoiceOver manual speech review",
     "Contrast fix/disposition before publishing",
-    "Existing development-tool advisories remediation/risk disposition"
+    "Existing development-tool advisories remediation/risk disposition",
+    "Preview feedback/toolbar cookie finding documented; production environment verification remains #91"
   ],
   "finalAutomation": {
     "vitestTests": 294,
@@ -1568,6 +1568,625 @@
       "retries": 0,
       "source": "Unchanged e2e/taskflow.spec.ts",
       "configuration": "Temporary access-cookie state only; same desktop/mobile projects and two workers; no repository configuration change"
+    }
+  },
+  "latestBranchVerification": {
+    "date": "2026-10-08",
+    "testedCommit": "165cbfb4627cc3301cde00f43c956e9e65e4ed39",
+    "testedPreviewURL": "https://taskflow-git-release-v150-prep-garrib11.vercel.app",
+    "urlKind": "Mutable branch alias; PR/branch head and successful deployment checked before testing and unchanged after testing",
+    "accessMethod": "Owner-authorized scoped share grant; parameters/cookies/profiles excluded",
+    "chrome": {
+      "version": "154.0.8037.98",
+      "viewports": [
+        {
+          "width": 320,
+          "height": 568,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 375,
+          "height": 667,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 1024,
+          "height": 768,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 1280,
+          "height": 720,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 1280,
+          "height": 375,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "status": "Pass",
+          "checks": [
+            "page/card containment, populated columns and >=44px primary targets",
+            "search, combined filters and reset",
+            "long parent ellipsis, child context, dialog scrolling and Escape",
+            "visible keyboard movement focus",
+            "hidden/full-board parent completion warning, containment and keyboard dismissal",
+            "completely empty columns and page containment"
+          ]
+        }
+      ],
+      "journeys": [
+        {
+          "name": "keyboard create/dialog labels/required errors/focus association",
+          "status": "Pass"
+        },
+        {
+          "name": "edit fields, forward move, invalid reverse, dismissal, reload persistence",
+          "status": "Pass"
+        },
+        {
+          "name": "unsaved dialog focus trap and cancellation/restore",
+          "status": "Pass"
+        },
+        {
+          "name": "delete confirmation, Cancel initial focus, persisted deletion",
+          "status": "Pass"
+        },
+        {
+          "name": "create parent and child, edit/navigation, completion blocked then permitted",
+          "status": "Pass"
+        }
+      ],
+      "reducedMotion": {
+        "status": "Pass",
+        "cardTransitions": [
+          "0s",
+          "0s",
+          "0s",
+          "0s",
+          "0s"
+        ],
+        "inputTransition": "0s"
+      },
+      "runtime": []
+    },
+    "repositorySmoke": {
+      "passed": 6,
+      "seconds": 7.8,
+      "retries": 0,
+      "configuration": "Temporary private access-cookie state; unchanged repository tests, same desktop/mobile projects"
+    },
+    "storage": {
+      "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+      "results": [
+        {
+          "name": "Clean first-use sample board valid: four columns, nine sample tasks, schema 2",
+          "status": "Pass"
+        },
+        {
+          "name": "Legacy v0 migrates both checklist states, preserves parent/content/defaults, repeats without rewrites/duplicates/loss/orphans, remains editable",
+          "status": "Pass"
+        },
+        {
+          "name": "Legacy v1 migrates both checklist states, preserves parent/content/defaults, repeats without rewrites/duplicates/loss/orphans, remains editable",
+          "status": "Pass"
+        },
+        {
+          "name": "corrupt JSON: empty workspace, saving paused, original unchanged across edits/reload",
+          "status": "Pass"
+        },
+        {
+          "name": "invalid legacy fields: empty workspace, saving paused, original unchanged across edits/reload",
+          "status": "Pass"
+        },
+        {
+          "name": "inconsistent completed legacy parent: empty workspace, saving paused, original unchanged across edits/reload",
+          "status": "Pass"
+        },
+        {
+          "name": "unsupported future schema: empty workspace, saving paused, original unchanged across edits/reload",
+          "status": "Pass"
+        },
+        {
+          "name": "Multiple linked children: child delete preserves others; parent cancellation preserves all; confirmed parent delete detaches surviving child",
+          "status": "Pass"
+        },
+        {
+          "name": "Native same-origin two-tab conflict: memory retained, stale write blocked, accurate warning, cancel/confirmed reload, one storage event and no write/notification loop",
+          "status": "Pass"
+        }
+      ]
+    },
+    "additionalChecks": {
+      "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+      "checks": [
+        "UI creation of two linked children; parent edits preserve links and progress across reload",
+        "High/Medium/Low priority order and stable equal-priority creation order",
+        "Description search and reset"
+      ],
+      "runtime": [],
+      "unexpectedErrors": [],
+      "status": "Pass"
+    },
+    "zoom": {
+      "method": "Isolated Chrome native default zoom set to 2 through chrome.settingsPrivate; 1440x900 physical device metrics, mobile=false, scale=1. Not CSS/root-text scaling or pinch zoom.",
+      "status": "Pass",
+      "before": {
+        "innerWidth": 720,
+        "innerHeight": 450,
+        "dpr": 2,
+        "visualScale": 1,
+        "pageWidth": 720
+      },
+      "form": {
+        "x": 85,
+        "y": 16,
+        "right": 635,
+        "bottom": 434,
+        "scrollWidth": 550,
+        "clientWidth": 550,
+        "scrollHeight": 593,
+        "clientHeight": 418
+      },
+      "checks": [
+        "page containment",
+        "dialog containment and scrolling",
+        "keyboard open/Escape/focus restoration"
+      ]
+    },
+    "safari": {
+      "testedCommit": "165cbfb4627cc3301cde00f43c956e9e65e4ed39",
+      "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+      "browser": "Safari",
+      "version": "27.0",
+      "isolation": "SafariDriver isolated automation window; synthetic TaskFlow data only",
+      "checks": [
+        {
+          "name": "Load and empty board",
+          "status": "Pass"
+        },
+        {
+          "name": "Create normal task",
+          "status": "Pass"
+        },
+        {
+          "name": "Edit task fields",
+          "status": "Pass"
+        },
+        {
+          "name": "Native keyboard valid movement",
+          "status": "Pass"
+        },
+        {
+          "name": "Invalid movement leaves storage unchanged; keyboard dismissal",
+          "status": "Pass"
+        },
+        {
+          "name": "Search, combined priority/category/status filters and Reset",
+          "status": "Pass"
+        },
+        {
+          "name": "Refresh restores fields and status",
+          "status": "Pass"
+        },
+        {
+          "name": "Keyboard dialogs, Tab containment, Escape and focus restoration",
+          "status": "Pass"
+        },
+        {
+          "name": "Delete through named confirmation and persisted removal",
+          "status": "Pass"
+        },
+        {
+          "name": "Parent/subtask creation and context; hidden-child completion guard; completion and reload",
+          "status": "Pass"
+        },
+        {
+          "name": "Actual narrow Safari window: page/dialog containment, child context and close",
+          "status": "Pass"
+        }
+      ],
+      "viewport": {
+        "outerHeight": 844,
+        "innerWidth": 390,
+        "outerWidth": 390,
+        "innerHeight": 792,
+        "pageWidth": 390
+      },
+      "observations": [
+        "Runtime error/unhandled-rejection observation covers post-load interactions; SafariDriver does not expose a complete startup console log here."
+      ],
+      "dialog": {
+        "x": 16,
+        "bottom": 776,
+        "clientWidth": 358,
+        "y": 16,
+        "scrollHeight": 806,
+        "viewportHeight": 792,
+        "scrollWidth": 358,
+        "right": 374,
+        "clientHeight": 760,
+        "viewportWidth": 390
+      },
+      "runtimeErrors": [],
+      "status": "Pass with observation"
+    },
+    "lighthouse": [
+      {
+        "profile": "mobile",
+        "run": 1,
+        "fetchTime": "2026-10-08T17:39:19.669Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "mobile",
+          "screenEmulation": {
+            "mobile": true,
+            "width": 412,
+            "height": 823,
+            "deviceScaleFactor": 1.75,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 99,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 1303.4185,
+          "largest-contentful-paint": 1903.4185,
+          "total-blocking-time": 52,
+          "cumulative-layout-shift": 0.03888213851761847,
+          "speed-index": 1303.4185
+        },
+        "warnings": [],
+        "sha256": "67bd5ab39f0bb05101a7eb0c75103d1147001f6e81ebebec62d0321e3b903a37"
+      },
+      {
+        "profile": "mobile",
+        "run": 2,
+        "fetchTime": "2026-10-08T17:39:29.107Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "mobile",
+          "screenEmulation": {
+            "mobile": true,
+            "width": 412,
+            "height": 823,
+            "deviceScaleFactor": 1.75,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 98,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 1306.1136999999999,
+          "largest-contentful-paint": 1947.1136999999999,
+          "total-blocking-time": 106,
+          "cumulative-layout-shift": 0.03888213851761847,
+          "speed-index": 1306.1136999999999
+        },
+        "warnings": [],
+        "sha256": "d0312c4c44356d7d05b6ab7cf36b4cf1b387d508f6711fb7339d99c2725f21ee"
+      },
+      {
+        "profile": "mobile",
+        "run": 3,
+        "fetchTime": "2026-10-08T17:39:38.203Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "mobile",
+          "screenEmulation": {
+            "mobile": true,
+            "width": 412,
+            "height": 823,
+            "deviceScaleFactor": 1.75,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 98,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 1295.9137,
+          "largest-contentful-paint": 1949.4136999999998,
+          "total-blocking-time": 137.00000000000023,
+          "cumulative-layout-shift": 0.03888213851761847,
+          "speed-index": 1295.9137
+        },
+        "warnings": [],
+        "sha256": "0cd214ec8ae530add3368ae5a583c07b55211d0c4d89adb5d87e9720006b0858"
+      },
+      {
+        "profile": "desktop",
+        "run": 1,
+        "fetchTime": "2026-10-08T17:39:47.286Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "desktop",
+          "screenEmulation": {
+            "mobile": false,
+            "width": 1350,
+            "height": 940,
+            "deviceScaleFactor": 1,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 100,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 366.913,
+          "largest-contentful-paint": 678.8999999999999,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.0237037037037037,
+          "speed-index": 366.913
+        },
+        "warnings": [],
+        "sha256": "a2c9990df06557dd6078f6b7e8f5031d46eac7242c1bf175f60a8c694b35573c"
+      },
+      {
+        "profile": "desktop",
+        "run": 2,
+        "fetchTime": "2026-10-08T17:39:57.638Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "desktop",
+          "screenEmulation": {
+            "mobile": false,
+            "width": 1350,
+            "height": 940,
+            "deviceScaleFactor": 1,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 100,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 370.3936,
+          "largest-contentful-paint": 614.8520000000001,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.0237037037037037,
+          "speed-index": 388.9760703916513
+        },
+        "warnings": [],
+        "sha256": "e37060ab509a47c00be6c3d586db90ade87bb12120772f1d95afe11486819ce5"
+      },
+      {
+        "profile": "desktop",
+        "run": 3,
+        "fetchTime": "2026-10-08T17:40:07.377Z",
+        "lighthouseVersion": "13.5.0",
+        "url": "https://taskflow-git-release-v150-prep-garrib11.vercel.app/",
+        "settings": {
+          "formFactor": "desktop",
+          "screenEmulation": {
+            "mobile": false,
+            "width": 1350,
+            "height": 940,
+            "deviceScaleFactor": 1,
+            "disabled": false
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "throttlingMethod": "simulate"
+        },
+        "scores": {
+          "performance": 100,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 375.1134,
+          "largest-contentful-paint": 620.7170000000001,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.0237037037037037,
+          "speed-index": 432.447282965886
+        },
+        "warnings": [],
+        "sha256": "f718b3d728eaf4c71909b9a4915ef887d2c51d5d8c23274c9ac2a7693959f8eb"
+      }
+    ],
+    "lighthouseMedians": {
+      "mobile": {
+        "scores": {
+          "performance": 98,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 1303.4185,
+          "largest-contentful-paint": 1947.1136999999999,
+          "total-blocking-time": 106,
+          "cumulative-layout-shift": 0.03888213851761847,
+          "speed-index": 1303.4185
+        }
+      },
+      "desktop": {
+        "scores": {
+          "performance": 100,
+          "accessibility": 96,
+          "best-practices": 77,
+          "seo": 50
+        },
+        "metrics": {
+          "first-contentful-paint": 370.3936,
+          "largest-contentful-paint": 620.7170000000001,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.0237037037037037,
+          "speed-index": 388.9760703916513
+        }
+      }
+    },
+    "bestPracticesFinding": {
+      "allRunsScore": 77,
+      "failingAudits": [
+        "third-party-cookies",
+        "inspector-issues"
+      ],
+      "attributedResource": "https://vercel.live/_next-live/feedback/feedback.js",
+      "cookieValuesExcluded": true,
+      "classification": "Reproduced preview-feedback environment finding; production presence not verified"
+    },
+    "seoFinding": {
+      "observedHeader": "x-robots-tag: noindex",
+      "metaDescription": "Missing",
+      "classification": "Preview indexing policy plus existing metadata finding; production verification remains #91"
     }
   }
 }
