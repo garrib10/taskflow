@@ -778,5 +778,20 @@
       "Return": "WebDriver U+E006",
       "observation": "Literal U+0020 produces code Unidentified in SafariDriver; symbolic Space produces code Space. No application change."
     }
+  },
+  "ownerVoiceOver": {
+    "date": "2026-10-08",
+    "status": "Pass (owner-reported)",
+    "screenReader": "VoiceOver",
+    "browser": "Not specified by reviewer",
+    "checks": [
+      "Create Task dialog and field labels",
+      "Empty submission error announcement and Title focus",
+      "Escape and Create Task focus restoration",
+      "Keyboard pickup, destination and drop announcements",
+      "Invalid movement warning, dismissal and task focus restoration",
+      "Subtask parent control full name"
+    ],
+    "independentlyHeardByAutomation": false
   }
 }
