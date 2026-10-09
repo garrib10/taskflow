@@ -110,12 +110,12 @@
 }
 
 .create-task-actions button:last-child {
-  background: #3b82f6;
+  background: #2563eb;
   color: white;
 }
 
 .create-task-actions button:last-child:hover {
-  background: #2563eb;
+  background: #1d4ed8;
 }
 
 @media (max-width: 600px) {

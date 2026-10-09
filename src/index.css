@@ -22,12 +22,17 @@
 
   /* ===== Text ===== */
   --text-primary: #1f2937;
-  --text-secondary: #6b7280;
+  --text-secondary: #4b5563;
 
   /* ===== Priority ===== */
   --priority-high: #dc2626;
   --priority-medium: #d97706;
   --priority-low: #16a34a;
+
+  /* Badge text uses darker shades without changing priority borders. */
+  --priority-high-text: #b91c1c;
+  --priority-medium-text: #92400e;
+  --priority-low-text: #166534;
 
   /* ===== Shadows ===== */
   --shadow-small: 0 2px 6px rgba(0, 0, 0, 0.08);

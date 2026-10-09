@@ -72,7 +72,7 @@
   border: 1px solid #93c5fd;
   border-radius: 999px;
   background: #eff6ff;
-  color: #6b7280;
+  color: var(--text-secondary);
   font: inherit;
   font-size: 0.85rem;
   cursor: pointer;
