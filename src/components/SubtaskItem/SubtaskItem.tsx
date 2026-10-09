@@ -1,5 +1,5 @@
 import type { Subtask } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 
 interface SubtaskItemProps {
   taskId: string;
@@ -17,6 +17,7 @@ export default function SubtaskItem({
       type: "TOGGLE_SUBTASK",
       taskId,
       subtaskId: subtask.id,
+      updatedAt: new Date(),
     });
   }
 
@@ -25,14 +26,15 @@ export default function SubtaskItem({
       type: "DELETE_SUBTASK",
       taskId,
       subtaskId: subtask.id,
+      updatedAt: new Date(),
     });
   }
 
   return (
     <div className="subtask-item">
-      <label htmlFor={`subtask-${subtask.id}`} className="subtask-item-left">
+      <label htmlFor={`subtask-${taskId}-${subtask.id}`} className="subtask-item-left">
         <input
-          id={`subtask-${subtask.id}`}
+          id={`subtask-${taskId}-${subtask.id}`}
           type="checkbox"
           checked={subtask.completed}
           onChange={handleToggle}
@@ -45,7 +47,7 @@ export default function SubtaskItem({
 
       <button
         type="button"
-        className="subtask-delete-button"
+        className="subtask-delete-button" aria-label={`Delete checklist item ${subtask.title}`}
         onClick={handleDelete}
       >
         Delete

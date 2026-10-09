@@ -1,0 +1,565 @@
+{
+  "date": "2026-10-08",
+  "baseCommit": "a9f53e7000c7a900566723aa492d17e1e971768c",
+  "branch": "fix/v1.5-release-readiness",
+  "target": "develop",
+  "packageVersion": "Unchanged from develop; release version update remains PR137",
+  "dependencyAudit": {
+    "beforeAffectedPackages": 8,
+    "beforeSeverity": "high",
+    "afterCleanInstall": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "runtimeOnly": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "removedPackages": 44,
+    "versionChanges": [
+      {
+        "path": "node_modules/brace-expansion",
+        "before": "5.0.8",
+        "after": "5.0.12"
+      },
+      {
+        "path": "node_modules/nanoid",
+        "before": "3.3.16",
+        "after": "3.3.20"
+      },
+      {
+        "path": "node_modules/source-map-js",
+        "before": "1.2.1",
+        "after": "1.2.2"
+      }
+    ],
+    "newPackagePaths": 0,
+    "forcedFixes": false,
+    "overridesAdded": false
+  },
+  "contrast": {
+    "url": "http://127.0.0.1:4191/",
+    "browser": "154.0.8037.98",
+    "measurements": [
+      {
+        "width": 390,
+        "label": "Create Task normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 390,
+        "label": "Edit action normal",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 390,
+        "label": "Delete action normal",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 390,
+        "label": "Edit action hover",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 390,
+        "label": "Delete action hover",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 390,
+        "label": "high badge",
+        "foreground": "rgb(185, 28, 28)",
+        "background": "rgb(254, 226, 226)",
+        "border": "rgb(185, 28, 28)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 5.296472886194491
+      },
+      {
+        "width": 390,
+        "label": "medium badge",
+        "foreground": "rgb(146, 64, 14)",
+        "background": "rgb(254, 243, 199)",
+        "border": "rgb(146, 64, 14)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.367237188363559
+      },
+      {
+        "width": 390,
+        "label": "low badge",
+        "foreground": "rgb(22, 101, 52)",
+        "background": "rgb(220, 252, 231)",
+        "border": "rgb(22, 101, 52)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.4923831516894746
+      },
+      {
+        "width": 390,
+        "label": "Create Task hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 390,
+        "label": "Create form submit normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 390,
+        "label": "Create form submit hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1350,
+        "label": "Board scroll hint",
+        "foreground": "rgb(75, 85, 99)",
+        "background": "rgb(244, 246, 249)",
+        "border": "rgb(75, 85, 99)",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "contrastRatio": 6.980439543056105
+      },
+      {
+        "width": 1350,
+        "label": "Create Task normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 1350,
+        "label": "Edit action normal",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1350,
+        "label": "Delete action normal",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 1350,
+        "label": "Edit action hover",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1350,
+        "label": "Delete action hover",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 1350,
+        "label": "high badge",
+        "foreground": "rgb(185, 28, 28)",
+        "background": "rgb(254, 226, 226)",
+        "border": "rgb(185, 28, 28)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 5.296472886194491
+      },
+      {
+        "width": 1350,
+        "label": "medium badge",
+        "foreground": "rgb(146, 64, 14)",
+        "background": "rgb(254, 243, 199)",
+        "border": "rgb(146, 64, 14)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.367237188363559
+      },
+      {
+        "width": 1350,
+        "label": "low badge",
+        "foreground": "rgb(22, 101, 52)",
+        "background": "rgb(220, 252, 231)",
+        "border": "rgb(22, 101, 52)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.4923831516894746
+      },
+      {
+        "width": 1350,
+        "label": "Create Task hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1350,
+        "label": "Create form submit normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 1350,
+        "label": "Create form submit hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1440,
+        "label": "Create Task normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 1440,
+        "label": "Edit action normal",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1440,
+        "label": "Delete action normal",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 1440,
+        "label": "Edit action hover",
+        "foreground": "rgb(29, 78, 216)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(29, 78, 216)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1440,
+        "label": "Delete action hover",
+        "foreground": "rgb(153, 27, 27)",
+        "background": "rgb(255, 255, 255)",
+        "border": "rgb(153, 27, 27)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 8.310050481211189
+      },
+      {
+        "width": 1440,
+        "label": "high badge",
+        "foreground": "rgb(185, 28, 28)",
+        "background": "rgb(254, 226, 226)",
+        "border": "rgb(185, 28, 28)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 5.296472886194491
+      },
+      {
+        "width": 1440,
+        "label": "medium badge",
+        "foreground": "rgb(146, 64, 14)",
+        "background": "rgb(254, 243, 199)",
+        "border": "rgb(146, 64, 14)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.367237188363559
+      },
+      {
+        "width": 1440,
+        "label": "low badge",
+        "foreground": "rgb(22, 101, 52)",
+        "background": "rgb(220, 252, 231)",
+        "border": "rgb(22, 101, 52)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "contrastRatio": 6.4923831516894746
+      },
+      {
+        "width": 1440,
+        "label": "Create Task hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      },
+      {
+        "width": 1440,
+        "label": "Create form submit normal",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(37, 99, 235)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 5.168555560022562
+      },
+      {
+        "width": 1440,
+        "label": "Create form submit hover",
+        "foreground": "rgb(255, 255, 255)",
+        "background": "rgb(29, 78, 216)",
+        "border": "rgb(255, 255, 255)",
+        "fontSize": "13.3333px",
+        "fontWeight": "600",
+        "contrastRatio": 6.701618401398807
+      }
+    ],
+    "screenshots": [
+      {
+        "name": "board-390.png",
+        "width": 390,
+        "height": 900
+      },
+      {
+        "name": "board-1350.png",
+        "width": 1350,
+        "height": 900
+      },
+      {
+        "name": "board-1440.png",
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "errors": [],
+    "status": "Pass"
+  },
+  "stateProbes": [
+    {
+      "name": "Default board and scroll hint",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": [
+            [
+              "#task-task-1 > .task-footer > .task-actions > .edit-task-button"
+            ],
+            [
+              "#task-task-1 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "button[aria-label=\"Edit Build Dashboard Widgets\"]"
+            ],
+            [
+              "button[aria-label=\"Delete Build Dashboard Widgets\"]"
+            ],
+            [
+              "button[aria-label=\"Edit Add Search Functionality\"]"
+            ],
+            [
+              "#task-task-3 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "button[aria-label=\"Edit Refactor State Management\"]"
+            ],
+            [
+              "#task-task-5 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "button[aria-label=\"Edit Improve Responsive Layout\"]"
+            ],
+            [
+              "#task-task-4 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "#task-task-9 > .task-footer > .task-actions > .edit-task-button"
+            ],
+            [
+              "#task-task-9 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "#task-task-8 > .task-footer > .task-actions > .edit-task-button"
+            ],
+            [
+              "#task-task-8 > .task-footer > .task-actions > .delete-task-button"
+            ],
+            [
+              "button[aria-label=\"Edit Configure Drag & Drop\"]"
+            ],
+            [
+              "button[aria-label=\"Delete Configure Drag & Drop\"]"
+            ],
+            [
+              "button[aria-label=\"Edit Add Priority Scoring\"]"
+            ],
+            [
+              "button[aria-label=\"Delete Add Priority Scoring\"]"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "No results, count and empty columns",
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "name": "Create task form",
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "name": "Parent editor and progress",
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "name": "Subtask editor parent pill normal",
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "name": "Subtask editor parent pill hover",
+      "violations": [],
+      "incomplete": []
+    }
+  ],
+  "lighthouse": [
+    {
+      "profile": "mobile",
+      "version": "13.5.0",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "colorContrastScore": 1,
+      "warnings": [],
+      "reportSha256": "c89581b43506012b92311c132048c26fc0dfe3b87ffb62feaecadaf9d00bbdbf"
+    },
+    {
+      "profile": "desktop",
+      "version": "13.5.0",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 82
+      },
+      "colorContrastScore": 1,
+      "warnings": [],
+      "reportSha256": "356363443b7b1c25f98e7dc8d43d579002afa13ecc2bb2de6d81c0101c717d3d"
+    }
+  ],
+  "verification": {
+    "tests": 294,
+    "testFiles": 25,
+    "vitestSeconds": 34.42,
+    "typecheck": "pass",
+    "lint": "pass",
+    "build": {
+      "modules": 64,
+      "milliseconds": 326,
+      "jsKB": 280.05,
+      "jsGzipKB": 87.14,
+      "cssKB": 20.83,
+      "cssGzipKB": 4.5
+    },
+    "browserSmoke": {
+      "passed": 6,
+      "seconds": 25.7,
+      "retries": 0
+    },
+    "diffCheck": "pass"
+  },
+  "releaseControl": {
+    "releasePrepPR": 137,
+    "automaticMerge": false,
+    "publishTagOrRelease": false,
+    "productionDeployment": false,
+    "pending": [
+      "Integrate fix into develop then release prep",
+      "Corrected release-preview confirmation",
+      "Fresh deployed VoiceOver review"
+    ]
+  }
+}

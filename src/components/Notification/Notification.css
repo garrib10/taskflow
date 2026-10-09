@@ -1,0 +1,123 @@
+/* Typed outcome feedback, dismiss focus and animation. */
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  margin-bottom: 1rem;
+
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-small);
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  animation: notification-slide-in 0.2s ease;
+}
+
+.notification.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.notification.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.notification.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.notification.info {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.notification-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.notification.success .notification-icon {
+  background: #bbf7d0;
+}
+
+.notification.error .notification-icon {
+  background: #fecaca;
+}
+
+.notification.warning .notification-icon {
+  background: #fde68a;
+}
+
+.notification.info .notification-icon {
+  background: #dbeafe;
+}
+
+.notification-message {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.notification-close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: var(--radius-small);
+
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.notification-close-button:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.notification-close-button:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+@keyframes notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification {
+    animation: none;
+  }
+}

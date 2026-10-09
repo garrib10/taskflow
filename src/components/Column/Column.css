@@ -1,0 +1,73 @@
+/* Column layout, headings and empty states. */
+.column {
+  flex: 1 1 320px;
+  min-width: 320px;
+  min-height: 500px;
+
+  background: var(--column-background);
+  border: 1px solid var(--column-border);
+  border-radius: var(--radius-large);
+  padding: 1rem;
+
+  transition: box-shadow var(--transition-speed);
+}
+
+.column h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.column-header {
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+  border-bottom: 1px solid var(--column-border);
+  margin: -1rem -1rem 1rem;
+}
+
+.column-header h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.empty-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+
+  color: var(--text-secondary);
+  font-style: italic;
+
+  border: 2px dashed var(--column-border);
+  border-radius: var(--radius-medium);
+}
+
+@media (max-width: 1024px) {
+  .column {
+    flex: 0 0 320px;
+    min-height: 450px;
+  }
+}
+
+@media (max-width: 600px) {
+  .column {
+    width: 100%;
+    min-width: 0;
+    flex: 1;
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column { transition: none; }
+}
+
+.column-header h2:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: var(--radius-small);
+}

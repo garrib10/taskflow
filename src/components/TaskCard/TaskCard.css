@@ -1,0 +1,288 @@
+/* Task cards, badges, linked child progress and drag focus. */
+.task-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  background: var(--card-background);
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-small);
+  transition:
+    transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* The header owns drag interaction; card buttons and checklist inputs remain independent. */
+
+.task-card-header {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.task-card-header:active {
+  cursor: grabbing;
+}
+
+.task-card-header h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.task-description {
+  color: var(--text-secondary);
+  margin: 0.75rem 0 1rem;
+}
+
+.task-footer {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  flex: 1 0 auto;
+  min-width: 0;
+}
+
+.task-meta span {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 6px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.task-actions button {
+  padding-inline: 6px;
+  position: relative;
+  isolation: isolate;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+}
+
+/* Slim visible buttons retain the full 44px target supplied by shared controls. */
+.task-actions button::before {
+  content: "";
+  position: absolute;
+  inset: 6px 0;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid var(--task-action-border);
+  border-radius: inherit;
+  background: var(--task-action-background);
+}
+
+.task-actions .edit-task-button {
+  --task-action-border: #bfdbfe;
+  --task-action-background: #eff6ff;
+}
+
+.task-actions .delete-task-button {
+  --task-action-border: #fecaca;
+  --task-action-background: #fff1f2;
+}
+
+.task-actions .edit-task-button:hover {
+  --task-action-background: #dbeafe;
+  background: transparent;
+}
+
+.task-actions .delete-task-button:hover {
+  --task-action-background: #fee2e2;
+  background: transparent;
+}
+
+.task-category {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.category-feature {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.category-ui {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.category-bug {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.category-testing {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.category-refactor {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.category-devops {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.priority-high {
+  border-left: 6px solid var(--priority-high);
+}
+
+.priority-medium {
+  border-left: 6px solid var(--priority-medium);
+}
+
+.priority-low {
+  border-left: 6px solid var(--priority-low);
+}
+
+.badge-high,
+.badge-medium,
+.badge-low {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-high {
+  color: var(--priority-high-text);
+  background: #fee2e2;
+}
+
+.badge-medium {
+  color: var(--priority-medium-text);
+  background: #fef3c7;
+}
+
+.badge-low {
+  color: var(--priority-low-text);
+  background: #dcfce7;
+}
+
+.completed-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.task-card-header:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: var(--radius-small);
+}
+
+@media (max-width: 600px) {
+  .task-footer {
+    justify-content: space-between;
+  }
+
+  .task-card h3 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .task-footer { gap: 6px; }
+  .task-meta, .task-actions { gap: 4px; }
+  .task-meta span, .task-actions button { padding-inline: 4px; }
+}
+.task-progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 4px 0 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  flex-wrap: wrap;
+}
+.task-progress-count, .task-progress-percentage { white-space: nowrap; }
+.task-progress-track {
+  display: flex;
+  flex: 1 1 24px;
+  gap: 2px;
+  min-width: 24px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.task-progress-segment {
+  flex: 1;
+  min-width: 0;
+  background: #dbeafe;
+}
+.task-progress-segment.is-complete {
+  background: #3b82f6;
+}
+
+.task-title-link {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card { transition: none; }
+  .task-card:hover { transform: none; }
+}
+
+.task-title-link:hover,
+.task-title-link:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+}

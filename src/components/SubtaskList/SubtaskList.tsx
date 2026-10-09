@@ -1,14 +1,17 @@
+import "./SubtaskList.css";
 import { useState } from "react";
+import { createSubtask } from "../../domain/task/taskActions";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import SubtaskItem from "../SubtaskItem/SubtaskItem";
 
 interface SubtaskListProps {
   task: Task;
   dispatch: React.Dispatch<BoardAction>;
+  allowCreate?: boolean;
 }
 
-export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
+export default function SubtaskList({ task, dispatch, allowCreate = true }: SubtaskListProps) {
   const [newSubtask, setNewSubtask] = useState("");
 
   const subtasks = task.subtasks ?? [];
@@ -23,7 +26,8 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
     dispatch({
       type: "ADD_SUBTASK",
       taskId: task.id,
-      title: trimmedSubtask,
+      subtask: createSubtask(trimmedSubtask),
+      updatedAt: new Date(),
     });
 
     setNewSubtask("");
@@ -58,8 +62,9 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
         <p className="no-subtasks">No subtasks yet.</p>
       )}
 
-      <div className="subtask-input-container">
+      {allowCreate && <div className="subtask-input-container">
         <input
+          aria-label={`Add checklist item to ${task.title}`}
           type="text"
           placeholder="Add subtask..."
           value={newSubtask}
@@ -81,7 +86,7 @@ export default function SubtaskList({ task, dispatch }: SubtaskListProps) {
         >
           Add
         </button>
-      </div>
+      </div>}
     </div>
   );
 }

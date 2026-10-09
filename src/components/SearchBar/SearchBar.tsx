@@ -1,3 +1,4 @@
+import "./SearchBar.css";
 interface SearchBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
@@ -19,6 +20,7 @@ export default function SearchBar({
         <input
           id="task-search"
           type="search"
+          aria-controls="taskflow-board"
           placeholder="Search by title or description..."
           value={searchTerm}
           onChange={(event) => onSearchChange(event.target.value)}

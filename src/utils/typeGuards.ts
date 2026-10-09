@@ -1,10 +1,6 @@
-import type { TaskStatus } from "../domain/task/Task";
+import { taskStatuses, type TaskStatus } from "../domain/task/Task";
 
-/**
- * Type guard that verifies whether a string
- * is a valid TaskStatus.
- */
-
-export function isTaskStatus(value: string): value is TaskStatus {
-  return ["todo", "in-progress", "done"].includes(value);
+/** Narrow unknown runtime values before using them in workflow operations. */
+export function isTaskStatus(value: unknown): value is TaskStatus {
+  return taskStatuses.some((status) => status === value);
 }
