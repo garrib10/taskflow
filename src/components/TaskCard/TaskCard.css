@@ -180,17 +180,17 @@
 }
 
 .badge-high {
-  color: var(--priority-high);
+  color: var(--priority-high-text);
   background: #fee2e2;
 }
 
 .badge-medium {
-  color: var(--priority-medium);
+  color: var(--priority-medium-text);
   background: #fef3c7;
 }
 
 .badge-low {
-  color: var(--priority-low);
+  color: var(--priority-low-text);
   background: #dcfce7;
 }
 

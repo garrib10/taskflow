@@ -106,7 +106,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  background: #3b82f6;
+  background: #2563eb;
   color: white;
   transition:
     background-color 0.2s ease,
@@ -115,7 +115,7 @@
 }
 
 .create-task-button:hover {
-  background: #2563eb;
+  background: #1d4ed8;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
