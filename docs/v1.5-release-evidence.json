@@ -921,10 +921,10 @@
   },
   "releaseReady": false,
   "pending": [
+    "Corrected release-preview verification after PR #138 integration",
     "Fresh deployed VoiceOver manual speech review",
-    "Contrast fix/disposition before publishing",
-    "Existing development-tool advisories remediation/risk disposition",
-    "Preview feedback/toolbar cookie finding documented; production environment verification remains #91"
+    "Preview feedback/toolbar cookie finding documented; production environment verification remains #91",
+    "Resolve separate github-advanced-security automation failure"
   ],
   "finalAutomation": {
     "vitestTests": 294,
@@ -2187,6 +2187,59 @@
       "observedHeader": "x-robots-tag: noindex",
       "metaDescription": "Missing",
       "classification": "Preview indexing policy plus existing metadata finding; production verification remains #91"
+    }
+  },
+  "remediationIntegration": {
+    "date": "2026-10-09",
+    "mergedFixPR": 138,
+    "releaseMergeCommit": "fdebb759580ea87417e3a31c1da4f2cfde71f3ca",
+    "version": "1.5.0",
+    "conflicts": "none",
+    "fixEvidence": "docs/v1.5-release-remediation-evidence.json",
+    "historicalRecords": "Earlier audit and Lighthouse measurements retain their original source scope; do not interpret them as current findings.",
+    "correctedPreview": "pending",
+    "voiceOver": "pending",
+    "automation": {
+      "cleanInstallPackages": 235,
+      "auditedPackages": 236,
+      "fullAudit": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "runtimeAudit": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "typecheck": "pass",
+      "lint": "pass",
+      "build": "pass",
+      "vitestTests": 294,
+      "vitestFiles": 25,
+      "vitestSeconds": 55.07,
+      "browserSmokePassed": 6,
+      "browserSmokeSeconds": 27.2,
+      "browserSmokeRetries": 0
+    },
+    "remoteChecks": {
+      "commit": "fdebb759580ea87417e3a31c1da4f2cfde71f3ca",
+      "passing": [
+        "Lint and build",
+        "Dependency review",
+        "CodeQL",
+        "Analyze",
+        "Label pull request",
+        "Vercel Preview Comments"
+      ],
+      "unresolved": "github-advanced-security failed; root cause unconfirmed; job logs inaccessible",
+      "vercelDeployment": "success"
     }
   }
 }

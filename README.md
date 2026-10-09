@@ -43,7 +43,9 @@ and [release QA report](docs/v1.5-release-qa.md) for readiness and known finding
   GitHub Actions quality gates.
 
 Accessibility is tested within the documented scope; **full WCAG compliance is
-not claimed**. Known small-text contrast findings remain for release review.
+not claimed**. The identified small-text contrast findings were corrected and
+validated in [the remediation report](docs/v1.5-release-remediation.md); fresh
+deployed VoiceOver verification remains part of release review.
 
 ## Current interface
 
@@ -187,10 +189,9 @@ See [branching and release workflow](docs/branching-workflow.md) for promotion.
 
 Preview, staging, and production origins do not share LocalStorage. Verify the
 exact commit preview, review gates, promote through staging, then main, verify
-production, and only then publish the tag/release under #91. The legacy `deploy`
-script and `gh-pages` dependency are retained historical tooling; **do not use
-`npm run deploy` for the Vercel release**. Removing that tooling requires separate
-review and is not part of this documentation branch.
+production, and only then publish the tag/release under #91. The unused legacy
+`deploy`/`predeploy` scripts and `gh-pages` dependency were removed in PR #138.
+Deployment uses the Vercel Git integration and `npm run build`.
 
 ## Version history and scope
 
