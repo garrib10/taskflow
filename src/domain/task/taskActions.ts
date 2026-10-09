@@ -1,4 +1,4 @@
-import type { Task, Priority, TaskStatus, Subtask } from "./Task";
+import type { Task, Priority, TaskStatus, Subtask, TaskEdits } from "./Task";
 import type { TaskCategory } from "./taskCategory";
 import { canMoveTask } from "./taskRules";
 
@@ -28,19 +28,13 @@ export function createTask(
   };
 }
 
-export function updateTask(
-  task: Task,
-  title: string,
-  description: string,
-  priority: Priority,
-  category: TaskCategory,
-): Task {
+export function updateTask(task: Task, edits: TaskEdits): Task {
   return {
     ...task,
-    title,
-    description,
-    priority,
-    category,
+    title: edits.title,
+    description: edits.description,
+    priority: edits.priority,
+    category: edits.category,
   };
 }
 

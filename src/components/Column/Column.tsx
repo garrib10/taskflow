@@ -1,12 +1,15 @@
+import "./Column.css";
 import { useDroppable } from "@dnd-kit/core";
 import type { Column as ColumnType } from "../../domain/board/Board";
+import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../hooks/useBoardReducer";
+import type { BoardAction } from "../../domain/board/boardReducer";
 import { sortTasksByPriority } from "../../domain/task/taskPriority";
 import TaskCard from "../TaskCard/TaskCard";
 
 interface ColumnProps {
   column: ColumnType;
+  board: Board;
   dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
@@ -15,6 +18,7 @@ interface ColumnProps {
 
 export default function Column({
   column,
+  board,
   dispatch,
   onEdit,
   onDelete,
@@ -27,9 +31,9 @@ export default function Column({
   const sortedTasks = sortTasksByPriority(column.tasks);
 
   return (
-    <div ref={setNodeRef} className="column">
+    <section ref={setNodeRef} className="column" aria-labelledby={`column-${column.id}-title`}>
       <div className="column-header">
-        <h2>
+        <h2 id={`column-${column.id}-title`} tabIndex={-1}>
           {column.title} ({column.tasks.length})
         </h2>
       </div>
@@ -43,12 +47,13 @@ export default function Column({
           <TaskCard
             key={task.id}
             task={task}
+            board={board}
             dispatch={dispatch}
             onEdit={onEdit}
             onDelete={onDelete}
           />
         ))
       )}
-    </div>
+    </section>
   );
 }

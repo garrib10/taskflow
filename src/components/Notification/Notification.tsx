@@ -1,35 +1,61 @@
+import "./Notification.css";
+import { useEffectEvent, useLayoutEffect, useRef } from "react";
+
+import { notificationPresentation, type TaskNotification } from "../../notifications/notification";
+
 interface NotificationProps {
-  message: string;
-  type?: "success" | "error";
+  notification: TaskNotification;
+  id?: string;
+  messageId?: string;
+  tabIndex?: number;
   onClose: () => void;
+  announce?: boolean;
+  onFocusLost?: () => void;
 }
 
 export default function Notification({
-  message,
-  type = "error",
+  notification,
+  id,
+  messageId,
+  tabIndex,
   onClose,
+  announce = true,
+  onFocusLost,
 }: NotificationProps) {
-  const icon = type === "success" ? "✓" : "!";
-
-  const notificationRole = type === "error" ? "alert" : "status";
+  const ref = useRef<HTMLDivElement>(null);
+  const restore = useEffectEvent(() => {
+    if (onFocusLost) onFocusLost();
+    else document.querySelector<HTMLElement>('[data-focus-fallback]')?.focus();
+  });
+  useLayoutEffect(() => {
+    const element = ref.current;
+    return () => { if (element?.contains(document.activeElement)) restore(); };
+  }, []);
+  const { variant, message } = notification;
+  const { icon, label, role } = notificationPresentation[variant];
 
   return (
     <div
-      className={`notification ${type}`}
-      role={notificationRole}
-      aria-live={type === "error" ? "assertive" : "polite"}
+      ref={ref}
+      id={id}
+      tabIndex={tabIndex}
+      className={`notification ${variant}`}
+      role={announce ? role : tabIndex !== undefined ? "group" : undefined}
+      aria-labelledby={tabIndex !== undefined ? messageId : undefined}
+      aria-live={announce ? role === "alert" ? "assertive" : "polite" : "off"}
+      aria-atomic="true"
     >
       <span className="notification-icon" aria-hidden="true">
         {icon}
       </span>
 
-      <span className="notification-message">{message}</span>
+      <span id={messageId} className="notification-message">{`${label}: ${message}`}</span>
 
       <button
         type="button"
         className="notification-close-button"
         onClick={onClose}
-        aria-label="Dismiss notification"
+        aria-label={`Dismiss notification: ${message}`}
       >
         ×
       </button>

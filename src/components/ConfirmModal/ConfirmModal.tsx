@@ -1,4 +1,7 @@
-import { useEffect, useRef } from "react";
+import "./ConfirmModal.css";
+import { useId, useRef } from "react";
+
+import { useModalFocus } from "../../accessibility/useModalFocus";
 
 interface ConfirmModalProps {
   title: string;
@@ -19,24 +22,9 @@ export default function ConfirmModal({
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
-  const cancelButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    cancelButtonRef.current?.focus();
-
-    function handleEscapeKey(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onCancel();
-      }
-    }
-
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [onCancel]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const id = useId();
+  useModalFocus(dialogRef, onCancel);
 
   function handleOverlayMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     if (event.target === event.currentTarget) {
@@ -47,23 +35,25 @@ export default function ConfirmModal({
   return (
     <div className="confirm-modal-overlay" onMouseDown={handleOverlayMouseDown}>
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         className="confirm-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="confirm-modal-title"
-        aria-describedby="confirm-modal-message"
+        aria-labelledby={`${id}-title`}
+        aria-describedby={`${id}-message`}
       >
-        <h2 id="confirm-modal-title" className="confirm-modal-title">
+        <h2 id={`${id}-title`} className="confirm-modal-title">
           {title}
         </h2>
 
-        <p id="confirm-modal-message" className="confirm-modal-message">
+        <p id={`${id}-message`} className="confirm-modal-message">
           {message}
         </p>
 
         <div className="confirm-modal-actions">
           <button
-            ref={cancelButtonRef}
+            data-initial-focus
             type="button"
             className="confirm-modal-cancel-button"
             onClick={onCancel}
