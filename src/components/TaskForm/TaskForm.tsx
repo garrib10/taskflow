@@ -1,5 +1,7 @@
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
+import Button from "../ui/Button/Button";
+import Field from "../ui/Field/Field";
 import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
 import type { Board } from "../../domain/board/Board";
@@ -251,41 +253,43 @@ export default function TaskForm({
             </p>
           ))}
 
-          <label htmlFor={`${fieldPrefix}-title`}>Title</label>
+          <Field controlId={`${fieldPrefix}-title`} label="Title">
 
-          <input
-            id={`${fieldPrefix}-title`}
-            name="title"
-            type="text"
-            placeholder="Task title"
-            maxLength={150}
-            value={title}
-            data-initial-focus
-            required
-            aria-invalid={invalidField === "title" || undefined}
-            aria-describedby={`${fieldPrefix}-title-count${invalidField === "title" ? ` ${fieldPrefix}-error` : ""}`}
-            onChange={(event) => setTitle(event.target.value)}
-          />
+            <input
+              id={`${fieldPrefix}-title`}
+              name="title"
+              type="text"
+              placeholder="Task title"
+              maxLength={150}
+              value={title}
+              data-initial-focus
+              required
+              aria-invalid={invalidField === "title" || undefined}
+              aria-describedby={`${fieldPrefix}-title-count${invalidField === "title" ? ` ${fieldPrefix}-error` : ""}`}
+              onChange={(event) => setTitle(event.target.value)}
+            />
 
-          <small id={`${fieldPrefix}-title-count`} className="character-count">{title.trim().length}/150</small>
+            <small id={`${fieldPrefix}-title-count`} className="character-count">{title.trim().length}/150</small>
+          </Field>
 
-          <label htmlFor={`${fieldPrefix}-description`}>Description</label>
+          <Field controlId={`${fieldPrefix}-description`} label="Description">
 
-          <textarea
-            id={`${fieldPrefix}-description`}
-            name="description"
-            required
-            aria-invalid={invalidField === "description" || undefined}
-            aria-describedby={`${fieldPrefix}-description-count${invalidField === "description" ? ` ${fieldPrefix}-error` : ""}`}
-            placeholder="Task description"
-            maxLength={300}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
+            <textarea
+              id={`${fieldPrefix}-description`}
+              name="description"
+              required
+              aria-invalid={invalidField === "description" || undefined}
+              aria-describedby={`${fieldPrefix}-description-count${invalidField === "description" ? ` ${fieldPrefix}-error` : ""}`}
+              placeholder="Task description"
+              maxLength={300}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
 
-          <small id={`${fieldPrefix}-description-count`} className="character-count">
-            {description.trim().length}/300
-          </small>
+            <small id={`${fieldPrefix}-description-count`} className="character-count">
+              {description.trim().length}/300
+            </small>
+          </Field>
 
           <div className="task-form-select-row">
             <div className="task-form-field">
@@ -375,13 +379,13 @@ export default function TaskForm({
           )}
 
           <div className="create-task-actions">
-            <button type="button" onClick={handleRequestClose}>
+            <Button variant="secondary" onClick={handleRequestClose}>
               Cancel
-            </button>
+            </Button>
 
-            <button type="submit">
+            <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

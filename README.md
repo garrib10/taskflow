@@ -149,6 +149,9 @@ The incremental [v2 design-token foundation](docs/v2-design-tokens.md) documents
 shared semantic colors, typography, spacing, focus and motion. It prepares later
 visual work while preserving the current board and form interactions.
 
+The [interface primitive guide](docs/v2-interface-primitives.md) explains the
+small shared Button, Field and Badge APIs and their accessibility ownership.
+
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.
 - [Persistence compatibility](docs/v1.5-persistence-reliability.md): storage key,

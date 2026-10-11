@@ -112,17 +112,6 @@
   background: transparent;
 }
 
-.task-category {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-compact);
-  font-weight: var(--font-weight-label);
-}
-
 .category-feature {
   background: var(--color-category-feature-surface);
   color: var(--color-category-feature-text);
@@ -165,20 +154,6 @@
   border-left: 6px solid var(--color-priority-low-accent);
 }
 
-.badge-high,
-.badge-medium,
-.badge-low {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  white-space: nowrap;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-compact);
-  font-weight: var(--font-weight-label);
-}
-
 .badge-high {
   color: var(--color-priority-high-text);
   background: var(--color-priority-high-surface);
@@ -195,17 +170,8 @@
 }
 
 .completed-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  white-space: nowrap;
   color: var(--color-completion-text);
   background: var(--color-completion-surface);
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-compact);
-  font-weight: var(--font-weight-label);
 }
 
 .task-card-header:focus-visible {

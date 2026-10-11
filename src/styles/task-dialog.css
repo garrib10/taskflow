@@ -93,48 +93,9 @@
   font-weight: var(--font-weight-label);
 }
 
-.create-task-actions button {
-  min-height: var(--size-touch-target);
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  padding: 10px 18px;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  border: none;
-  font-weight: var(--font-weight-label);
-}
-
-.create-task-actions button:first-child {
-  background: var(--color-action-secondary);
-  color: var(--color-action-secondary-text);
-}
-
-.create-task-actions button:first-child:hover:not(:disabled) {
-  background: var(--color-action-secondary-hover);
-}
-
-.create-task-actions button:last-child {
-  background: var(--color-action-primary);
-  color: var(--color-text-on-action);
-}
-
-.create-task-actions button:last-child:hover:not(:disabled) {
-  background: var(--color-action-primary-hover);
-}
-
-.create-task-actions button:last-child:active:not(:disabled) {
-  background: var(--color-action-primary-active);
-}
-
-.create-task-actions button:disabled {
-  background: var(--color-action-disabled);
-  color: var(--color-action-disabled-text);
-  cursor: not-allowed;
-}
-
 @media (max-width: 600px) {
   .create-task-actions { flex-direction: column-reverse; }
-  .create-task-actions button { width: 100%; }
+  .create-task-actions > .ui-button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

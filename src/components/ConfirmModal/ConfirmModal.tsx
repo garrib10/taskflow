@@ -1,4 +1,5 @@
 import "./ConfirmModal.css";
+import Button from "../ui/Button/Button";
 import { useId, useRef } from "react";
 
 import { useModalFocus } from "../../accessibility/useModalFocus";
@@ -52,22 +53,22 @@ export default function ConfirmModal({
         </p>
 
         <div className="confirm-modal-actions">
-          <button
+          <Button
             data-initial-focus
             type="button"
-            className="confirm-modal-cancel-button"
+            variant="secondary"
             onClick={onCancel}
           >
             {cancelText}
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className={`confirm-modal-confirm-button ${confirmVariant}`}
+            variant={confirmVariant}
             onClick={onConfirm}
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
