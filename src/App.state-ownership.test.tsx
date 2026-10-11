@@ -2,13 +2,13 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, it } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { STORAGE_KEY } from "./utils/storage";
 
 afterEach(() => localStorage.clear());
 
 it("keeps criteria and an open draft during an external-storage notice, then hydrates domain only on reload", async () => {
-  const initial = JSON.stringify({ schemaVersion: 2, revision: "initial", board: makeBoard() });
+  const initial = currentBoardRaw();
   localStorage.setItem(STORAGE_KEY, initial);
   const user = userEvent.setup();
   const view = render(<App />);
@@ -21,7 +21,7 @@ it("keeps criteria and an open draft during an external-storage notice, then hyd
   await user.type(dialog.getByLabelText("Title"), "Draft title");
   expect(localStorage.getItem(STORAGE_KEY)).toBe(initial);
 
-  const external = JSON.stringify({ schemaVersion: 2, revision: "external", board: makeBoard([makeTask({ title: "External work" })]) });
+  const external = currentBoardRaw(makeBoard([makeTask({ title: "External work" })]), "external");
   localStorage.setItem(STORAGE_KEY, external);
   act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY, newValue: external })));
   expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();

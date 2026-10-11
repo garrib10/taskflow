@@ -2,14 +2,14 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { createTask, measureColumns, moveTask, savedTasks } from "./test/appJourney";
 import { STORAGE_KEY } from "./utils/storage";
 import type { TaskStatus } from "./domain/task/Task";
 
 beforeEach(() => {
   localStorage.clear(); measureColumns();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "relationships", board: makeBoard([]) }));
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([]), "relationships"));
 });
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
 
@@ -18,7 +18,7 @@ function seedFamily(parentStatus: TaskStatus = "todo") {
   const parent = makeTask({ id: "parent", title: "Release parent", description: "Release parent description", status: parentStatus });
   const children = ["First child", "Second child"].map((title, index) =>
     makeTask({ id: `child-${index}`, title, description: `${title} description`, parentId: parent.id }));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "family", board: makeBoard([parent, ...children]) }));
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([parent, ...children]), "family"));
   return { parent, children };
 }
 
@@ -113,9 +113,9 @@ it("completes and restores the whole family and rejects reopening the completed 
 it("excludes invalid parents from management and persists valid reassignment without loss", async () => {
   const parent = makeTask({ id: "parent", title: "Parent" });
   const child = makeTask({ id: "child", title: "Child", parentId: parent.id });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "links", board: makeBoard([
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([
     parent, child, makeTask({ id: "other", title: "Other" }), makeTask({ id: "done", title: "Completed", status: "done" }),
-  ]) }));
+  ]), "links"));
   const user = userEvent.setup(); render(<App />);
   const original = localStorage.getItem(STORAGE_KEY);
   await user.click(screen.getByRole("button", { name: "Open task Other" }));
@@ -140,9 +140,9 @@ it("excludes invalid parents from management and persists valid reassignment wit
 });
 
 it("confirms child deletion and parent detachment, restores focus and persists no orphan links", async () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "deletion", board: makeBoard([
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([
     makeTask({ id: "p", title: "Parent" }), makeTask({ id: "a", title: "Child A", parentId: "p" }), makeTask({ id: "b", title: "Child B", parentId: "p" }),
-  ]) }));
+  ]), "deletion"));
   const user = userEvent.setup(); const view = render(<App />);
   await user.click(screen.getByRole("button", { name: "Delete Child A" }));
   await user.click(within(screen.getByRole("dialog", { name: "Delete Task" })).getByRole("button", { name: "Delete" }));

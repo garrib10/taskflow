@@ -8,6 +8,7 @@ function notice(variant: NotificationVariant, message: string, recovery: Persist
   return { ...createNotification(variant, message), recovery };
 }
 function blockedNotice(result: LoadResult): PersistenceNotice {
+  if (result.kind === "order-recovery") return notice("warning", "Your tasks were restored in Priority order, but saved manual order needs repair. Your saved data is untouched. Changes stay in this tab; saving is paused.", "reload");
   if (result.kind === "future") return notice("error", "This saved board needs a newer TaskFlow version. An empty workspace is open; your saved data is untouched. Saving is paused.", "reload");
   if (result.kind === "unavailable") return notice("error", "Browser storage is unavailable. An empty workspace is open. Changes stay in this tab and may be lost when it closes. Saving is paused.", "reload");
   if (result.kind === "migration-failed") return notice("error", "Your older saved board could not be upgraded safely. An empty workspace is open; the original is untouched. Saving is paused.", "reload");
@@ -20,6 +21,7 @@ function blockedNotice(result: LoadResult): PersistenceNotice {
  */
 export class PersistenceSession {
   readonly board: Board;
+  readonly orderRecovery: Extract<LoadResult, { kind: "order-recovery" }> | null;
   notice: PersistenceNotice | null = null;
   private listeners = new Set<() => void>();
   getSnapshot = () => this.notice;
@@ -38,7 +40,8 @@ export class PersistenceSession {
   constructor(storage: () => BoardStorage = browserStorage) {
     this.storage = storage;
     const loaded = loadBoard(storage);
-    this.board = loaded.kind === "current" || loaded.kind === "migrated" ? loaded.board
+    this.orderRecovery = loaded.kind === "order-recovery" ? loaded : null;
+    this.board = loaded.kind === "current" || loaded.kind === "migrated" || loaded.kind === "order-recovery" ? loaded.board
       : loaded.kind === "missing" ? initialBoard
       : { id: "board-1", name: "TaskFlow Board", lastUpdated: new Date(0), columns: initialBoard.columns.map((column) => ({ ...column, tasks: [] })) };
     if (loaded.kind === "current" || loaded.kind === "migrated" || loaded.kind === "missing") {
@@ -59,7 +62,7 @@ export class PersistenceSession {
         this.knownRaw = result.raw;
         this.lastSavedBoard = board;
         if (this.migrationPending) {
-          this.notice = notice("info", "Your saved board was upgraded to the current format. Any legacy checklist items now use linked subtasks.", null);
+          this.notice = notice("info", "Your saved board was upgraded to the current format.", null);
         } else if (this.notice?.recovery === "retry") {
           this.notice = notice("success", "Changes in this tab are now saved.", null);
         }

@@ -32,7 +32,7 @@ and [release QA report](docs/v1.5-release-qa.md) for readiness and known finding
 - Typed success, error, warning, and information feedback. Success expires after
   four seconds and information after six; warnings/errors require dismissal or
   resolution. Persistent storage notices remain while the underlying condition exists.
-- Last-updated timestamp, runtime LocalStorage validation, schema version 2,
+- Last-updated timestamp, runtime LocalStorage validation, schema version 3,
   repeat-safe legacy migrations, saving-paused recovery, retry for write failures,
   and multiple-tab conflict detection with explicit reload confirmation.
 - Dialog labels, associated validation errors, focus containment/restoration,
@@ -160,8 +160,9 @@ positions, independent priority ties, atomic placement and persistence deferrals
 The [column capacity guide](docs/v2-column-capacity.md) documents fixed limits,
 complete-board counting, mutation enforcement and over-limit recovery.
 The [v2 persistence specification](docs/v2-persistence-schema.md) defines the
-future schema-3 board contract and separate mode preference; runtime writes
-remain schema 2 until the migration and recovery implementation is ready.
+schema-3 board contract and separate future mode preference. The
+[migration guide](docs/v2-data-migration.md) documents supported legacy upgrades,
+safe writeback and the recovery/preference work still to come.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.

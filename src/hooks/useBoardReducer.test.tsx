@@ -1,7 +1,7 @@
 import { StrictMode, type PropsWithChildren } from "react";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { fixtureDate, makeBoard, makeTask } from "../test/fixtures";
+import { currentBoardRaw, fixtureDate, makeBoard, makeTask } from "../test/fixtures";
 import { boardReducer } from "../domain/board/boardReducer";
 import * as persistenceBoundary from "../utils/storage";
 import { useBoardReducer } from "./useBoardReducer";
@@ -13,7 +13,7 @@ it("does not save rejected multi-field edits or identity collisions, then saves 
     makeTask({ id: "parent" }),
     makeTask({ id: "child", parentId: "parent", status: "in-progress", subtasks: [{ id: "legacy-entry", title: "Legacy work", completed: true }] }),
   ]), { type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate });
-  let raw = JSON.stringify({ schemaVersion: 2, revision: "initial", board: seed });
+  let raw = currentBoardRaw(seed);
   const originalRaw = raw;
   const storage = { getItem: () => raw, setItem: vi.fn((_key: string, value: string) => { raw = value; }) };
   vi.spyOn(persistenceBoundary, "browserStorage").mockReturnValue(storage);
@@ -36,7 +36,7 @@ it("does not save rejected multi-field edits or identity collisions, then saves 
   expect(restored.board.columns.map(column => column.manualOrder)).toEqual(original.columns.map(column => column.manualOrder));
 });
 it("hydrates once per mount and exposes failed saves while reducer work stays usable", () => {
-  const initial = JSON.stringify({ schemaVersion: 2, revision: "a", board: makeBoard() });
+  const initial = currentBoardRaw(makeBoard(), "a");
   const storage = { getItem: vi.fn(() => initial), setItem: vi.fn(() => { throw new DOMException("Full", "QuotaExceededError"); }) };
   vi.spyOn(persistenceBoundary, "browserStorage").mockReturnValue(storage);
   const { result } = renderHook(useBoardReducer, { wrapper: strict });
@@ -48,13 +48,13 @@ it("hydrates once per mount and exposes failed saves while reducer work stays us
   expect(storage.getItem.mock.calls.length).toBe(readsAfterMount + 1);
 });
 it("pauses for external changes and removes listeners on unmount", () => {
-  let current = JSON.stringify({ schemaVersion: 2, revision: "a", board: makeBoard() });
+  let current = currentBoardRaw(makeBoard(), "a");
   const storage = { getItem: () => current, setItem: vi.fn() };
   vi.spyOn(persistenceBoundary, "browserStorage").mockReturnValue(storage);
   const remove = vi.spyOn(window, "removeEventListener");
   const { result, unmount } = renderHook(useBoardReducer);
   const local = result.current[0];
-  current = JSON.stringify({ schemaVersion: 2, revision: "b", board: makeBoard([makeTask({ title: "External work" })]) });
+  current = currentBoardRaw(makeBoard([makeTask({ title: "External work" })]), "b");
   act(() => window.dispatchEvent(new StorageEvent("storage", { key: persistenceBoundary.STORAGE_KEY, newValue: current })));
   expect(result.current[0]).toBe(local);
   expect(result.current[2].notice?.message).toContain("Another tab");

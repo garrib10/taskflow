@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { makeBoard, makeTask } from "../test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "../test/fixtures";
 import { boardReducer } from "../domain/board/boardReducer";
 import { PersistenceSession, listenForBoardChanges } from "./session";
 import { STORAGE_KEY, type BoardStorage } from "../utils/storage";
 
-const raw = (revision = "a", title = "Saved task") => JSON.stringify({ schemaVersion: 2, revision, board: makeBoard([makeTask({ title })]) });
+const raw = (revision = "a", title = "Saved task") => currentBoardRaw(makeBoard([makeTask({ title })]), revision);
 function target(value: string | null = raw()) {
   let current = value;
   const storage: BoardStorage = { getItem: vi.fn(() => current), setItem: vi.fn((_key, next) => { current = next; }) };
