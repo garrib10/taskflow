@@ -8,57 +8,57 @@
   align-items: center;
   justify-content: center;
 
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.55);
+  padding: var(--space-4);
+  background: var(--overlay-confirm);
 }
 
 .confirm-modal {
   width: 100%;
-  max-width: 440px;
-  padding: 24px;
+  max-width: var(--size-confirm-dialog);
+  padding: var(--space-6);
   min-width: 0;
   max-height: calc(100vh - 32px);
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
   overflow-wrap: anywhere;
 
-  background: white;
-  border-radius: var(--radius-medium);
-  box-shadow: var(--shadow-large);
+  background: var(--color-surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-overlay);
 
-  animation: confirm-modal-enter 0.2s ease;
+  animation: confirm-modal-enter var(--motion-duration-enter) var(--motion-easing);
 }
 
 .confirm-modal-title {
   margin: 0 0 10px;
-  color: var(--text-primary);
-  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-panel);
 }
 
 .confirm-modal-message {
   margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.6;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
 }
 
 .confirm-modal-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-3);
   margin-top: 24px;
 }
 
 .confirm-modal-cancel-button,
 .confirm-modal-confirm-button {
-  min-height: 44px;
+  min-height: var(--size-touch-target);
   max-width: 100%;
   overflow-wrap: anywhere;
   padding: 10px 18px;
 
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-control);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--font-weight-label);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -66,33 +66,33 @@
 }
 
 .confirm-modal-cancel-button {
-  border: 1px solid #d1d5db;
-  background: #f3f4f6;
-  color: #374151;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface-hover);
+  color: var(--color-action-secondary-text);
 }
 
 .confirm-modal-cancel-button:hover {
-  background: #e5e7eb;
+  background: var(--color-action-secondary);
 }
 
 .confirm-modal-confirm-button.danger {
-  border: 1px solid #dc2626;
-  background: #dc2626;
-  color: white;
+  border: 1px solid var(--color-action-danger);
+  background: var(--color-action-danger);
+  color: var(--color-text-on-action);
 }
 
 .confirm-modal-confirm-button.danger:hover {
-  background: #b91c1c;
+  background: var(--color-action-danger-hover);
 }
 
 .confirm-modal-confirm-button.primary {
-  border: 1px solid #2563eb;
-  background: #2563eb;
-  color: white;
+  border: 1px solid var(--color-action-primary);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
 }
 
 .confirm-modal-confirm-button.primary:hover {
-  background: #1d4ed8;
+  background: var(--color-action-primary-hover);
 }
 
 @keyframes confirm-modal-enter {

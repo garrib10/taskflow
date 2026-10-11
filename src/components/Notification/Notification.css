@@ -5,39 +5,39 @@
   gap: 10px;
 
   padding: 12px 14px;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 
-  border-radius: var(--radius-small);
-  box-shadow: var(--shadow-small);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-surface);
 
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
 
-  animation: notification-slide-in 0.2s ease;
+  animation: notification-slide-in var(--motion-duration-enter) var(--motion-easing);
 }
 
 .notification.success {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: var(--color-feedback-success-surface);
+  color: var(--color-feedback-success-text);
+  border: var(--border-width) solid var(--color-feedback-success-border);
 }
 
 .notification.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: var(--color-feedback-error-surface);
+  color: var(--color-feedback-error-text);
+  border: var(--border-width) solid var(--color-feedback-error-border);
 }
 
 .notification.warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fcd34d;
+  background: var(--color-feedback-warning-surface);
+  color: var(--color-feedback-warning-text);
+  border: var(--border-width) solid var(--color-feedback-warning-border);
 }
 
 .notification.info {
-  background: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
+  background: var(--color-feedback-info-surface);
+  color: var(--color-feedback-info-text);
+  border: var(--border-width) solid var(--color-feedback-info-border);
 }
 
 .notification-icon {
@@ -50,23 +50,23 @@
   flex-shrink: 0;
 
   border-radius: 50%;
-  font-weight: 700;
+  font-weight: var(--font-weight-heading);
 }
 
 .notification.success .notification-icon {
-  background: #bbf7d0;
+  background: var(--color-feedback-success-icon);
 }
 
 .notification.error .notification-icon {
-  background: #fecaca;
+  background: var(--color-feedback-error-icon);
 }
 
 .notification.warning .notification-icon {
-  background: #fde68a;
+  background: var(--color-feedback-warning-icon);
 }
 
 .notification.info .notification-icon {
-  background: #dbeafe;
+  background: var(--color-feedback-info-icon);
 }
 
 .notification-message {
@@ -80,12 +80,12 @@
   align-items: center;
   justify-content: center;
 
-  width: 44px;
-  height: 44px;
+  width: var(--size-touch-target);
+  height: var(--size-touch-target);
   flex-shrink: 0;
 
   border: none;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-control);
 
   background: transparent;
   color: inherit;
@@ -96,12 +96,12 @@
 }
 
 .notification-close-button:hover {
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--color-dismiss-hover);
 }
 
 .notification-close-button:focus-visible {
-  outline: 3px solid currentColor;
-  outline-offset: 2px;
+  outline: var(--focus-width) solid currentColor;
+  outline-offset: var(--focus-offset);
 }
 
 @keyframes notification-slide-in {

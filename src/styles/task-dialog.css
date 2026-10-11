@@ -1,13 +1,13 @@
 /* Shared task and relationship dialogs. Imported by the two related form components. */
 .form-error {
-  color: #b91c1c;
-  background: #fee2e2;
-  border: 1px solid #fecaca;
-  border-radius: 6px;
+  color: var(--color-validation-text);
+  background: var(--color-validation-surface);
+  border: 1px solid var(--color-validation-border);
+  border-radius: var(--radius-compact);
   padding: 10px 12px;
-  margin-bottom: 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
 }
 
 .create-task-modal {
@@ -16,26 +16,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay-dialog);
   z-index: 1000;
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .create-task-modal form {
-  background: white;
-  width: 550px;
+  background: var(--color-surface);
+  width: var(--size-task-dialog);
   max-width: 100%;
   min-width: 0;
   max-height: calc(100vh - 32px);
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
   overflow-wrap: anywhere;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: var(--space-6);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-dialog);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .create-task-modal form > * { flex-shrink: 0; }
@@ -44,27 +44,29 @@
 .create-task-modal textarea,
 .create-task-modal select {
   width: 100%;
+  min-height: var(--size-touch-target);
   padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-control-border);
+  font-size: var(--font-size-body);
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--motion-duration-enter) var(--motion-easing),
+    box-shadow var(--motion-duration-enter) var(--motion-easing);
 }
 
 .create-task-modal input:hover,
 .create-task-modal textarea:hover,
 .create-task-modal select:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-control-border-hover);
 }
 
 .create-task-modal input:focus,
 .create-task-modal textarea:focus,
 .create-task-modal select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-color: var(--color-focus);
+  box-shadow: var(--focus-shadow);
 }
 
 .create-task-modal textarea {
@@ -76,46 +78,58 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-3);
   margin-top: 20px;
 }
 
 .create-task-modal h2 {
+  font-size: var(--font-size-dialog-title);
+  font-weight: var(--font-weight-heading);
   margin-top: 0;
   margin-bottom: 8px;
 }
 
 .create-task-modal label {
-  font-weight: 600;
+  font-weight: var(--font-weight-label);
 }
 
 .create-task-actions button {
-  min-height: 44px;
+  min-height: var(--size-touch-target);
   max-width: 100%;
   overflow-wrap: anywhere;
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   cursor: pointer;
   border: none;
-  font-weight: 600;
+  font-weight: var(--font-weight-label);
 }
 
 .create-task-actions button:first-child {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--color-action-secondary);
+  color: var(--color-action-secondary-text);
 }
 
-.create-task-actions button:first-child:hover {
-  background: #d1d5db;
+.create-task-actions button:first-child:hover:not(:disabled) {
+  background: var(--color-action-secondary-hover);
 }
 
 .create-task-actions button:last-child {
-  background: #2563eb;
-  color: white;
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
 }
 
-.create-task-actions button:last-child:hover {
-  background: #1d4ed8;
+.create-task-actions button:last-child:hover:not(:disabled) {
+  background: var(--color-action-primary-hover);
+}
+
+.create-task-actions button:last-child:active:not(:disabled) {
+  background: var(--color-action-primary-active);
+}
+
+.create-task-actions button:disabled {
+  background: var(--color-action-disabled);
+  color: var(--color-action-disabled-text);
+  cursor: not-allowed;
 }
 
 @media (max-width: 600px) {

@@ -1,28 +1,28 @@
 /* Legacy checklist feature, including SubtaskItem controls. */
 .subtask-container {
-  margin-top: 1rem;
+  margin-top: var(--space-4);
 }
 
 .subtask-list {
   padding: 0.75rem;
-  background: var(--column-background);
-  border-radius: var(--radius-small);
-  border: 1px solid var(--column-border);
+  background: var(--color-surface-inset);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border);
 }
 
 .subtask-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 8px 0;
-  font-size: 0.85rem;
+  font-size: var(--font-size-support);
 }
 
 .subtask-item-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   flex: 1;
   min-width: 0;
 }
@@ -36,8 +36,8 @@
 }
 
 .no-subtasks {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: var(--font-size-metadata);
+  color: var(--color-text-secondary);
   font-style: italic;
   margin-bottom: 0.75rem;
 }
@@ -45,49 +45,50 @@
 .subtask-delete-button {
   background: transparent;
   border: none;
-  color: #dc2626;
+  color: var(--color-action-danger);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: var(--font-size-compact);
   padding: 4px 8px;
   border-radius: 4px;
 }
 
 .subtask-delete-button:hover {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-action-danger-subtle);
+  color: var(--color-action-danger-text);
 }
 
 .subtask-input-container {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: 12px;
 }
 
 .subtask-input-container input {
   flex: 1;
   padding: 8px 10px;
-  border-radius: var(--radius-small);
-  border: 1px solid var(--column-border);
-  font-size: 0.85rem;
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--color-control-border);
+  font-size: var(--font-size-support);
 }
 
 .subtask-input-container input:focus {
-  outline: none;
-  border-color: #3b82f6;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-color: var(--color-focus);
 }
 
 .add-subtask-button {
-  background: #2563eb;
-  color: white;
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
   border: none;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-control);
   padding: 8px 14px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--font-weight-label);
 }
 
 .add-subtask-button:hover {
-  background: #1d4ed8;
+  background: var(--color-action-primary-hover);
 }
 
 .subtask-container summary { cursor: pointer; }

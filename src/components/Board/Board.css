@@ -1,7 +1,7 @@
 /* Board layout, header and board-owned controls. */
 .board-container {
   width: 100%;
-  max-width: 1800px;
+  max-width: var(--size-board-max);
   margin: 2rem auto;
   padding: 0 1rem;
 }
@@ -9,7 +9,7 @@
 .board {
   display: flex;
   align-items: flex-start;
-  gap: 24px;
+  gap: var(--space-6);
 
   width: 100%;
   overflow-x: auto;
@@ -21,37 +21,42 @@
 }
 
 .board::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 999px;
+  background: var(--color-scrollbar);
+  border-radius: var(--radius-pill);
 }
 
 .board::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-scrollbar-hover);
 }
 
 .board-header {
-  background: white;
+  background: var(--color-surface);
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-panel);
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-header);
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .board-header > div { min-width: 0; }
 .board-scroll-hint { display: none; }
-.board:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+.board:focus-visible {
+  outline: var(--focus-ring);
+  box-shadow: var(--focus-shadow);
+  outline-offset: var(--focus-offset);
+}
 
 @media (min-width: 601px) and (max-width: 1383px) {
-  .board-scroll-hint { display: block; margin: 0; color: var(--text-secondary); }
+  .board-scroll-hint { display: block; margin: 0; color: var(--color-text-secondary); }
 }
 
 .board-header h1 {
+  font-size: var(--font-size-identity);
   margin: 0;
 }
 
@@ -61,68 +66,74 @@
 
 .last-updated {
   margin: 6px 0 0;
-  color: var(--text-secondary);
-  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-metadata);
 }
 
 .reset-controls-button {
-  min-height: 44px;
+  min-height: var(--size-touch-target);
   padding: 10px 20px;
   margin-right: 20px;
   margin-left: auto;
-  border: 1px solid #bfdbfe;
-  border-radius: var(--radius-small);
-  background: #dbeafe;
-  color: #1d4ed8;
+  border: 1px solid var(--color-action-subtle-border);
+  border-radius: var(--radius-control);
+  background: var(--color-action-subtle);
+  color: var(--color-action-subtle-text);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--font-weight-label);
   white-space: nowrap;
 
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    opacity 0.2s ease;
+    background-color var(--motion-duration-enter) var(--motion-easing),
+    border-color var(--motion-duration-enter) var(--motion-easing),
+    opacity var(--motion-duration-enter) var(--motion-easing);
 }
 
 .reset-controls-button:hover:not(:disabled) {
-  background: #bfdbfe;
+  background: var(--color-action-subtle-hover);
 }
 
 .reset-controls-button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  background: var(--color-action-disabled);
+  color: var(--color-action-disabled-text);
+  border-color: var(--color-border);
 }
 
 .search-results-count {
   margin: 0 0 1rem;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-support);
 }
 
 .create-task-button {
-  min-height: 44px;
+  min-height: var(--size-touch-target);
   padding: 10px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   cursor: pointer;
-  font-weight: 600;
-  background: #2563eb;
-  color: white;
+  font-weight: var(--font-weight-label);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
   transition:
-    background-color 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
+    background-color var(--motion-duration-enter) var(--motion-easing),
+    transform var(--motion-duration-fast) var(--motion-easing),
+    box-shadow var(--motion-duration-enter) var(--motion-easing);
 }
 
 .create-task-button:hover {
-  background: #1d4ed8;
+  background: var(--color-action-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-action);
+}
+
+.create-task-button:active {
+  background: var(--color-action-primary-active);
 }
 
 @media (max-width: 1024px) {
   .board {
-    gap: 16px;
+    gap: var(--space-4);
     overflow-x: auto;
     flex-wrap: nowrap;
     padding-bottom: 0.5rem;

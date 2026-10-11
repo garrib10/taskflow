@@ -135,7 +135,7 @@ src/
   persistence/            Runtime validation, migrations and persistence session
   notifications/          Typed notification creation and lifecycle
   accessibility/          Dialog focus and keyboard coordinates
-  styles/                 Shared control and dialog styles
+  styles/                 Design tokens, shared control and dialog styles
   utils/                  Storage boundary and sample board
   test/                   Fixtures and test setup
 ```
@@ -144,6 +144,10 @@ UI validates intended actions and the reducer validates them again against the
 current complete board. Action IDs/timestamps are supplied before dispatch.
 Filters affect presentation, not relationship integrity. Component CSS is owned
 by its component; shared styles remain explicit.
+
+The incremental [v2 design-token foundation](docs/v2-design-tokens.md) documents
+shared semantic colors, typography, spacing, focus and motion. It prepares later
+visual work while preserving the current board and form interactions.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.

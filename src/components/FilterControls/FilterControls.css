@@ -5,7 +5,7 @@
   max-width: 100%;
   display: flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: nowrap;
 }
 
@@ -17,24 +17,24 @@
 }
 
 .filter-group label {
-  color: var(--text-primary);
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-support);
+  font-weight: var(--font-weight-label);
 }
 
 .filter-group select {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--size-touch-target);
   padding: 9px 34px 9px 12px;
-  border: 1px solid var(--column-border);
-  border-radius: var(--radius-small);
-  background: white;
-  color: var(--text-primary);
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font: inherit;
   cursor: pointer;
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--motion-duration-enter) var(--motion-easing),
+    box-shadow var(--motion-duration-enter) var(--motion-easing);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,12 +42,12 @@
 }
 
 .filter-group select:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-control-border-hover);
 }
 
 .filter-group select:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: var(--color-focus);
+  box-shadow: var(--focus-shadow);
 }
 
 @media (max-width: 600px) {
