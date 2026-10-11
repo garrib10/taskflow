@@ -85,11 +85,42 @@ test("keyboard dialogs and primary controls fit the viewport without accidental 
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(create).toBeFocused();
   await page.getByLabel("Search:", { exact: true }).fill("keyboard");
+  const filters = page.getByRole("button", { name: /^Filters \(/ });
+  if (await filters.count()) await filters.click();
   await page.getByLabel("Priority", { exact: true }).selectOption("medium");
   await page.getByLabel("Category", { exact: true }).selectOption("feature");
   await page.getByLabel("Status", { exact: true }).selectOption("todo");
+  if (await filters.count()) await page.getByRole("button", { name: "Done", exact: true }).click();
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
   await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("shell landmarks and responsive filter presentation preserve criteria and reset", async ({ page }) => {
+  await expect(page.getByRole("banner")).toHaveCount(1);
+  await expect(page.getByRole("main", { name: "Task board" })).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Workflow columns", exact: true })).toBeVisible();
+  const trigger = page.getByRole("button", { name: /^Filters \(/ });
+  const narrow = await trigger.count() > 0;
+  await page.getByLabel("Search:", { exact: true }).fill("authentication");
+  if (narrow) {
+    await trigger.focus(); await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("dialog", { name: "Filter tasks" }).getByRole("heading")).toBeFocused();
+  }
+  await page.getByLabel("Priority", { exact: true }).selectOption("high");
+  await page.getByLabel("Category", { exact: true }).selectOption("feature");
+  if (narrow) {
+    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await expect(trigger).toHaveText("Filters (2)"); await expect(trigger).toBeFocused();
+    await trigger.click(); await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("high");
+    await page.keyboard.press("Escape"); await expect(trigger).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 720 });
+  }
+  await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("high");
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
+  await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("all");
 });
