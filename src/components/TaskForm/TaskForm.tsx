@@ -17,8 +17,7 @@ import Notification from "../Notification/Notification";
 import { useNotification } from "../../notifications/useNotification";
 import { operationVariant } from "../../notifications/notification";
 import { useModalFocus } from "../../accessibility/useModalFocus";
-import { priorityStyles } from "../../domain/task/priorityStyles";
-import { categoryStyles } from "../../domain/task/categoryStyles";
+import { validateTaskContent } from "../../domain/task/taskContent";
 
 interface TaskFormProps {
   board: Board;
@@ -136,33 +135,8 @@ export default function TaskForm({
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
 
-    if (!trimmedTitle) {
-      fail("title", "Task title is required.");
-      return;
-    }
-
-    if (trimmedTitle.length < 3) {
-      fail("title", "Task title must be at least 3 characters long.");
-      return;
-    }
-
-    if (trimmedTitle.length > 150) {
-      fail("title", "Task title cannot exceed 150 characters.");
-      return;
-    }
-
-    if (!trimmedDescription) {
-      fail("description", "Task description is required.");
-      return;
-    }
-
-    if (trimmedDescription.length > 300) {
-      fail("description", "Task description cannot exceed 300 characters.");
-      return;
-    }
-
-    if (!Object.hasOwn(priorityStyles, priority)) { fail("priority", "Choose a valid priority."); return; }
-    if (!Object.hasOwn(categoryStyles, category)) { fail("category", "Choose a valid category."); return; }
+    const contentError = validateTaskContent({ title: trimmedTitle, description: trimmedDescription, priority, category });
+    if (contentError) { fail(contentError.field, contentError.message); return; }
 
     if (isEditing && task) {
       const failure = dispatch({
@@ -178,7 +152,7 @@ export default function TaskForm({
       });
       if (failure) {
         show(operationVariant(failure), failure.message);
-        fail(null, failure.message);
+        fail(failure.code === "invalid-task-content" ? failure.field : null, failure.message);
         return;
       }
 
@@ -191,7 +165,7 @@ export default function TaskForm({
         : { type: "CREATE_TASK", task: newTask, updatedAt });
       if (failure) {
         show(operationVariant(failure), failure.message);
-        fail(null, failure.message);
+        fail(failure.code === "invalid-task-content" ? failure.field : null, failure.message);
         return;
       }
 

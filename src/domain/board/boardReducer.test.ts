@@ -3,6 +3,7 @@ import { fixtureDate, freezeDeep, makeBoard, makeTask } from "../../test/fixture
 import type { Board } from "./Board";
 import { boardReducer, type BoardAction } from "./boardReducer";
 import { createDefaultBoardFilters, filterBoardColumns } from "./boardFilters";
+import { validateBoardAction } from "./boardValidation";
 
 const updatedAt = new Date("2026-02-01T00:00:00.000Z");
 const tasks = (board: Board) => board.columns.flatMap((column) => column.tasks);
@@ -49,6 +50,30 @@ describe("atomic movement", () => {
 });
 
 describe("deterministic actions and immutable updates", () => {
+  it.each([
+    ["title", "   "], ["title", "ab"], ["title", "x".repeat(151)],
+    ["description", ""], ["description", "x".repeat(301)],
+    ["priority", "urgent"], ["category", "unknown"],
+  ])("rejects invalid %s in a multi-field edit before changing any content, relationships or positions", (field, value) => {
+    const initial = makeBoard([makeTask({ id: "parent" }), makeTask({ id: "child", parentId: "parent", status: "in-progress", subtasks: [checklistItem] })]);
+    const board = boardReducer(initial, { type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate });
+    freezeDeep(board);
+    // Runtime command input can evade the compile-time unions.
+    const action: BoardAction = { type: "UPDATE_TASK", taskId: "child", edits: JSON.parse(JSON.stringify({ ...edits, [field]: value })), updatedAt };
+    expect(validateBoardAction(board, action)).toMatchObject({ code: "invalid-task-content", field });
+    expect(boardReducer(board, action)).toBe(board);
+  });
+  it("rejects invalid linked creation without inserting a record or manual position", () => {
+    const board = boardReducer(makeBoard(), { type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate });
+    const action: BoardAction = { type: "CREATE_CHILD_TASK", parentId: "task-1", task: makeTask({ id: "child", title: "" }), updatedAt };
+    expect(validateBoardAction(board, action)).toMatchObject({ code: "invalid-task-content", field: "title" });
+    expect(boardReducer(board, action)).toBe(board);
+    expect(validateBoardAction(board, { ...action, parentId: "missing" })?.code).toBe("missing-parent");
+    expect(validateBoardAction(board, { ...action, task: { ...action.task, id: "task-1" } })?.code).toBe("duplicate-id");
+    const invalidEdits = { ...edits, title: "", description: "" };
+    expect(validateBoardAction(board, { type: "UPDATE_TASK", taskId: "missing", edits: invalidEdits, updatedAt })?.code).toBe("missing-task");
+    expect(validateBoardAction(board, { type: "UPDATE_TASK", taskId: "task-1", edits: invalidEdits, updatedAt })).toMatchObject({ code: "invalid-task-content", field: "title" });
+  });
   const actions: BoardAction[] = [
     { type: "CREATE_TASK", task: makeTask({ id: "created" }), updatedAt },
     { type: "UPDATE_TASK", taskId: "task-1", edits, updatedAt },
@@ -83,6 +108,12 @@ describe("deterministic actions and immutable updates", () => {
     const board = makeBoard([makeTask({ subtasks: [checklistItem] })]);
     expect(boardReducer(board, { type: "CREATE_TASK", task: makeTask(), updatedAt })).toBe(board);
     expect(boardReducer(board, { type: "ADD_SUBTASK", taskId: "task-1", subtask: checklistItem, updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "CREATE_TASK", task: makeTask({ id: checklistItem.id }), updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "ADD_SUBTASK", taskId: "task-1", subtask: { ...checklistItem, id: "task-1" }, updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "CREATE_TASK", task: makeTask({ id: "new", subtasks: [checklistItem] }), updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "CREATE_CHILD_TASK", parentId: "task-1", task: makeTask({ id: "new", subtasks: [checklistItem] }), updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "CREATE_TASK", task: makeTask({ id: "new", subtasks: [{ ...checklistItem, id: "new" }] }), updatedAt })).toBe(board);
+    expect(boardReducer(board, { type: "CREATE_TASK", task: makeTask({ id: "new", subtasks: [{ ...checklistItem, id: "new-entry" }, { ...checklistItem, id: "new-entry" }] }), updatedAt })).toBe(board);
   });
   it("requires a todo destination and status for creation", () => {
     const board = makeBoard([]);
