@@ -153,6 +153,8 @@ The [interface primitive guide](docs/v2-interface-primitives.md) explains the
 small shared Button, Field and Badge APIs and their accessibility ownership.
 The [application shell guide](docs/v2-app-shell.md) records responsive toolbar
 behavior, modal focus ownership and the boundaries for later board/detail work.
+The [state ownership guide](docs/v2-state-ownership.md) maps durable board data,
+mount-local view preferences and temporary interactions to their owners.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.
