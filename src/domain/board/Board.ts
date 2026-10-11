@@ -1,5 +1,5 @@
 /** type-only imports */
-import type { Task, TaskStatus } from "../task/Task";
+import type { Task, TaskStatus } from "../task/Task.ts";
 
 export interface Column {
   id: TaskStatus;

@@ -27,7 +27,7 @@ export function operationVariant(failure: BoardOperationError): "warning" | "err
   switch (failure.code) {
     case "self-parent": case "cycle": case "hierarchy-depth": case "missing-parent":
     case "completed-parent": case "unchanged-relationship": case "incomplete-children":
-    case "parent-delete-confirmation":
+    case "parent-delete-confirmation": case "capacity-exceeded":
       return "warning";
     default:
       return "error";
