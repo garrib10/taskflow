@@ -1,0 +1,60 @@
+.board-toolbar { margin: var(--space-5) 0 var(--space-3); }
+.toolbar-controls {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr) auto;
+  gap: var(--space-4);
+  align-items: end;
+}
+.toolbar-controls-with-order { grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr) auto auto; }
+.board-toolbar .filter-controls { flex-wrap: wrap; }
+.board-toolbar .filter-group { flex: 1 1 12rem; }
+.board-toolbar .search-bar { min-width: 0; max-width: none; }
+.toolbar-ordering {
+  align-self: center;
+  font-size: var(--font-size-support);
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+.toolbar-context { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+.toolbar-context p, .toolbar-sheet-summary p { margin: 0; font-size: var(--font-size-support); color: var(--color-text-secondary); }
+.toolbar-filter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--overlay-dialog);
+}
+.toolbar-filter-sheet {
+  width: 100%;
+  max-width: var(--size-task-dialog);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  background: var(--color-surface);
+  padding: var(--space-6);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-overlay);
+}
+.toolbar-filter-sheet h2 { margin: 0; font-size: var(--font-size-dialog-title); }
+.toolbar-filter-sheet p { font-size: var(--font-size-support); }
+.toolbar-filter-sheet .filter-controls { margin: var(--space-4) 0; }
+.toolbar-sheet-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+.toolbar-sheet-actions > button { flex: 1 1 auto; }
+
+@media (max-width: 1100px) {
+  .toolbar-controls, .toolbar-controls-with-order { grid-template-columns: minmax(0, 1fr) auto; }
+  .toolbar-controls > button:last-child { grid-column: -2 / -1; }
+  .board-toolbar .search-bar, .board-toolbar .filter-controls { grid-column: 1 / -1; }
+  .board-toolbar .filter-controls { align-items: stretch; flex-wrap: wrap; }
+
+}
+@media (max-width: 600px) {
+  .toolbar-controls { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2); }
+  .toolbar-controls-with-order { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .board-toolbar .search-bar { grid-column: 1 / -1; }
+  .toolbar-controls > button { padding-inline: var(--space-3); }
+  .toolbar-filter-sheet .filter-controls { gap: var(--space-4); }
+}

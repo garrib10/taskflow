@@ -1,5 +1,5 @@
 import "./Board.css";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { DndContext, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type Announcements, type Modifier } from "@dnd-kit/core";
 import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
@@ -9,6 +9,8 @@ import { getChildren } from "../../domain/board/taskRelationships";
 import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
+import AppShell from "../AppShell/AppShell";
+import BoardToolbar from "../BoardToolbar/BoardToolbar";
 import {
   filterBoardColumns,
   createDefaultBoardFilters,
@@ -30,9 +32,11 @@ import { restrictDragToColumns } from "./dragBounds";
 interface BoardProps {
   board: BoardType;
   dispatch: React.Dispatch<BoardAction>;
+  feedback?: ReactNode;
+  overlays?: ReactNode;
 }
 
-export default function Board({ board, dispatch }: BoardProps) {
+export default function Board({ board, dispatch, feedback, overlays }: BoardProps) {
   const boardElement = useRef<HTMLDivElement>(null);
   const restrictToBoard: Modifier = ({ transform, draggingNodeRect }) =>
     restrictDragToColumns(transform, draggingNodeRect,
@@ -78,14 +82,6 @@ export default function Board({ board, dispatch }: BoardProps) {
     statusFilter !== "all";
 
   const isFiltering = isSearching || hasActiveFilters;
-
-  const formattedLastUpdated = board.lastUpdated.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
 
   const filteredColumns = filterBoardColumns(board, {
     searchTerm,
@@ -247,108 +243,73 @@ export default function Board({ board, dispatch }: BoardProps) {
       onDragOver={({ active, over }) => { if (over && over.id !== active.data.current?.status) announce(`Destination: ${board.columns.find(column => column.id === over.id)?.title}.`); }}
       onDragCancel={({ active }) => { announce(`Movement of "${titleFor(active.id)}" cancelled.`); focusTargets([`task-${active.id}`, "task-search"]); }} accessibility={{ restoreFocus: false, announcements, screenReaderInstructions: { draggable: "Press Space or Enter to pick up a task. Use Left and Right to select a workflow column. Press Space or Enter to drop, or Escape or Tab to cancel." } }}>
       <div className="visually-hidden" data-live-region role="status" aria-label="Board updates" aria-atomic="true"><span key={announcement.id}>{announcement.message}</span></div>
-      <div className="board-container" onFocusCapture={event => { const task = (event.target as HTMLElement).closest(".task-card"); if (task) lastTaskFocus.current = task.id; }}>
-        {notification && (
-          <Notification
-            key={notification.id}
-            notification={notification}
-            onFocusLost={() => focusTargets(lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"])}
-            announce={false}
-            onClose={() => { dismissFocus(); dismiss(notification.id); }}
-          />
-        )}
+      <div onFocusCapture={event => { const task = (event.target as HTMLElement).closest(".task-card"); if (task) lastTaskFocus.current = task.id; }}>
+        <AppShell lastUpdated={board.lastUpdated} onCreateTask={handleCreateTask}
+          feedback={<>
+            {feedback}
+            {notification && (
+              <Notification
+                key={notification.id}
+                notification={notification}
+                onFocusLost={() => focusTargets(lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"])}
+                announce={false}
+                onClose={() => { dismissFocus(); dismiss(notification.id); }}
+              />
+            )}
+          </>}
+          toolbar={<BoardToolbar
+            search={<SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />}
+            filters={<FilterControls priorityFilter={priorityFilter} categoryFilter={categoryFilter} statusFilter={statusFilter}
+              onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
+            filterCount={Number(priorityFilter !== "all") + Number(categoryFilter !== "all") + Number(statusFilter !== "all")}
+            activeCriteria={isFiltering} onReset={handleResetControls}
+            resultSummary={isFiltering ? <p aria-live="polite">{matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"} found</p> : null}
+          />}
+          overlays={<>
+            {overlays}
+            {showTaskForm && (
+              <TaskForm
+                key={taskToEdit?.id ?? "new"}
+                board={board}
+                task={taskToEdit}
+                onClose={handleCloseTaskForm}
+                dispatch={tryDispatch}
+                onSuccess={handleTaskSaved}
+                onOpenTask={handleEditTask}
+              />
+            )}
 
-        <div className="board-header">
-          <div>
-            <h1>TaskFlow</h1>
-            <p>Rule-Based Workflow Board</p>
+            {taskPendingDeletion && (
+              <ConfirmModal
+                title={pendingChildren.length > 0 ? "Delete Parent Task" : "Delete Task"}
+                message={pendingChildren.length > 0
+                  ? `Delete "${taskPendingDeletion.title}" and detach its ${pendingChildren.length} ${pendingChildren.length === 1 ? "subtask" : "subtasks"}? All subtasks will be kept as independent tasks. This action cannot be undone.`
+                  : `Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
+                confirmText={pendingChildren.length > 0 ? "Delete Parent and Detach Subtasks" : "Delete"}
+                cancelText="Cancel"
+                confirmVariant="danger"
+                onConfirm={handleConfirmDeleteTask}
+                onCancel={handleCancelDeleteTask}
+              />
+            )}
 
-            <p className="last-updated">
-              Last updated:{" "}
-              <time dateTime={board.lastUpdated.toISOString()}>
-                {formattedLastUpdated}
-              </time>
-            </p>
+          </>}
+        >
+          <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>
+          <div ref={boardElement} className="board" id="taskflow-board" role="region" aria-label="Workflow columns" tabIndex={0}>
+            {filteredColumns.map((column) => (
+              <Column
+                key={column.id}
+                column={column}
+                board={board}
+                dispatch={dispatchFromCard}
+                onEdit={handleEditTask}
+                onDelete={handleDeleteTask}
+                isFiltering={isFiltering}
+              />
+            ))}
           </div>
-
-          <button
-            type="button"
-            className="create-task-button" data-focus-fallback
-            onClick={handleCreateTask}
-          >
-            + Create Task
-          </button>
-        </div>
-
-        <div className="board-controls" role="search" aria-label="Search and filter tasks">
-          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-
-          <FilterControls
-            priorityFilter={priorityFilter}
-            categoryFilter={categoryFilter}
-            statusFilter={statusFilter}
-            onPriorityChange={setPriorityFilter}
-            onCategoryChange={setCategoryFilter}
-            onStatusChange={setStatusFilter}
-          />
-
-          <button
-            type="button"
-            className="reset-controls-button"
-            onClick={handleResetControls}
-            disabled={!isFiltering}
-          >
-            Reset
-          </button>
-        </div>
-
-        {isFiltering && (
-          <p className="search-results-count" aria-live="polite">
-            {matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"}{" "}
-            found
-          </p>
-        )}
-
-        {showTaskForm && (
-          <TaskForm
-            key={taskToEdit?.id ?? "new"}
-            board={board}
-            task={taskToEdit}
-            onClose={handleCloseTaskForm}
-            dispatch={tryDispatch}
-            onSuccess={handleTaskSaved}
-            onOpenTask={handleEditTask}
-          />
-        )}
-
-        {taskPendingDeletion && (
-          <ConfirmModal
-            title={pendingChildren.length > 0 ? "Delete Parent Task" : "Delete Task"}
-            message={pendingChildren.length > 0
-              ? `Delete "${taskPendingDeletion.title}" and detach its ${pendingChildren.length} ${pendingChildren.length === 1 ? "subtask" : "subtasks"}? All subtasks will be kept as independent tasks. This action cannot be undone.`
-              : `Are you sure you want to delete "${taskPendingDeletion.title}"? This action cannot be undone.`}
-            confirmText={pendingChildren.length > 0 ? "Delete Parent and Detach Subtasks" : "Delete"}
-            cancelText="Cancel"
-            confirmVariant="danger"
-            onConfirm={handleConfirmDeleteTask}
-            onCancel={handleCancelDeleteTask}
-          />
-        )}
-
-        <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>
-        <div ref={boardElement} className="board" id="taskflow-board" role="region" aria-label="Workflow columns" tabIndex={0}>
-          {filteredColumns.map((column) => (
-            <Column
-              key={column.id}
-              column={column}
-              board={board}
-              dispatch={dispatchFromCard}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-              isFiltering={isFiltering}
-            />
-          ))}
-        </div>
+        </AppShell>
       </div>
     </DndContext>
   );

@@ -18,19 +18,19 @@ function App() {
     if (trigger && !trigger.isConnected) document.querySelector<HTMLElement>("[data-focus-fallback]")?.focus();
   }, [notice]);
 
-  return <main>
+  return <Board board={board} dispatch={dispatch} feedback={<>
     {notification && <Notification key={notification.id} notification={notification} onClose={() => dismiss(notification.id)} />}
     {notice?.recovery && (
-      <section className="board-controls" aria-label="Board storage">
+      <section className="board-storage" aria-label="Board storage">
         <p>{notice.message}</p>
         {notice.recovery === "retry" && <button type="button" className="edit-task-button" onClick={event => { retryTrigger.current = event.currentTarget; persistence.retrySave(); }}>Retry saving</button>}
         <button type="button" className="edit-task-button" onClick={() => setShowReload(true)}>Reload saved board</button>
       </section>
     )}
-    <Board board={board} dispatch={dispatch} />
+    </>} overlays={<>
     {showReload && <ConfirmModal title="Reload Saved Board?"
       message="Reloading discards unsaved work in this tab and tries to restore the saved board. The stored data will not be cleared."
       confirmText="Reload Saved Board" onCancel={() => setShowReload(false)} onConfirm={() => window.location.reload()} />}
-  </main>;
+  </>} />;
 }
 export default App;
