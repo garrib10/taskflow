@@ -143,7 +143,7 @@ test("full destination stays blocked when search hides occupants and becomes usa
   await page.reload();
   await page.getByLabel("Search:", { exact: true }).fill("Incoming");
   await move(page, "Incoming task");
-  await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`${COLUMN_CAPACITY["in-progress"]} of ${COLUMN_CAPACITY["in-progress"]} slots are occupied`);
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`In Progress is full (${COLUMN_CAPACITY["in-progress"]}-task limit).`);
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Tasks hidden by search or filters still count");
   await expect(page.getByRole("group", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);

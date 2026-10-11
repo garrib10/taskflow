@@ -50,7 +50,11 @@ describe("fixed complete-board capacity", () => {
     for (const count of [limit, limit + 2]) {
       const blocked = populated(status, count, source); freezeDeep(blocked);
       const action = move("incoming", status);
-      expect(validateBoardAction(blocked, action)).toMatchObject({ code: "capacity-exceeded", taskId: "incoming", capacity: { kind: "limited", status, count, limit } });
+      const rejection = validateBoardAction(blocked, action);
+      expect(rejection).toMatchObject({ code: "capacity-exceeded", taskId: "incoming", capacity: { kind: "limited", status, count, limit } });
+      expect(rejection?.message).toContain(count === limit
+        ? `${status} is full (${limit}-task limit).`
+        : `${status} is over its ${limit}-task limit (${count} tasks).`);
       expect(boardReducer(blocked, action)).toBe(blocked);
     }
   });

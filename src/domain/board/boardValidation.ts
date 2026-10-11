@@ -27,8 +27,11 @@ function incomingCapacityError(board: Board, task: Task, destination: Task["stat
   const decision = evaluateIncomingCapacity(board, destination, source);
   if (decision.kind === "allowed") return null;
   const title = board.columns.find(column => column.id === destination)?.title ?? destination;
+  const summary = decision.capacity.state === "over"
+    ? `${title} is over its ${decision.capacity.limit}-task limit (${decision.capacity.count} tasks).`
+    : `${title} is full (${decision.capacity.limit}-task limit).`;
   return { code: "capacity-exceeded", taskId: task.id, capacity: decision.capacity,
-    message: `Cannot move "${task.title}" to ${title}: ${decision.capacity.count} of ${decision.capacity.limit} slots are occupied. The task was not moved. Tasks hidden by search or filters still count. Finish, move, or delete work there before adding another task.` };
+    message: `${summary} "${task.title}" wasn't moved. Move or delete a task from this column, then try again. Tasks hidden by search or filters still count toward the limit.` };
 }
 
 /** Check an intended link using the complete board, never filtered columns. */

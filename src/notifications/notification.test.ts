@@ -13,7 +13,8 @@ it("classifies a structured capacity rejection as the existing warning variant",
   if (!result || result.code !== "capacity-exceeded") throw new Error("Expected capacity rejection");
   expect(operationVariant(result)).toBe("warning");
   expect(result.capacity).toMatchObject({ status: "in-progress", count: COLUMN_CAPACITY["in-progress"], limit: COLUMN_CAPACITY["in-progress"] });
-  expect(result.message).toContain("The task was not moved");
+  expect(result.message).toContain(`in-progress is full (${COLUMN_CAPACITY["in-progress"]}-task limit).`);
+  expect(result.message).toContain('"Build search" wasn\'t moved.');
 });
 
 it.each(["self", "cycle", "depth", "completed", "missing"] as const)("classifies the real %s relationship rejection as a warning", scenario => {
