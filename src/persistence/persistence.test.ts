@@ -158,6 +158,29 @@ describe("safe storage boundary", () => {
     expect(JSON.parse(target.getItem(STORAGE_KEY) ?? "null")).toMatchObject({ schemaVersion: CURRENT_SCHEMA_VERSION, revision: "known-revision" });
     expect(loadBoard(() => target)).toMatchObject({ kind: "current", board, revision: "known-revision" });
   });
+  it("saves only validated domain fields even when structurally compatible objects contain UI state", () => {
+    const domain = makeBoard([makeTask({ subtasks: [{ id: "check", title: "Checklist", completed: false }] })]);
+    const mixed = {
+      ...domain,
+      filters: { searchTerm: "private query" },
+      dialog: { open: true, draft: "Unsaved title" },
+      columns: domain.columns.map(column => ({
+        ...column, selected: true,
+        tasks: column.tasks.map(task => ({
+          ...task, validationError: "Temporary error", dragging: true,
+          subtasks: task.subtasks.map(entry => ({ ...entry, focused: true })),
+        })),
+      })),
+    };
+    const target = memory();
+    expect(saveBoard(mixed, null, () => target, () => "domain-only").kind).toBe("saved");
+    expect(JSON.parse(target.getItem(STORAGE_KEY)!)).toEqual({
+      schemaVersion: CURRENT_SCHEMA_VERSION, revision: "domain-only", board: json(domain),
+    });
+    expect(loadBoard(() => target)).toMatchObject({ kind: "current", board: domain });
+    expect(mixed.dialog.draft).toBe("Unsaved title");
+    expect(mixed.columns[0].tasks[0].dragging).toBe(true);
+  });
   it("read failures and unavailable storage return typed failure", () => {
     const unavailable = () => { throw new DOMException("Blocked", "SecurityError"); };
     expect(loadBoard(unavailable).kind).toBe("unavailable");

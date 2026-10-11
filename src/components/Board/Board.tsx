@@ -11,13 +11,8 @@ import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
 import AppShell from "../AppShell/AppShell";
 import BoardToolbar from "../BoardToolbar/BoardToolbar";
-import {
-  filterBoardColumns,
-  createDefaultBoardFilters,
-  type CategoryFilter,
-  type PriorityFilter,
-  type StatusFilter,
-} from "../../domain/board/boardFilters";
+import { filterBoardColumns } from "../../domain/board/boardFilters";
+import { useBoardViewPreferences } from "../../hooks/useBoardViewPreferences";
 import { isTaskStatus } from "../../utils/typeGuards";
 import Notification from "../Notification/Notification";
 import { useNotification } from "../../notifications/useNotification";
@@ -68,27 +63,9 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     null,
   );
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-
-  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-  const isSearching = normalizedSearchTerm.length > 0;
-
-  const hasActiveFilters =
-    priorityFilter !== "all" ||
-    categoryFilter !== "all" ||
-    statusFilter !== "all";
-
-  const isFiltering = isSearching || hasActiveFilters;
-
-  const filteredColumns = filterBoardColumns(board, {
-    searchTerm,
-    priorityFilter,
-    categoryFilter,
-    statusFilter,
-  });
+  const { filters, filterCount, isFiltering, setSearchTerm, setPriorityFilter, setCategoryFilter, setStatusFilter, resetCriteria } = useBoardViewPreferences();
+  const { searchTerm, priorityFilter, categoryFilter, statusFilter } = filters;
+  const filteredColumns = filterBoardColumns(board, filters);
 
   const matchingTaskCount = filteredColumns.reduce(
     (total, column) => total + column.tasks.length,
@@ -106,11 +83,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
   }
 
   function handleResetControls() {
-    const defaults = createDefaultBoardFilters();
-    setSearchTerm(defaults.searchTerm);
-    setPriorityFilter(defaults.priorityFilter);
-    setCategoryFilter(defaults.categoryFilter);
-    setStatusFilter(defaults.statusFilter);
+    resetCriteria();
     pendingFocus.current = ["task-search"];
   }
 
@@ -261,7 +234,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
             search={<SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />}
             filters={<FilterControls priorityFilter={priorityFilter} categoryFilter={categoryFilter} statusFilter={statusFilter}
               onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
-            filterCount={Number(priorityFilter !== "all") + Number(categoryFilter !== "all") + Number(statusFilter !== "all")}
+            filterCount={filterCount}
             activeCriteria={isFiltering} onReset={handleResetControls}
             resultSummary={isFiltering ? <p aria-live="polite">{matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"} found</p> : null}
           />}

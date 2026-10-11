@@ -68,10 +68,12 @@ export function saveBoard(board: Board, expectedRaw: string | null,
   let revision: string;
   try {
     const data: unknown = JSON.parse(JSON.stringify(board));
-    if (!validateBoard(data).ok) return { kind: "invalid-board" };
+    const validated = validateBoard(data);
+    if (!validated.ok) return { kind: "invalid-board" };
     revision = newRevision();
     if (!isId(revision)) return { kind: "save-failed" };
-    raw = JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, revision, board: data });
+    // Serialize the trusted domain projection, not structurally compatible UI extras.
+    raw = JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, revision, board: validated.board });
     target.setItem(STORAGE_KEY, raw);
   } catch { return { kind: "save-failed" }; }
   try {
