@@ -5,7 +5,7 @@ import type { Board as BoardType } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
 import { validateBoardAction, type BoardOperationError } from "../../domain/board/boardValidation";
-import { getChildren } from "../../domain/board/taskRelationships";
+import { findTask, getChildren } from "../../domain/board/taskRelationships";
 import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
@@ -106,7 +106,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     const { active, over } = event;
 
     if (!over) {
-      announce(`Dropped "${board.columns.flatMap(column => column.tasks).find(task => task.id === String(active.id))?.title ?? "Task"}" without changing its stage.`);
+      announce(`Dropped "${findTask(board, String(active.id))?.title ?? "Task"}" without changing its stage.`);
       pendingFocus.current = [`task-${active.id}`, "task-search"];
       return;
     }
@@ -117,9 +117,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     }
     const newStatus = over.id;
 
-    const currentTask = board.columns
-      .flatMap((column) => column.tasks)
-      .find((task) => task.id === taskId);
+    const currentTask = findTask(board, taskId);
 
     if (!currentTask) {
       return;
@@ -164,9 +162,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
   }
 
   function handleDeleteTask(taskId: string) {
-    const task = board.columns
-      .flatMap((column) => column.tasks)
-      .find((currentTask) => currentTask.id === taskId);
+    const task = findTask(board, taskId);
 
     if (!task) {
       return;
@@ -204,7 +200,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     showFeedback("success", pendingChildren.length > 0 ? `Deleted parent "${taskPendingDeletion.title}"; subtasks kept as independent tasks.` : `Deleted "${taskPendingDeletion.title}".`);
   }
 
-  const titleFor = (id: string | number) => board.columns.flatMap(column => column.tasks).find(task => task.id === String(id))?.title ?? "Task";
+  const titleFor = (id: string | number) => findTask(board, String(id))?.title ?? "Task";
   // dnd-kit's default live region is assertive. Route meaningful outcomes through our single polite region.
   const announcements: Announcements = {
     onDragStart: () => undefined, onDragOver: () => undefined,

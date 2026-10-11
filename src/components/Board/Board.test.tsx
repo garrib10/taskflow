@@ -214,6 +214,8 @@ describe("linked task board interactions", () => {
   it("unknown drag destinations are ignored and a valid child move keeps context", () => {
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     simulateDrop(child.id, "unknown");
+    simulateDrop("missing-task", "in-progress");
+    expect(screen.getByRole("region", { name: "in-progress (0)" })).toHaveTextContent("No tasks");
     expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent(/^$/);
     simulateDrop(child.id, "in-progress");
     expect(screen.getByRole("heading", { name: "in-progress (1)", level: 2 })).toBeInTheDocument();
