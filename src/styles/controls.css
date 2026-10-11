@@ -2,29 +2,29 @@
 .board-controls {
   display: flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 
   width: 100%;
   margin-bottom: 0.75rem;
   padding: 1rem 1.25rem;
 
-  background: white;
-  border-radius: var(--radius-medium);
-  box-shadow: var(--shadow-small);
+  background: var(--color-surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-surface);
 }
 
 .edit-task-button,
 .delete-task-button {
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: var(--radius-small);
+  min-width: var(--size-touch-target);
+  min-height: var(--size-touch-target);
+  border-radius: var(--radius-control);
   padding: 5px 9px;
   cursor: pointer;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-compact);
+  font-weight: var(--font-weight-label);
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: background-color var(--motion-duration-enter) var(--motion-easing);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -32,23 +32,23 @@
 }
 
 .edit-task-button {
-  background: #dbeafe;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
+  background: var(--color-action-subtle);
+  color: var(--color-action-subtle-text);
+  border: 1px solid var(--color-action-subtle-border);
 }
 
 .edit-task-button:hover {
-  background: #bfdbfe;
+  background: var(--color-action-subtle-hover);
 }
 
 .delete-task-button {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: var(--color-action-danger-subtle);
+  color: var(--color-action-danger-text);
+  border: 1px solid var(--color-action-danger-border);
 }
 
 .delete-task-button:hover {
-  background: #fecaca;
+  background: var(--color-action-danger-subtle-hover);
 }
 
 @media (max-width: 600px) {

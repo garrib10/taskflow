@@ -1,0 +1,176 @@
+/* TaskFlow's light, single-board foundation. Roles may share values, not meaning. */
+:root {
+  --color-canvas: #f4f6f9;
+  --color-surface: #ffffff;
+  --color-surface-inset: #e9eef5;
+  --color-surface-subtle: #f9fafb;
+  --color-surface-hover: #f3f4f6;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-title: #000000;
+  --color-text-on-action: #ffffff;
+  --color-border: #d8e0ea;
+  --color-control-border: #7c8798;
+  --color-control-border-hover: #64748b;
+  --color-scrollbar: #cbd5e1;
+  --color-scrollbar-hover: #94a3b8;
+
+  --color-action-primary: #2563eb;
+  --color-action-primary-hover: #1d4ed8;
+  --color-action-primary-active: #1e40af;
+  --color-action-secondary: #e5e7eb;
+  --color-action-secondary-hover: #d1d5db;
+  --color-action-secondary-text: #374151;
+  --color-action-subtle: #dbeafe;
+  --color-action-subtle-hover: #bfdbfe;
+  --color-action-subtle-text: #1d4ed8;
+  --color-action-subtle-border: #bfdbfe;
+  --color-action-quiet: #eff6ff;
+  --color-action-danger: #dc2626;
+  --color-action-danger-hover: #b91c1c;
+  --color-action-danger-subtle: #fee2e2;
+  --color-action-danger-subtle-hover: #fecaca;
+  --color-action-danger-quiet: #fff1f2;
+  --color-action-danger-text: #991b1b;
+  --color-action-danger-border: #fecaca;
+  --color-action-disabled: #e9eef5;
+  --color-action-disabled-text: #4b5563;
+  --color-selected-surface: #eff6ff;
+  --color-selected-border: #93c5fd;
+  --color-selected-border-hover: #60a5fa;
+  --color-focus: #2563eb;
+  --color-focus-halo: #ffffff;
+
+  --color-feedback-success-surface: #dcfce7;
+  --color-feedback-success-text: #166534;
+  --color-feedback-success-border: #bbf7d0;
+  --color-feedback-success-icon: #bbf7d0;
+  --color-feedback-warning-surface: #fef3c7;
+  --color-feedback-warning-text: #92400e;
+  --color-feedback-warning-border: #fcd34d;
+  --color-feedback-warning-icon: #fde68a;
+  --color-feedback-info-surface: #eff6ff;
+  --color-feedback-info-text: #1e40af;
+  --color-feedback-info-border: #bfdbfe;
+  --color-feedback-info-icon: #dbeafe;
+  --color-feedback-error-surface: #fee2e2;
+  --color-feedback-error-text: #991b1b;
+  --color-feedback-error-border: #fecaca;
+  --color-feedback-error-icon: #fecaca;
+  --color-validation-text: #b91c1c;
+  --color-validation-surface: var(--color-feedback-error-surface);
+  --color-validation-border: var(--color-feedback-error-border);
+  --color-dismiss-hover: rgba(255, 255, 255, 0.45);
+
+  --color-priority-high-accent: #dc2626;
+  --color-priority-high-text: #b91c1c;
+  --color-priority-high-surface: #fee2e2;
+  --color-priority-medium-accent: #d97706;
+  --color-priority-medium-text: #92400e;
+  --color-priority-medium-surface: #fef3c7;
+  --color-priority-low-accent: #16a34a;
+  --color-priority-low-text: #166534;
+  --color-priority-low-surface: #dcfce7;
+  --color-category-feature-text: #1d4ed8;
+  --color-category-feature-surface: #dbeafe;
+  --color-category-ui-text: #6d28d9;
+  --color-category-ui-surface: #ede9fe;
+  --color-category-bug-text: #b91c1c;
+  --color-category-bug-surface: #fee2e2;
+  --color-category-testing-text: #15803d;
+  --color-category-testing-surface: #dcfce7;
+  --color-category-refactor-text: #374151;
+  --color-category-refactor-surface: #f3f4f6;
+  --color-category-devops-text: #0f766e;
+  --color-category-devops-surface: #ccfbf1;
+
+  /* Stage roles prepare #44/#45; the current generic status pill stays intact. */
+  --color-stage-todo-text: #166534;
+  --color-stage-todo-surface: #f0fdf4;
+  --color-stage-todo-border: #16a34a;
+  --color-stage-in-progress-text: #1e40af;
+  --color-stage-in-progress-surface: #eff6ff;
+  --color-stage-in-review-text: #6d28d9;
+  --color-stage-in-review-surface: #f5f3ff;
+  --color-stage-done-text: #6d28d9;
+  --color-stage-done-surface: #f5f3ff;
+  --color-stage-done-border: #7c3aed;
+  --color-completion-text: #15803d;
+  --color-completion-surface: #dcfce7;
+  --color-progress-surface: #f8fbff;
+  --color-progress-track: #dbeafe;
+  --color-progress-fill: #3b82f6;
+
+  /* #99 states are presentation roles, not limits or enforcement. */
+  --color-capacity-available-text: var(--color-text-secondary);
+  --color-capacity-available-surface: var(--color-surface-subtle);
+  --color-capacity-near-text: var(--color-feedback-warning-text);
+  --color-capacity-near-surface: var(--color-feedback-warning-surface);
+  --color-capacity-full-text: var(--color-feedback-warning-text);
+  --color-capacity-full-surface: var(--color-feedback-warning-surface);
+  --color-capacity-over-text: var(--color-feedback-error-text);
+  --color-capacity-over-surface: var(--color-feedback-error-surface);
+
+  --font-family-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-size-identity: 2rem;
+  --font-size-dialog-title: 1.5rem;
+  --font-size-panel: 1.25rem;
+  --font-size-section: 1rem;
+  --font-size-task-title: 1.05rem;
+  --font-size-body: 1rem;
+  --font-size-label: 0.9rem;
+  --font-size-support: 0.85rem;
+  --font-size-metadata: 0.8rem;
+  --font-size-compact: 0.75rem;
+  --font-weight-body: 400;
+  --font-weight-medium: 500;
+  --font-weight-label: 600;
+  --font-weight-heading: 700;
+  --line-height-body: 1.5;
+  --line-height-reading: 1.6;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --size-touch-target: 44px;
+  --size-board-max: 1800px;
+  --size-task-dialog: 550px;
+  --size-confirm-dialog: 440px;
+  --size-viewport-min: 320px;
+  --border-width: 1px;
+  --radius-compact: 6px;
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --radius-column: 16px;
+  --radius-pill: 999px;
+  --shadow-surface: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --shadow-header: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-overlay: 0 8px 20px rgba(0, 0, 0, 0.16);
+  --shadow-dialog: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-action: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --overlay-dialog: rgba(0, 0, 0, 0.45);
+  --overlay-confirm: rgba(0, 0, 0, 0.55);
+  --focus-width: 3px;
+  --focus-offset: 2px;
+  --focus-offset-inset: 3px;
+  --focus-ring: var(--focus-width) solid var(--color-focus);
+  --focus-shadow: 0 0 0 2px var(--color-focus-halo);
+  --motion-duration-fast: 0.15s;
+  --motion-duration-feedback: 0.18s;
+  --motion-duration-enter: 0.2s;
+  --motion-easing: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0s;
+    --motion-duration-feedback: 0s;
+    --motion-duration-enter: 0s;
+  }
+}
