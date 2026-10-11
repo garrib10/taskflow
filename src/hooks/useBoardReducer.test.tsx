@@ -1,12 +1,40 @@
 import { StrictMode, type PropsWithChildren } from "react";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { makeBoard, makeTask } from "../test/fixtures";
+import { fixtureDate, makeBoard, makeTask } from "../test/fixtures";
+import { boardReducer } from "../domain/board/boardReducer";
 import * as persistenceBoundary from "../utils/storage";
 import { useBoardReducer } from "./useBoardReducer";
 
 afterEach(() => vi.restoreAllMocks());
 const strict = ({ children }: PropsWithChildren) => <StrictMode>{children}</StrictMode>;
+it("does not save rejected multi-field edits or identity collisions, then saves one complete valid edit", () => {
+  const seed = boardReducer(makeBoard([
+    makeTask({ id: "parent" }),
+    makeTask({ id: "child", parentId: "parent", status: "in-progress", subtasks: [{ id: "legacy-entry", title: "Legacy work", completed: true }] }),
+  ]), { type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate });
+  let raw = JSON.stringify({ schemaVersion: 2, revision: "initial", board: seed });
+  const originalRaw = raw;
+  const storage = { getItem: () => raw, setItem: vi.fn((_key: string, value: string) => { raw = value; }) };
+  vi.spyOn(persistenceBoundary, "browserStorage").mockReturnValue(storage);
+  const { result } = renderHook(useBoardReducer, { wrapper: strict });
+  const original = result.current[0];
+  const edits = { title: "Updated child", description: "Updated description", priority: "high", category: "testing" } as const;
+  act(() => result.current[1]({ type: "UPDATE_TASK", taskId: "child", edits: { ...edits, title: "" }, updatedAt: new Date() }));
+  act(() => result.current[1]({ type: "CREATE_TASK", task: makeTask({ id: "legacy-entry" }), updatedAt: new Date() }));
+  expect(result.current[0]).toBe(original);
+  expect(raw).toBe(originalRaw);
+  expect(storage.setItem).not.toHaveBeenCalled();
+  expect(result.current[2].notice).toBeNull();
+  act(() => result.current[1]({ type: "UPDATE_TASK", taskId: "child", edits, updatedAt: new Date() }));
+  expect(storage.setItem).toHaveBeenCalledTimes(1);
+  const restored = persistenceBoundary.decodeBoard(raw);
+  if (restored.kind !== "current") throw new Error("Valid edit did not round-trip");
+  expect(restored.board).toEqual(result.current[0]);
+  expect(restored.board.columns.flatMap(column => column.tasks).find(task => task.id === "child"))
+    .toMatchObject({ ...edits, parentId: "parent", status: "in-progress", subtasks: [{ id: "legacy-entry", completed: true }] });
+  expect(restored.board.columns.map(column => column.manualOrder)).toEqual(original.columns.map(column => column.manualOrder));
+});
 it("hydrates once per mount and exposes failed saves while reducer work stays usable", () => {
   const initial = JSON.stringify({ schemaVersion: 2, revision: "a", board: makeBoard() });
   const storage = { getItem: vi.fn(() => initial), setItem: vi.fn(() => { throw new DOMException("Full", "QuotaExceededError"); }) };
