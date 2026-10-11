@@ -263,7 +263,6 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
               onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
             filterCount={Number(priorityFilter !== "all") + Number(categoryFilter !== "all") + Number(statusFilter !== "all")}
             activeCriteria={isFiltering} onReset={handleResetControls}
-            ordering={<span>Order: Priority</span>}
             resultSummary={isFiltering ? <p aria-live="polite">{matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"} found</p> : null}
           />}
           overlays={<>

@@ -20,12 +20,12 @@ function Harness() {
     search={<SearchBar searchTerm={query} onSearchChange={setQuery} />}
     filters={<FilterControls priorityFilter={priority} categoryFilter="all" statusFilter="all" onPriorityChange={value => setPriority(value === "high" ? "high" : "all")} onCategoryChange={() => {}} onStatusChange={() => {}} />}
     filterCount={Number(priority !== "all")} activeCriteria={!!query || priority !== "all"}
-    onReset={() => { setQuery(""); setPriority("all"); }} ordering={<span>Order: Priority</span>}
+    onReset={() => { setQuery(""); setPriority("all"); }}
     resultSummary={(query || priority !== "all") && <p aria-live="polite">Matching tasks</p>}
   /></>;
 }
 
-it("keeps desktop labels, search and reset native and exposes current ordering without a fake selector", async () => {
+it("keeps desktop labels, search and reset native without a static ordering placeholder", async () => {
   const user = userEvent.setup(); render(<Harness />);
   const toolbar = screen.getByRole("search", { name: "Search and filter tasks" });
   expect(within(toolbar).getAllByRole("combobox")).toHaveLength(3);
@@ -33,7 +33,7 @@ it("keeps desktop labels, search and reset native and exposes current ordering w
   await user.type(screen.getByLabelText("Search:"), "work");
   await user.click(screen.getByRole("button", { name: "Reset" }));
   expect(screen.getByLabelText("Search:")).toHaveValue("");
-  expect(screen.getByText("Order: Priority")).toBeInTheDocument();
+  expect(screen.queryByText("Order: Priority")).not.toBeInTheDocument();
 });
 
 it("applies mobile filters immediately, keeps them on Done/Escape, and restores disclosure focus", async () => {

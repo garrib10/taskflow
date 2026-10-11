@@ -10,7 +10,7 @@ interface BoardToolbarProps {
   activeCriteria: boolean;
   onReset: () => void;
   resultSummary: ReactNode;
-  ordering: ReactNode;
+  ordering?: ReactNode;
   capacity?: ReactNode;
 }
 
@@ -28,10 +28,10 @@ export default function BoardToolbar({ search, filters, filterCount, activeCrite
   return (
     <>
       <div className="board-toolbar" role="search" aria-label="Search and filter tasks">
-        <div className="toolbar-controls">
+        <div className={`toolbar-controls${ordering ? " toolbar-controls-with-order" : ""}`}>
           {search}
           {narrow ? <Button variant="secondary" className="toolbar-filter-trigger" aria-expanded={open} aria-haspopup="dialog" aria-controls={open ? "board-filter-sheet" : undefined} onClick={() => setOpen(true)}>Filters ({filterCount})</Button> : filters}
-          <div className="toolbar-ordering">{ordering}</div>
+          {ordering && <div className="toolbar-ordering">{ordering}</div>}
           <Button variant="secondary" onClick={onReset} disabled={!activeCriteria}>Reset</Button>
         </div>
         <div className="toolbar-context">{!(narrow && open) && resultSummary}{capacity}</div>
