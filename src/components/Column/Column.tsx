@@ -4,7 +4,7 @@ import type { Column as ColumnType } from "../../domain/board/Board";
 import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
-import { sortTasksByPriority } from "../../domain/task/taskPriority";
+import { selectOrderedTasks } from "../../domain/board/boardOrdering";
 import TaskCard from "../TaskCard/TaskCard";
 
 interface ColumnProps {
@@ -28,7 +28,7 @@ export default function Column({
     id: column.id,
   });
 
-  const sortedTasks = sortTasksByPriority(column.tasks);
+  const sortedTasks = selectOrderedTasks(column).tasks;
 
   return (
     <section ref={setNodeRef} className="column" aria-labelledby={`column-${column.id}-title`}>

@@ -155,6 +155,8 @@ The [application shell guide](docs/v2-app-shell.md) records responsive toolbar
 behavior, modal focus ownership and the boundaries for later board/detail work.
 The [state ownership guide](docs/v2-state-ownership.md) maps durable board data,
 mount-local view preferences and temporary interactions to their owners.
+The [manual ordering domain guide](docs/v2-manual-ordering.md) explains ID-list
+positions, independent priority ties, atomic placement and persistence deferrals.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.

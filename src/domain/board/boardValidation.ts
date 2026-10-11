@@ -2,6 +2,7 @@ import type { Board } from "./Board";
 import type { BoardAction } from "./boardReducer";
 import type { Task } from "../task/Task";
 import { canMoveTask, getMoveErrorMessage } from "../task/taskRules";
+import { validateOrderingAction, validateManualColumns, destinationPlacement, validatePlacement } from "./boardOrdering";
 import { findTask, getChildren } from "./taskRelationships";
 
 export type BoardErrorCode =
@@ -9,7 +10,8 @@ export type BoardErrorCode =
   | "self-parent" | "cycle" | "hierarchy-depth" | "missing-parent"
   | "completed-parent" | "unchanged-relationship" | "incomplete-children"
   | "parent-delete-confirmation" | "not-parent" | "invalid-transition"
-  | "missing-subtask";
+  | "missing-subtask" | "invalid-manual-order" | "manual-order-uninitialized"
+  | "priority-ordering" | "filtered-reorder" | "invalid-placement";
 
 export interface BoardOperationError {
   code: BoardErrorCode;
@@ -49,6 +51,11 @@ export function validateParentAssignment(
 
 /** The UI uses these typed errors; the reducer repeats validation before mutation. */
 export function validateBoardAction(board: Board, action: BoardAction): BoardOperationError | null {
+  if (action.type === "INITIALIZE_MANUAL_ORDER" || action.type === "REPAIR_MANUAL_ORDER") return validateOrderingAction(board, action);
+  if (action.type === "REORDER_TASK") {
+    const orderingError = validateOrderingAction(board, action);
+    if (orderingError) return orderingError;
+  }
   if (action.type === "CREATE_TASK" || action.type === "CREATE_CHILD_TASK") {
     if (board.columns.some((column) => column.tasks.some((task) => task.id === action.task.id))) {
       return error("duplicate-id", "A task with that ID already exists.");
@@ -59,6 +66,8 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
     if (!board.columns.some((column) => column.id === "todo")) {
       return error("missing-column", "The To Do column is unavailable.");
     }
+    const orderingError = validateManualColumns(board.columns.filter(column => column.id === "todo"));
+    if (orderingError) return orderingError;
     return action.type === "CREATE_CHILD_TASK"
       ? validateParentAssignment(board, action.task, action.parentId)
       : null;
@@ -79,6 +88,11 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
     if (relationshipError) return relationshipError;
   }
 
+  if (action.type === "DELETE_TASK" || action.type === "DELETE_PARENT_TASK") {
+    const orderingError = validateManualColumns(board.columns.filter(column => column.tasks.includes(task)));
+    if (orderingError) return orderingError;
+  }
+
   switch (action.type) {
     case "MOVE_TASK": {
       if (!board.columns.some((column) => column.id === task.status && column.tasks.includes(task))) {
@@ -97,8 +111,13 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
       if (task.parentId !== undefined && action.newStatus !== "done" && findTask(board, task.parentId)?.status === "done") {
         return error("completed-parent", "An unfinished subtask cannot belong to a completed parent.");
       }
-      return null;
+      const affected = board.columns.filter(column => column.id === task.status || column.id === action.newStatus);
+      const orderingError = validateManualColumns(action.ordering?.mode === "manual" ? board.columns : affected, action.ordering?.mode === "manual");
+      if (orderingError) return orderingError;
+      const destination = board.columns.find(column => column.id === action.newStatus);
+      return destination ? validatePlacement(destination, task.id, destinationPlacement(action.ordering)) : null;
     }
+    case "REORDER_TASK": return null;
     case "DELETE_TASK":
       return getChildren(board, task.id).length > 0
         ? error("parent-delete-confirmation", "Confirm parent deletion and explicitly detach its subtasks first.")

@@ -1,3 +1,4 @@
+import { manualOrderState } from "../domain/board/boardOrdering";
 import type { Board, Column } from "../domain/board/Board";
 import { taskStatuses, type Priority, type Subtask, type Task } from "../domain/task/Task";
 import type { TaskCategory } from "../domain/task/taskCategory";
@@ -68,7 +69,14 @@ export function validateBoard(value: unknown, legacy = false): ValidationResult 
         priority: candidate.priority, category: candidate.category, createdAt, subtasks,
         ...(candidate.parentId === undefined ? {} : { parentId: candidate.parentId }) });
     }
-    columns.push({ id: item.id, title: item.title, tasks });
+    const column: Column = { id: item.id, title: item.title, tasks };
+    // Optional additive domain metadata. Legacy formats never require manual order.
+    if (!legacy && Object.hasOwn(item, "manualOrder")) {
+      if (!Array.isArray(item.manualOrder) || !item.manualOrder.every(isId)) return fail(`${path}.manualOrder`, "Invalid manual task IDs");
+      column.manualOrder = [...item.manualOrder];
+      if (manualOrderState(column) !== "valid") return fail(`${path}.manualOrder`, "Manual order must contain every column task exactly once");
+    }
+    columns.push(column);
   }
   if (!legacy && taskStatuses.some((status) => !columnIds.has(status))) return fail("board.columns", "Missing workflow column");
   if (legacy) {

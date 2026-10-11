@@ -1,0 +1,42 @@
+# Manual ordering domain contract
+
+Issue #105 implements the approved #98 ordering rules under #21. The current application still renders Priority and has no ordering-mode control; #44/#46 integrate the new operations and placement feedback. #47 owns movement focus and accessible earlier/later controls.
+
+## Audit and representation
+
+Tasks are grouped in `Board.columns[].tasks`. Creation appends to To Do; valid stage movement removes from source and appends to destination. Those arrays already provide stable per-column arrival ties. `sortTasksByPriority` copies before sorting by the unchanged High/Medium/Low scores 300/200/100. Column rendering now uses the default Priority ordering selector. Both mouse/touch and keyboard movement already dispatch `MOVE_TASK`; same-stage drops remain a UI no-op until manual UI integration.
+
+`Column.manualOrder?: Task["id"][]` is the smallest additional durable representation: an ordered list of existing IDs, not duplicated task records or task ranks. Each valid initialized column contains every current task ID exactly once; array index is its zero-based manual position. Empty initialized columns use `[]`; absence means never initialized. The task array remains the independent stable arrival sequence. Manual reordering changes only the ID list, so it cannot reorder equal-priority arrivals or require unrelated task records to be rewritten. Linear array updates are adequate for the approved 20/100/300-record workloads; no fractional ranks or distributed algorithm is needed.
+
+Selected mode is a view preference, never a task/board field. #104 introduced a mount-local query/filter owner, not an ordering-mode state value. #46 can extend that owner after successful full-board initialization; #116 owns independently validated mode persistence. This issue supplies the `OrderingMode` policy type for domain selectors/operations without adding an unused UI preference/control.
+
+## Invariants and operations
+
+- `INITIALIZE_MANUAL_ORDER` initializes all absent columns from their **full** priority display with stable arrival ties. Existing valid manual lists remain unchanged. A second initialization returns the same board. Invalid existing order rejects the whole action; initialization never silently repairs saved intent.
+- `REORDER_TASK` accepts typed top/bottom/before-ID/after-ID placement. It requires Manual, no active search/filter criteria and initialized valid complete-board orders. Missing/ambiguous/self targets reject. The task array, metadata, links and unrelated columns remain unchanged. Choosing the current logical position is a no-op, including its timestamp.
+- `MOVE_TASK` retains its existing atomic workflow/relationship validation. Optional `ordering` describes mode, filtered context, input method and placement. Manual unfiltered pointer/touch uses the indicated gap (default top); keyboard, explicit stage actions and all filtered arrivals use **full destination top**. Priority ignores gap coordinates and maintains latent manual top if already initialized. Source removal and destination insertion commit with status in one reducer transition; destination arrival appends to the task array for Priority ties.
+- Independent and linked creation append to arrival ties and insert at full To Do manual top only when that column has an existing manual order. Never-initialized boards stay uninitialized; first-switch priority initialization remains correct.
+- Deletion removes only the requested ID. Confirmed parent deletion detaches surviving children at their current positions/statuses, preserving all survivor order and identities. Relationship reassignment and ordinary metadata edits do not change manual order. Reordering Done changes placement only.
+- Rejected actions return the previous board object and retain its timestamp/data/order. Ordering errors are part of the existing typed `BoardOperationError` contract, ready for later UI feedback. No separate pointer/keyboard business-rule implementation is needed.
+
+`manualOrderState` distinguishes expected absence, valid order and corruption. `normalizeManualOrder` builds deterministic priority-derived positions only for explicit initialization/repair of a core-valid column. Duplicate task identities are not repairable ordering metadata. `REPAIR_MANUAL_ORDER` represents an explicit repair request for one status; it rebuilds invalid order from full priority display and preserves other columns. No automatic repair UI or storage rewrite is introduced. A repeated repair is a no-op once valid.
+
+## Selectors and filtered safety
+
+`selectOrderedTasks` defaults to Priority, preserving its stable task-array ties independently of manual IDs. Manual uses validated IDs without changing priority values; legacy absence yields a deterministic priority preview, while Manual operations require explicit initialization. Invalid manual data returns a typed unavailable result with a safe priority projection rather than guessing user intent.
+
+The optional visible-ID projection is applied **after ordering the complete column**. Future Manual consumers must supply the full domain column and project visible IDs, rather than validate/rewrite a filtered column as though it were complete. Search/filter reset and selector switches never change domain positions.
+
+Same-column reordering is rejected whenever criteria are active, even if every task remains visible. Cross-column filtered movement stays available and inserts above both hidden and visible destination tasks. The future UI must pass its real criteria/input context, show the selected gap/top policy, and initialize/validate the board before enabling Manual. Current Priority UI remains compatible without an ordering payload.
+
+## Persistence implications and deferred gates
+
+The #104 writer serializes the validator's domain whitelist. This branch therefore adds recognition of the optional column ID list: valid lists round-trip through the current schema-2 envelope, while absent lists are omitted. Existing v1.5 schema-2 data loads without manufacturing positions or selecting Manual. Existing v0/v1 migrations remain unchanged; they do not require this metadata. Invalid optional lists reject safe loading/saving and preserve raw originals using the existing recovery behavior; there is no destructive reset.
+
+This is an additive domain-metadata bridge, **not the formal v2 persisted contract or migration completion**. Older deployed readers do not preserve this metadata on re-save; cross-version interoperability must be resolved before releasing usable Manual controls. #113 decides recognition/version requirements, #114 implements required migration, and #115 owns richer safe fallback/explicit repair recovery for formats requiring positions. The current strict rejection of malformed optional metadata is not a claim that #98's future core-data-retaining required-position repair experience is complete. #116 owns mode-preference storage, separately from the board. The current UI neither initializes manual order automatically nor claims an accepted domain update was durably saved.
+
+No capacity enforcement (#106), board/card redesign (#44), manual control/drag preview (#46), or schema/version/recovery rollout (#113–#115) is completed here.
+
+## Verification
+
+Direct ordering/reducer tests cover initialization, arrival ties, manual placement/gaps, no-ops, creation/deletion, all movement input policies, filtered/full order, relationships, completion rejection, immutable updates, explicit repeat-safe repair and selector switches. Persistence tests cover current optional-field round trips, unchanged legacy loading and malformed metadata preserving originals. Existing reducer, relationship, persistence/recovery, component and Chromium journeys remain the regression baseline. Lint, strict TypeScript checking, the production build and all 342 Vitest cases in 34 files passed with default test settings. The two focused new files passed 28 cases. All eight desktop/mobile Chromium journeys passed against the built app, covering creation/editing, valid/invalid keyboard moves, filters/reset, refresh, parent/subtask navigation and responsive dialogs. A separate filtered pointer move on a saved board with latent manual lists verified top insertion, independent arrival ties, criteria retention and order restoration. Mode switching is tested through domain selectors; no existing UI mode control is present.
