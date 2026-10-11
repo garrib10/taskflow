@@ -3,6 +3,7 @@ import type { BoardAction } from "./boardReducer";
 import type { Task } from "../task/Task";
 import { canMoveTask, getMoveErrorMessage } from "../task/taskRules";
 import { validateOrderingAction, validateManualColumns, destinationPlacement, validatePlacement } from "./boardOrdering";
+import { evaluateIncomingCapacity, type LimitedColumnCapacity } from "./boardCapacity";
 import { findTask, getChildren } from "./taskRelationships";
 
 export type BoardErrorCode =
@@ -11,15 +12,23 @@ export type BoardErrorCode =
   | "completed-parent" | "unchanged-relationship" | "incomplete-children"
   | "parent-delete-confirmation" | "not-parent" | "invalid-transition"
   | "missing-subtask" | "invalid-manual-order" | "manual-order-uninitialized"
-  | "priority-ordering" | "filtered-reorder" | "invalid-placement";
+  | "priority-ordering" | "filtered-reorder" | "invalid-placement" | "capacity-exceeded";
 
-export interface BoardOperationError {
-  code: BoardErrorCode;
-  message: string;
+export type BoardOperationError =
+  | { code: Exclude<BoardErrorCode, "capacity-exceeded">; message: string }
+  | { code: "capacity-exceeded"; message: string; taskId: Task["id"]; capacity: LimitedColumnCapacity };
+
+function error(code: Exclude<BoardErrorCode, "capacity-exceeded">, message: string): BoardOperationError {
+  return { code, message };
 }
 
-function error(code: BoardErrorCode, message: string): BoardOperationError {
-  return { code, message };
+/** Capacity is last: invalid workflow, links or placement never masquerade as a full column. */
+function incomingCapacityError(board: Board, task: Task, destination: Task["status"], source?: Task["status"]): BoardOperationError | null {
+  const decision = evaluateIncomingCapacity(board, destination, source);
+  if (decision.kind === "allowed") return null;
+  const title = board.columns.find(column => column.id === destination)?.title ?? destination;
+  return { code: "capacity-exceeded", taskId: task.id, capacity: decision.capacity,
+    message: `Cannot move "${task.title}" to ${title}: ${decision.capacity.count} of ${decision.capacity.limit} slots are occupied. The task was not moved. Tasks hidden by search or filters still count. Finish, move, or delete work there before adding another task.` };
 }
 
 /** Check an intended link using the complete board, never filtered columns. */
@@ -68,9 +77,9 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
     }
     const orderingError = validateManualColumns(board.columns.filter(column => column.id === "todo"));
     if (orderingError) return orderingError;
-    return action.type === "CREATE_CHILD_TASK"
-      ? validateParentAssignment(board, action.task, action.parentId)
-      : null;
+    const relationshipError = action.type === "CREATE_CHILD_TASK" ? validateParentAssignment(board, action.task, action.parentId) : null;
+    if (relationshipError) return relationshipError;
+    return incomingCapacityError(board, action.task, "todo");
   }
 
   const task = findTask(board, action.taskId);
@@ -115,7 +124,9 @@ export function validateBoardAction(board: Board, action: BoardAction): BoardOpe
       const orderingError = validateManualColumns(action.ordering?.mode === "manual" ? board.columns : affected, action.ordering?.mode === "manual");
       if (orderingError) return orderingError;
       const destination = board.columns.find(column => column.id === action.newStatus);
-      return destination ? validatePlacement(destination, task.id, destinationPlacement(action.ordering)) : null;
+      const placementError = destination ? validatePlacement(destination, task.id, destinationPlacement(action.ordering)) : null;
+      if (placementError) return placementError;
+      return incomingCapacityError(board, task, action.newStatus, task.status);
     }
     case "REORDER_TASK": return null;
     case "DELETE_TASK":

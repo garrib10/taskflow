@@ -17,7 +17,7 @@ export type OrderingAction =
   | { type: "REPAIR_MANUAL_ORDER"; status: TaskStatus }
   | { type: "REORDER_TASK"; taskId: Task["id"]; placement: TaskPlacement; mode: OrderingMode; filtered: boolean };
 
-function failure(code: BoardOperationError["code"], message: string): BoardOperationError { return { code, message }; }
+function failure(code: Exclude<BoardOperationError["code"], "capacity-exceeded">, message: string): BoardOperationError { return { code, message }; }
 
 /** Absence is expected legacy/uninitialized data, not a corrupt saved order. */
 export function manualOrderState(column: Column): "uninitialized" | "valid" | "invalid" {

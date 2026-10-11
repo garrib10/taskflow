@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { COLUMN_CAPACITY } from "../src/domain/board/boardCapacity.ts";
 
 const browserFailures = new WeakMap<Page, string[]>();
 test.afterEach(async ({ page }) => {
@@ -123,4 +124,35 @@ test("shell landmarks and responsive filter presentation preserve criteria and r
   await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
   await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
   await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("all");
+});
+
+test("full destination stays blocked when search hides occupants and becomes usable after an exit", async ({ page }) => {
+  const raw = await page.evaluate(limit => {
+    const saved = JSON.parse(localStorage.getItem("taskflow-board") ?? "null");
+    const template = saved.board.columns[0].tasks[0];
+    for (const column of saved.board.columns) {
+      column.tasks = column.id === "in-progress"
+        ? Array.from({ length: limit }, (_, index) => ({ ...template, id: `capacity-${index}`, title: `Occupant ${index}`, status: column.id }))
+        : column.id === "todo" ? [{ ...template, id: "capacity-incoming", title: "Incoming task" }] : [];
+    }
+    saved.revision = "capacity-start";
+    const value = JSON.stringify(saved);
+    localStorage.setItem("taskflow-board", value);
+    return value;
+  }, COLUMN_CAPACITY["in-progress"]);
+  await page.reload();
+  await page.getByLabel("Search:", { exact: true }).fill("Incoming");
+  await move(page, "Incoming task");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`${COLUMN_CAPACITY["in-progress"]} of ${COLUMN_CAPACITY["in-progress"]} slots are occupied`);
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Tasks hidden by search or filters still count");
+  await expect(page.getByRole("group", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);
+  await page.getByRole("button", { name: /Dismiss notification/ }).click();
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await move(page, "Occupant 0");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Occupant 0" to In Review');
+  await move(page, "Incoming task");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Incoming task" to In Progress');
+  await page.reload();
+  await expect(page.getByRole("group", { name: "Move task Incoming task, In Progress", exact: true })).toBeVisible();
 });
