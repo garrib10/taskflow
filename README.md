@@ -159,6 +159,9 @@ The [manual ordering domain guide](docs/v2-manual-ordering.md) explains ID-list
 positions, independent priority ties, atomic placement and persistence deferrals.
 The [column capacity guide](docs/v2-column-capacity.md) documents fixed limits,
 complete-board counting, mutation enforcement and over-limit recovery.
+The [v2 persistence specification](docs/v2-persistence-schema.md) defines the
+future schema-3 board contract and separate mode preference; runtime writes
+remain schema 2 until the migration and recovery implementation is ready.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.
