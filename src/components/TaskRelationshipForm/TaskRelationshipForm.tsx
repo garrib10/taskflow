@@ -1,4 +1,6 @@
 import "../../styles/task-dialog.css";
+import Button from "../ui/Button/Button";
+import Field from "../ui/Field/Field";
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
@@ -51,14 +53,15 @@ export default function TaskRelationshipForm({
         {notification && <Notification key={notification.id} notification={notification}
           messageId={`${id}-error`} announce={false} onClose={() => dismiss(notification.id)}
           onFocusLost={() => document.getElementById(`${id}-parent`)?.focus()} />}
-        <label htmlFor={`${id}-parent`}>Parent</label>
-        <select id={`${id}-parent`} data-initial-focus aria-invalid={!!notification || undefined} aria-describedby={notification ? `${id}-error` : `${id}-description`} value={parentId} onChange={(event) => setParentId(event.target.value)}>
-          <option value="">No parent (independent task)</option>
-          {candidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.title}</option>)}
-        </select>
+        <Field controlId={`${id}-parent`} label="Parent">
+          <select id={`${id}-parent`} data-initial-focus aria-invalid={!!notification || undefined} aria-describedby={notification ? `${id}-error` : `${id}-description`} value={parentId} onChange={(event) => setParentId(event.target.value)}>
+            <option value="">No parent (independent task)</option>
+            {candidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.title}</option>)}
+          </select>
+        </Field>
         <div className="create-task-actions">
-          <button type="button" onClick={onClose}>Cancel</button>
-          <button type="submit" disabled={parentId === (task.parentId ?? "")}>Save Relationship</button>
+          <Button variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" disabled={parentId === (task.parentId ?? "")}>Save Relationship</Button>
         </div>
       </form>
     </div>

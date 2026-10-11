@@ -1,3 +1,4 @@
+import Badge from "../ui/Badge/Badge";
 import "./TaskCard.css";
 import { useDraggable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
@@ -92,16 +93,16 @@ export default function TaskCard({
       <div className="task-footer">
         <div className="task-meta">
           {task.status === "done" ? (
-            <span className="completed-badge">✔ Done</span>
+            <Badge className="completed-badge">✔ Done</Badge>
           ) : (
-            <span className={priorityStyle.badgeClass}>
+            <Badge className={priorityStyle.badgeClass}>
               {priorityStyle.label}
-            </span>
+            </Badge>
           )}
 
-          <span className={`task-category ${categoryStyle.badgeClass}`}>
+          <Badge className={categoryStyle.badgeClass}>
             {categoryStyle.label}
-          </span>
+          </Badge>
         </div>
 
         <div className="task-actions">
