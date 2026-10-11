@@ -8,6 +8,27 @@ import { useBoardReducer } from "./useBoardReducer";
 
 afterEach(() => vi.restoreAllMocks());
 const strict = ({ children }: PropsWithChildren) => <StrictMode>{children}</StrictMode>;
+it("keeps damaged order isolated from Manual actions until a confirmed repair persists the full current board", () => {
+  const data = JSON.parse(currentBoardRaw(makeBoard()));
+  data.board.columns[0].manualOrder = ["task-1", "task-1"];
+  let raw = JSON.stringify(data);
+  const originalRaw = raw;
+  const storage = { getItem: () => raw, setItem: vi.fn((_key: string, value: string) => { raw = value; }) };
+  vi.spyOn(persistenceBoundary, "browserStorage").mockReturnValue(storage);
+  const { result } = renderHook(useBoardReducer, { wrapper: strict });
+  const before = result.current[0];
+  expect(result.current[2].recovery.kind).toBe("order-recovery");
+  act(() => result.current[1]({ type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate }));
+  expect(result.current[0]).toBe(before);
+  act(() => result.current[1]({ type: "CREATE_TASK", task: makeTask({ id: "temporary", title: "Temporary task" }), updatedAt: fixtureDate }));
+  expect(result.current[0].columns[0].tasks).toHaveLength(2);
+  expect(raw).toBe(originalRaw);
+  expect(storage.setItem).not.toHaveBeenCalled();
+  act(() => result.current[2].repairOrder());
+  expect(result.current[2].recovery.kind).toBe("ready");
+  expect(storage.setItem).toHaveBeenCalledOnce();
+  expect(persistenceBoundary.decodeBoard(raw)).toMatchObject({ kind: "current", board: result.current[0] });
+});
 it("does not save rejected multi-field edits or identity collisions, then saves one complete valid edit", () => {
   const seed = boardReducer(makeBoard([
     makeTask({ id: "parent" }),
