@@ -2,11 +2,11 @@
 
 ## Status and ownership
 
-Issue [#113](https://github.com/garrib10/taskflow/issues/113) defines this contract under [#43](https://github.com/garrib10/taskflow/issues/43). **This is a specification, not a runtime rollout.** The application currently reads and writes board schema 2. Schema 3, migrations, recovery and preference storage require #114, #115 and #116 respectively. Application release numbers and persistence schema numbers are independent.
+Issue [#113](https://github.com/garrib10/taskflow/issues/113) defines this contract under [#43](https://github.com/garrib10/taskflow/issues/43). [#114's implementation](v2-data-migration.md) now reads and writes schema 3 with supported legacy migration and paused order-recovery handoff. Explicit repair/reset UX and separate preference storage remain #115 and #116 respectively. Application release numbers and persistence schema numbers are independent.
 
 This contract builds on the completed [state ownership](v2-state-ownership.md), [manual ordering](v2-manual-ordering.md) and [capacity](v2-column-capacity.md) work (#104–#108), and the approved [ordering decisions in #98](https://github.com/garrib10/taskflow/issues/98). It does not redesign relationships, introduce a backend, add multiple boards or enable Manual controls.
 
-## Current implementation audit
+## Implementation audit at #113 (schema 2)
 
 The single-board key is `taskflow-board`, scoped to browser origin and profile. [storage.ts](../src/utils/storage.ts) owns storage access and serializes the validator's trusted projection. The current envelope is `{ schemaVersion: 2, revision, board }`. Dates become canonical UTC ISO strings on serialization and return to domain `Date` values on hydration.
 
@@ -147,7 +147,7 @@ LocalStorage provides no compare-and-swap transaction. Preserve the existing pos
 - **#116:** implement the independent preference boundary, Priority fallbacks, guarded Manual restoration and board/preference failure combinations.
 - **#43:** remains open until those implementations and their acceptance evidence are complete.
 
-Existing [ordering persistence tests](../src/persistence/ordering.test.ts), [capacity tests](../src/persistence/capacity.test.ts), [relationship storage tests](../src/utils/storage.relationships.test.ts), session tests and reducer tests provide the current schema-2 regression baseline. They are not tests of the future schema-3 contract. This issue changes documentation only; no fixture, runtime schema constant or application behavior changes.
+At #113, existing [ordering persistence tests](../src/persistence/ordering.test.ts), [capacity tests](../src/persistence/capacity.test.ts), [relationship storage tests](../src/utils/storage.relationships.test.ts), session tests and reducer tests provided the schema-2 regression baseline. #113 changed documentation only. #114 adds schema-3 implementation and verification in the linked migration guide; the remaining gates above are not claimed complete by the original specification.
 
 Representative fixture review covered schema-2 linked parent/child records with canonical dates, schema-2 boards without positions, valid optional lists with independent arrival ties, retained current checklist data, unversioned/schema-1 checklist conversion and already-converted children. The compatibility matrix preserves each recognized valid field and retains existing malformed-data rejection; it does not promise support for unidentified external formats. Serialization tests already verify projection of UI extras, while capacity tests verify that restored over-limit boards remain loadable.
 

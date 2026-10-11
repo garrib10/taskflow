@@ -37,7 +37,7 @@ This is an additive domain-metadata bridge, **not the formal v2 persisted contra
 
 No capacity enforcement (#106), board/card redesign (#44), manual control/drag preview (#46), or schema/version/recovery rollout (#113–#115) is completed here.
 
-The subsequent [#113 persistence specification](v2-persistence-schema.md) selects schema 3 with required nullable order metadata: `null` explicitly means never initialized, and a complete ID list means initialized. Missing or damaged required metadata needs recovery. This future DTO contract preserves the first-switch policy above; the current schema-2 bridge and optional in-memory property remain unchanged until migration/recovery rollout.
+The subsequent [#113 persistence specification](v2-persistence-schema.md) selects schema 3 with required nullable order metadata: `null` explicitly means never initialized, and a complete ID list means initialized. [#114 implements this DTO and migration](v2-data-migration.md), retaining the optional in-memory property and first-switch policy above. Damaged order restores validated core data in Priority with saving paused; explicit repair/reset UI remains #115 work. The preceding schema-2 audit records the original #105 bridge.
 
 ## Verification
 

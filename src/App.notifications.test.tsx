@@ -2,10 +2,10 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { STORAGE_KEY } from "./utils/storage";
 
-const current = (revision = "original", title = "Saved task") => JSON.stringify({ schemaVersion: 2, revision, board: makeBoard([makeTask({ title })]) });
+const current = (revision = "original", title = "Saved task") => currentBoardRaw(makeBoard([makeTask({ title })]), revision);
 beforeEach(() => localStorage.clear());
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
 const storageNotice = (text: RegExp) => screen.getAllByRole("status").find(node => text.test(node.textContent ?? ""));
@@ -32,7 +32,7 @@ it("announces a committed migration once, converts the checklist, and stays sile
   const view = render(<App />);
   expect(storageNotice(/saved board was upgraded/)).toHaveTextContent("Information:");
   expect(screen.getByRole("button", { name: "Open task Legacy child" })).toBeInTheDocument();
-  expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).schemaVersion).toBe(2);
+  expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).schemaVersion).toBe(3);
   view.unmount();
   render(<App />);
   expect(storageNotice(/saved board was upgraded/)).toBeUndefined();

@@ -1,14 +1,17 @@
 import type { Board } from "../domain/board/Board";
 import { isId, isRecord, validateBoard } from "../persistence/validation";
 import { migrateBoard } from "../persistence/migrations";
+import { CURRENT_SCHEMA_VERSION, encodeBoardV3, validateStoredBoard, type PersistedEnvelopeV3 } from "../persistence/schema";
+import type { TaskStatus } from "../domain/task/Task";
+export { CURRENT_SCHEMA_VERSION } from "../persistence/schema";
 
 export const STORAGE_KEY = "taskflow-board";
-export const CURRENT_SCHEMA_VERSION = 2;
 export interface BoardStorage { getItem(key: string): string | null; setItem(key: string, value: string): void }
 export type LoadResult =
   | { kind: "missing"; raw: null }
   | { kind: "current"; board: Board; raw: string; revision: string }
-  | { kind: "migrated"; board: Board; raw: string; fromVersion: 0 | 1 }
+  | { kind: "migrated"; board: Board; raw: string; fromVersion: 0 | 1 | 2 }
+  | { kind: "order-recovery"; board: Board; raw: string; version: 2 | 3; affectedColumns: TaskStatus[] }
   | { kind: "invalid" | "migration-failed"; raw: string; reason: string }
   | { kind: "future"; raw: string; version: number }
   | { kind: "unavailable" };
@@ -30,19 +33,21 @@ export function decodeBoard(raw: string | null): LoadResult {
       return { kind: "invalid", raw, reason: "Invalid schema version" };
     }
     if (version > CURRENT_SCHEMA_VERSION) return { kind: "future", raw, version };
-    if (version === CURRENT_SCHEMA_VERSION) {
+    if (version === 2 || version === CURRENT_SCHEMA_VERSION) {
       if (!isId(value.revision)) return { kind: "invalid", raw, reason: "Missing revision" };
-      const result = validateBoard(value.board);
-      return result.ok ? { kind: "current", raw, revision: value.revision, board: result.board }
-        : { kind: "invalid", raw, reason: `${result.path}: ${result.reason}` };
+      const result = version === 2 ? migrateBoard(value.board, 2) : validateStoredBoard(value.board, 3);
+      if (result.kind === "order-recovery") return { ...result, raw, version };
+      if (result.kind === "invalid-core") return { kind: "invalid", raw, reason: `${result.path}: ${result.reason}` };
+      return version === 2 ? { kind: "migrated", raw, fromVersion: 2, board: result.board }
+        : { kind: "current", raw, revision: value.revision, board: result.board };
     }
     const result = migrateBoard(value.board, 1);
-    return result.ok ? { kind: "migrated", raw, fromVersion: 1, board: result.board }
-      : { kind: "migration-failed", raw, reason: `${result.path}: ${result.reason}` };
+    return result.kind === "valid" ? { kind: "migrated", raw, fromVersion: 1, board: result.board }
+      : { kind: "migration-failed", raw, reason: result.kind === "invalid-core" ? `${result.path}: ${result.reason}` : "Invalid migrated order" };
   }
   const result = migrateBoard(value, 0);
-  return result.ok ? { kind: "migrated", raw, fromVersion: 0, board: result.board }
-    : { kind: "migration-failed", raw, reason: `${result.path}: ${result.reason}` };
+  return result.kind === "valid" ? { kind: "migrated", raw, fromVersion: 0, board: result.board }
+    : { kind: "migration-failed", raw, reason: result.kind === "invalid-core" ? `${result.path}: ${result.reason}` : "Invalid migrated order" };
 }
 export function loadBoard(storage: () => BoardStorage = browserStorage): LoadResult {
   try { return decodeBoard(storage().getItem(STORAGE_KEY)); } catch { return { kind: "unavailable" }; }
@@ -73,7 +78,9 @@ export function saveBoard(board: Board, expectedRaw: string | null,
     revision = newRevision();
     if (!isId(revision)) return { kind: "save-failed" };
     // Serialize the trusted domain projection, not structurally compatible UI extras.
-    raw = JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, revision, board: validated.board });
+    const envelope: PersistedEnvelopeV3 = { schemaVersion: CURRENT_SCHEMA_VERSION, revision, board: encodeBoardV3(validated.board) };
+    if (validateStoredBoard(envelope.board, 3).kind !== "valid") return { kind: "invalid-board" };
+    raw = JSON.stringify(envelope);
     target.setItem(STORAGE_KEY, raw);
   } catch { return { kind: "save-failed" }; }
   try {

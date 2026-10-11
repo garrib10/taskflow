@@ -21,3 +21,10 @@ export function freezeDeep(value: unknown): void {
   Object.values(value).forEach(freezeDeep);
   Object.freeze(value);
 }
+
+/** Literal schema-3 setup for ordinary loads, independent of the production encoder. */
+export function currentBoardRaw(board: Board = makeBoard(), revision = "initial"): string {
+  return JSON.stringify({ schemaVersion: 3, revision, board: { ...board,
+    columns: board.columns.map(column => ({ ...column, manualOrder: column.manualOrder ?? null })),
+  } });
+}

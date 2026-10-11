@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { makeBoard, makeTask, freezeDeep } from "../test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask, freezeDeep } from "../test/fixtures";
 import { validateBoard } from "./validation";
 import { migrateBoard, migrateV0ToV1, migrateV1ToV2 } from "./migrations";
 import { CURRENT_SCHEMA_VERSION, STORAGE_KEY, decodeBoard, loadBoard, saveBoard, type BoardStorage } from "../utils/storage";
 
 const json = (value: unknown): unknown => JSON.parse(JSON.stringify(value));
-const encoded = (board: unknown = makeBoard(), revision = "revision-a") => JSON.stringify({ schemaVersion: 2, revision, board });
+const encoded = (board = makeBoard(), revision = "revision-a") => currentBoardRaw(board, revision);
 function memory(raw: string | null = null): BoardStorage {
   const values = new Map<string, string>(raw === null ? [] : [[STORAGE_KEY, raw]]);
   return { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => { values.set(key, value); } };
@@ -97,7 +97,7 @@ describe("versioned decoding and ordered migrations", () => {
     expect(tasks).toHaveLength(3);
     expect(validateBoard(json(result.board)).ok).toBe(true);
     expect(parent.subtasks).toHaveLength(2);
-    expect(migrateBoard(json(result.board), 0)).toEqual({ ok: true, board: result.board });
+    expect(migrateBoard(json(result.board), 0)).toEqual({ kind: "valid", board: result.board });
     expect(migrateBoard(json(board), 0)).toEqual(migrateBoard(json(board), 0));
   });
   it("supports v1 to v2, missing columns, legacy defaults and deterministic dates", () => {
@@ -113,7 +113,7 @@ describe("versioned decoding and ordered migrations", () => {
   it("retains already converted children without duplicating or rolling back edits", () => {
     const converted = makeTask({ id: "finished", title: "Edited converted child", parentId: parent.id, status: "in-review", description: "Preserved child description" });
     const result = migrateBoard(json(makeBoard([parent, converted])), 0);
-    if (!result.ok) throw new Error(result.reason);
+    if (result.kind !== "valid") throw new Error("Expected successful migration");
     const tasks = result.board.columns.flatMap((column) => column.tasks);
     expect(tasks.filter((task) => task.id === "finished")).toEqual([converted]);
     expect(tasks).toHaveLength(3);
@@ -125,11 +125,11 @@ describe("versioned decoding and ordered migrations", () => {
     makeBoard([makeTask({ id: "ancestor" }), { ...parent, parentId: "ancestor" }]),
     makeBoard([{ ...parent, status: "done" }]),
   ])("rejects conflicting/deep/incomplete legacy data without a partial result", (board) => {
-    expect(migrateBoard(json(board), 0).ok).toBe(false);
+    expect(migrateBoard(json(board), 0).kind).toBe("invalid-core");
   });
   it("never silently drops malformed checklist entries", () => {
     const value = { ...makeBoard(), columns: [{ id: "todo", title: "To Do", tasks: [{ ...parent, subtasks: [{ title: "No ID", completed: false }] }] }] };
-    expect(migrateBoard(json(value), 0).ok).toBe(false);
+    expect(migrateBoard(json(value), 0).kind).toBe("invalid-core");
   });
   it("does not migrate current data", () => {
     expect(decodeBoard(encoded())).toMatchObject({ kind: "current", board: makeBoard() });
@@ -175,7 +175,7 @@ describe("safe storage boundary", () => {
     const target = memory();
     expect(saveBoard(mixed, null, () => target, () => "domain-only").kind).toBe("saved");
     expect(JSON.parse(target.getItem(STORAGE_KEY)!)).toEqual({
-      schemaVersion: CURRENT_SCHEMA_VERSION, revision: "domain-only", board: json(domain),
+      schemaVersion: CURRENT_SCHEMA_VERSION, revision: "domain-only", board: JSON.parse(currentBoardRaw(domain)).board,
     });
     expect(loadBoard(() => target)).toMatchObject({ kind: "current", board: domain });
     expect(mixed.dialog.draft).toBe("Unsaved title");

@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { createTask, measureColumns, moveTask, savedTasks } from "./test/appJourney";
 import { STORAGE_KEY } from "./utils/storage";
 
@@ -48,11 +48,11 @@ it("creates, edits, moves, restores and deletes through the full application", a
 });
 
 it("searches titles and descriptions, combines and resets filters without changing persisted state", async () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "filters", board: makeBoard([
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([
     makeTask({ id: "a", title: "Alpha deployment", description: "Release checklist", priority: "high", category: "devops" }),
     makeTask({ id: "b", title: "Beta", description: "Alpha research", priority: "low", category: "testing", status: "in-review" }),
     makeTask({ id: "c", title: "Gamma", description: "Other work", category: "feature", status: "in-progress" }),
-  ]) }));
+  ]), "filters"));
   const user = userEvent.setup(); render(<App />);
   const raw = localStorage.getItem(STORAGE_KEY);
   await user.type(screen.getByLabelText("Search:"), "alpha");

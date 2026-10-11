@@ -1,6 +1,7 @@
 import type { Board } from "../domain/board/Board";
 import type { Task } from "../domain/task/Task";
 import { validateBoard, type ValidationResult } from "./validation";
+import { encodeBoardV3, validateStoredBoard, type StoredBoardResult } from "./schema";
 
 /** v0 -> v1 restores workflow columns and deterministic legacy defaults. */
 export function migrateV0ToV1(value: unknown): ValidationResult {
@@ -41,9 +42,24 @@ export function migrateV1ToV2(value: unknown): ValidationResult {
   return validateBoard(JSON.parse(JSON.stringify(board)));
 }
 
-export function migrateBoard(value: unknown, fromVersion: 0 | 1): ValidationResult {
-  if (fromVersion === 1) return migrateV1ToV2(value);
-  const v1 = migrateV0ToV1(value);
-  if (!v1.ok) return v1;
-  return migrateV1ToV2(JSON.parse(JSON.stringify(v1.board)));
+/** v2 -> v3 preserves valid saved lists and encodes legacy absence as null.
+ * Never initialize order, re-convert current checklists, or write storage here.
+ */
+export function migrateV2ToV3(value: unknown): StoredBoardResult {
+  const v2 = validateStoredBoard(value, 2);
+  if (v2.kind !== "valid") return v2;
+  return validateStoredBoard(encodeBoardV3(v2.board), 3);
+}
+
+export function migrateBoard(value: unknown, fromVersion: 0 | 1 | 2): StoredBoardResult {
+  if (fromVersion === 2) return migrateV2ToV3(value);
+  let source = value;
+  if (fromVersion === 0) {
+    const v1 = migrateV0ToV1(source);
+    if (!v1.ok) return { kind: "invalid-core", path: v1.path, reason: v1.reason };
+    source = JSON.parse(JSON.stringify(v1.board));
+  }
+  const v2 = migrateV1ToV2(source);
+  if (!v2.ok) return { kind: "invalid-core", path: v2.path, reason: v2.reason };
+  return migrateV2ToV3(JSON.parse(JSON.stringify(v2.board)));
 }

@@ -28,7 +28,7 @@ function date(value: unknown): Date | null {
 const fail = (path: string, reason: string): ValidationResult => ({ ok: false, path, reason });
 
 /** Only this boundary constructs trusted domain values from unknown JSON. */
-export function validateBoard(value: unknown, legacy = false): ValidationResult {
+export function validateBoard(value: unknown, legacy = false, ignoreManualOrder = false): ValidationResult {
   if (!isRecord(value) || !isId(value.id) || !isId(value.name) || !Array.isArray(value.columns)) {
     return fail("board", "Invalid board structure");
   }
@@ -71,7 +71,7 @@ export function validateBoard(value: unknown, legacy = false): ValidationResult 
     }
     const column: Column = { id: item.id, title: item.title, tasks };
     // Optional additive domain metadata. Legacy formats never require manual order.
-    if (!legacy && Object.hasOwn(item, "manualOrder")) {
+    if (!legacy && !ignoreManualOrder && Object.hasOwn(item, "manualOrder")) {
       if (!Array.isArray(item.manualOrder) || !item.manualOrder.every(isId)) return fail(`${path}.manualOrder`, "Invalid manual task IDs");
       column.manualOrder = [...item.manualOrder];
       if (manualOrderState(column) !== "valid") return fail(`${path}.manualOrder`, "Manual order must contain every column task exactly once");

@@ -3,7 +3,7 @@ import { afterEach, expect, it } from "vitest";
 import { useBoardReducer } from "./useBoardReducer";
 import { useBoardViewPreferences } from "./useBoardViewPreferences";
 import { createDefaultBoardFilters, filterBoardColumns } from "../domain/board/boardFilters";
-import { makeBoard, makeTask } from "../test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "../test/fixtures";
 import { STORAGE_KEY } from "../utils/storage";
 
 afterEach(() => localStorage.clear());
@@ -33,7 +33,7 @@ it("updates independent criteria, derives active state/count, and resets only cr
 
 it("keeps preferences through domain actions and keeps criterion changes/reset out of saved board data", () => {
   const board = makeBoard();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "initial", board }));
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(board));
   const { result } = renderHook(() => ({ domain: useBoardReducer(), view: useBoardViewPreferences() }));
   const originalBoard = result.current.domain[0];
   const originalRaw = localStorage.getItem(STORAGE_KEY);
@@ -55,7 +55,7 @@ it("keeps preferences through domain actions and keeps criterion changes/reset o
 
 it("resets preferences on remount while hydrating the same durable board", () => {
   const board = makeBoard();
-  const raw = JSON.stringify({ schemaVersion: 2, revision: "initial", board });
+  const raw = currentBoardRaw(board);
   localStorage.setItem(STORAGE_KEY, raw);
   const first = renderHook(() => ({ domain: useBoardReducer(), view: useBoardViewPreferences() }));
   act(() => { first.result.current.view.setSearchTerm("work"); first.result.current.view.setCategoryFilter("testing"); });

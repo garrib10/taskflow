@@ -14,7 +14,7 @@ it.each([0, 1, 2])("loads schema %i over-limit data without task loss or forced 
   const board = overLimit();
   const raw = JSON.stringify(version === 0 ? board : { schemaVersion: version, revision: "old", board });
   const loaded = decodeBoard(raw);
-  expect(loaded.kind).toBe(version === 2 ? "current" : "migrated");
+  expect(loaded.kind).toBe("migrated");
   if (loaded.kind !== "current" && loaded.kind !== "migrated") throw new Error("Over-limit board rejected");
   expect(loaded.board).toEqual(board);
   expect(getColumnCapacity(loaded.board, "in-progress").state).toBe("over");
