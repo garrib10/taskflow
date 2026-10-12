@@ -1,5 +1,5 @@
-import type { Board } from "../domain/board/Board";
-import { taskStatuses, type Task } from "../domain/task/Task";
+import type { Board } from "../domain/board/Board.ts";
+import { taskStatuses, type Task } from "../domain/task/Task.ts";
 export const fixtureDate = new Date("2026-01-01T00:00:00.000Z");
 export function makeTask(overrides: Partial<Task> = {}): Task {
   return {

@@ -27,6 +27,10 @@ async function fillTask(page: Page, title: string, child = false) {
   await dialog.getByLabel("Description", { exact: true }).fill("Smoke journey description");
   await dialog.getByRole("button", { name: child ? "Create SubTask" : "Create Task", exact: true }).click();
 }
+async function stage(page: Page, value: string) {
+  const selector = page.getByLabel("Workflow stage", { exact: true });
+  if (await selector.count()) await selector.selectOption(value);
+}
 async function move(page: Page, title: string, direction = "ArrowRight") {
   const handle = page.getByRole("group", { name: new RegExp(`^Move task ${title},`) });
   await handle.focus();
@@ -53,13 +57,14 @@ test("task lifecycle persists, rejects reverse movement, and allows keyboard war
   await move(page, "Smoke task edited");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Smoke task edited" to In Progress');
   await page.reload();
+  await stage(page, "in-progress");
   await expect(page.getByRole("group", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeVisible();
   await move(page, "Smoke task edited", "ArrowLeft");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Cannot move task from in-progress to todo");
   const dismiss = page.getByRole("button", { name: /Dismiss notification/ });
   await dismiss.focus(); await page.keyboard.press("Enter");
   await expect(dismiss).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Open task Smoke task edited", exact: true })).toBeFocused();
+  await expect(page.getByRole("group", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeFocused();
 });
 
 test("parent and subtask creation survives reload with progress and navigable parent context", async ({ page }) => {
@@ -149,10 +154,13 @@ test("full destination stays blocked when search hides occupants and becomes usa
   expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);
   await page.getByRole("button", { name: /Dismiss notification/ }).click();
   await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await stage(page, "in-progress");
   await move(page, "Occupant 0");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Occupant 0" to In Review');
+  await stage(page, "todo");
   await move(page, "Incoming task");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Incoming task" to In Progress');
   await page.reload();
+  await stage(page, "in-progress");
   await expect(page.getByRole("group", { name: "Move task Incoming task, In Progress", exact: true })).toBeVisible();
 });

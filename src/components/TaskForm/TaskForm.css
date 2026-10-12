@@ -193,3 +193,6 @@
     flex-wrap: wrap;
   }
 }
+
+/* Interim deletion entry while #45 owns the read-first detail redesign. */
+.editor-danger-area { margin-top: var(--space-5); padding-top: var(--space-4); border-top: var(--border-width) solid var(--color-border); }

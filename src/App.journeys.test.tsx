@@ -9,7 +9,7 @@ import { STORAGE_KEY } from "./utils/storage";
 beforeEach(() => { localStorage.clear(); measureColumns(); });
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
 
-it("creates, edits, moves, restores and deletes through the full application", async () => {
+it("creates, edits, moves and restores through the full application", async () => {
   const user = userEvent.setup();
   const view = render(<App />);
   await user.click(screen.getByRole("button", { name: "+ Create Task" }));
@@ -30,6 +30,15 @@ it("creates, edits, moves, restores and deletes through the full application", a
   view.unmount();
   render(<App />);
   expect(screen.getByRole("button", { name: "Open task Edited journey" })).toBeInTheDocument();
+  expect(savedTasks().find(task => task.id === id)).toMatchObject({ title: "Edited journey", description: "Updated description", priority: "high", category: "devops", status: "in-progress" });
+});
+
+it("rejects reverse movement repeatedly and confirms editor deletion after restoration", async () => {
+  const id = "edited-journey";
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([makeTask({ id, title: "Edited journey", description: "Updated description", priority: "high", category: "devops", status: "in-progress" })]), "journey-restoration"));
+  const user = userEvent.setup();
+  render(<App />);
+  expect(savedTasks().find(task => task.id === id)).toMatchObject({ status: "in-progress", title: "Edited journey" });
   const raw = localStorage.getItem(STORAGE_KEY);
   for (let attempt = 0; attempt < 2; attempt++) {
     await moveTask(user, "Edited journey", "Left");
@@ -39,6 +48,7 @@ it("creates, edits, moves, restores and deletes through the full application", a
     dismiss.focus(); await user.keyboard("{Enter}");
     expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
   }
+  await user.click(screen.getByRole("button", { name: "Open task Edited journey" }));
   await user.click(screen.getByRole("button", { name: "Delete Edited journey" }));
   const confirmation = within(screen.getByRole("dialog", { name: "Delete Task" }));
   expect(confirmation.getByRole("button", { name: "Cancel" })).toHaveFocus();

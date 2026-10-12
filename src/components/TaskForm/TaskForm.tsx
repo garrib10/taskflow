@@ -1,3 +1,4 @@
+import SubtaskList from "../SubtaskList/SubtaskList";
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
 import Button from "../ui/Button/Button";
@@ -27,6 +28,7 @@ interface TaskFormProps {
   dispatch: (action: BoardAction) => BoardOperationError | null;
   onSuccess: (message: string, taskId?: string) => void;
   onOpenTask: (task: Task) => void;
+  onDelete?: (taskId: string) => void;
 }
 
 const statusLabels: Record<TaskStatus, string> = {
@@ -44,6 +46,7 @@ export default function TaskForm({
   dispatch,
   onSuccess,
   onOpenTask,
+  onDelete,
 }: TaskFormProps) {
   const isEditing = Boolean(task);
   const currentTask = task ? findTask(board, task.id) ?? task : null;
@@ -352,6 +355,8 @@ export default function TaskForm({
             </button>
           )}
 
+          {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
+          {currentTask && onDelete && <div className="editor-danger-area"><Button variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button></div>}
           <div className="create-task-actions">
             <Button variant="secondary" onClick={handleRequestClose}>
               Cancel
@@ -392,6 +397,7 @@ export default function TaskForm({
           parent={subtaskEditor.type === "create" ? currentTask : null}
           dispatch={dispatch}
           onSuccess={onSuccess}
+          onDelete={onDelete}
           onClose={() => setSubtaskEditor(null)}
           onOpenTask={(nextTask) => {
             if (nextTask.id === currentTask.id) setSubtaskEditor(null);
