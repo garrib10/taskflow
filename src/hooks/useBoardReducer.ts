@@ -31,5 +31,10 @@ export function useBoardReducer() {
     retryRead: () => restore(session.retryRead()),
     replaceStoredBoard: () => restore(session.replaceStoredBoard()),
     repairOrder: () => restore(session.repairOrder(board)),
+    initializeManual: () => {
+      const initialized = session.initializeManual(board);
+      restore(initialized);
+      return initialized !== null;
+    },
   }] as const;
 }

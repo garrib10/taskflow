@@ -60,7 +60,7 @@ Collapsed troubleshooting details expose only generic codes, version numbers or 
 
 New pure tests exercise preservation, explicit retries, source races, selective repair, quota failure and diagnostics. Component tests exercise dismissal, confirmation/cancellation, focus, read retry, failed replacement and stable announcements; hook coverage guards Manual actions during order recovery. Focused Chromium journeys use synthetic, isolated browser data for replacement failure/retry and filtered selective repair alongside the existing fresh/current/legacy migration checks.
 
-#116 still owns independent ordering-preference storage, guarded Manual restoration and preference/board failure combinations. Search/filter state remains mount-local. No auto-adoption, merge, export, backup, schema redesign or board redesign is introduced. Parent #43 remains open.
+[#116 now implements independent ordering-preference storage, guarded Manual restoration and preference/board failure combinations](v2-view-preferences.md). Search/filter state remains mount-local. No auto-adoption, merge, export, backup, schema redesign or board redesign is introduced. Parent #43 remains open.
 
 ### Branch verification (October 11, 2026)
 
