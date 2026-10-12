@@ -162,7 +162,9 @@ complete-board counting, mutation enforcement and over-limit recovery.
 The [v2 persistence specification](docs/v2-persistence-schema.md) defines the
 schema-3 board contract and separate future mode preference. The
 [migration guide](docs/v2-data-migration.md) documents supported legacy upgrades,
-safe writeback and the recovery/preference work still to come.
+safe writeback. The [recovery guide](docs/v2-persistence-recovery.md) explains
+paused writes, explicit retries and confirmed repair/replacement. Independent
+preferences remain future work.
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.
@@ -182,7 +184,7 @@ data, private-browsing restrictions, quotas, or a different origin/profile can
 make saved work unavailable. Invalid/future-version data is preserved and saving
 pauses; it is not silently replaced with sample content. Migration creates no
 separate backup. The original remains untouched if decoding/migration fails;
-only a valid conversion can replace it.
+only a fully validated conversion or explicitly confirmed recovery can replace it.
 
 Multiple tabs do not merge automatically. External changes pause local saving
 and require a confirmed reload to discard local work. LocalStorage is not a

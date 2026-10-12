@@ -8,16 +8,16 @@ import { STORAGE_KEY } from "./utils/storage";
 const current = (revision = "original", title = "Saved task") => currentBoardRaw(makeBoard([makeTask({ title })]), revision);
 beforeEach(() => localStorage.clear());
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
-const storageNotice = (text: RegExp) => screen.getAllByRole("status").find(node => text.test(node.textContent ?? ""));
+const storageNotice = (text: RegExp) => [...screen.getAllByRole("status"), ...screen.queryAllByRole("alert")].find(node => text.test(node.textContent ?? ""));
 
 it("communicates an empty fallback accurately and keeps recovery available after dismissing a corrupt-data warning", async () => {
   localStorage.setItem(STORAGE_KEY, "{broken");
   const user = userEvent.setup();
   render(<App />);
   const warning = storageNotice(/saved board is invalid/)!;
-  expect(warning).toHaveTextContent("Warning: Your saved board is invalid");
+  expect(warning).toHaveTextContent("Error: Your saved board is invalid");
   expect(warning).toHaveTextContent("An empty workspace is open; the original is untouched");
-  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.getByRole("alert")).toBe(warning);
   expect(screen.queryByRole("heading", { level: 3 })).not.toBeInTheDocument();
   await user.click(within(warning).getByRole("button", { name: /Dismiss notification/ }));
   expect(storageNotice(/saved board is invalid/)).toBeUndefined();

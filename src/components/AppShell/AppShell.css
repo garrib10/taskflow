@@ -40,6 +40,8 @@
   border-radius: var(--radius-control);
 }
 .board-storage p { flex: 1 1 100%; margin: 0; overflow-wrap: anywhere; }
+.board-storage details { flex: 1 1 100%; min-width: 0; overflow-wrap: anywhere; }
+.board-storage summary { cursor: pointer; }
 .app-shell-board { min-width: 0; }
 
 @media (max-width: 600px) {

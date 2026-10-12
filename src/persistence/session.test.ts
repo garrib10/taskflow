@@ -94,7 +94,7 @@ describe("recovery without silent data loss", () => {
     session.save(makeBoard());
     expect(storage.setItem).not.toHaveBeenCalled();
     expect(storage.getItem(STORAGE_KEY)).toBe(value);
-    expect(session.notice?.variant).toBe(value.includes("schemaVersion") ? "error" : "warning");
+    expect(session.notice?.variant).toBe("error");
   });
   it("initial read failure never writes sample data", () => {
     const storage = { getItem: () => { throw new Error("Unavailable"); }, setItem: vi.fn() };
@@ -121,7 +121,7 @@ describe("recovery without silent data loss", () => {
     session.save(local);
     expect(session.notice?.recovery).toBe("retry");
     write.mockImplementation(originalWrite ?? (() => {}));
-    session.save(local);
+    session.retrySave(local);
     expect(session.notice).toMatchObject({ variant: "success", recovery: null, message: "Changes in this tab are now saved." });
     expect(JSON.parse(storage.getItem(STORAGE_KEY) ?? "null").board.columns[0].tasks[0].title).toBe("Unsaved work");
   });
@@ -136,7 +136,7 @@ describe("recovery without silent data loss", () => {
     expect(storage.getItem(STORAGE_KEY)).toBe(legacy);
     expect(session.notice?.recovery).toBe("retry");
     write.mockImplementation(originalWrite ?? (() => {}));
-    session.save(session.board);
+    session.retrySave(session.board);
     expect(session.notice?.variant).toBe("info");
     const reloaded = new PersistenceSession(() => storage);
     expect(reloaded.board.columns.flatMap((column) => column.tasks)).toHaveLength(2);

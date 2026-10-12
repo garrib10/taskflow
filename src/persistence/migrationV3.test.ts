@@ -184,7 +184,7 @@ describe("failure preservation and recovery handoff", () => {
     session.save(session.board);
     expect(session.notice?.recovery).toBe("retry");
     expect(target.getItem(STORAGE_KEY)).toBe(raw);
-    session.save(session.board);
+    session.retrySave(session.board);
     expect(session.notice?.message).toBe("Your saved board was upgraded to the current format.");
     expect(session.notice?.message).not.toContain("checklist");
     expect(loadBoard(() => target)).toMatchObject({ kind: "current", board: session.board });
