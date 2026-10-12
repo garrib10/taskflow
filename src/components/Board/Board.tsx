@@ -25,6 +25,7 @@ import { useNotification } from "../../notifications/useNotification";
 import { operationVariant, type NotificationVariant } from "../../notifications/notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
+import TaskDetails from "../TaskDetails/TaskDetails";
 import Field from "../ui/Field/Field";
 import { isOrderingMode } from "../../persistence/viewPreferences";
 import { selectOrderedTasks, type OrderingMode } from "../../domain/board/boardOrdering";
@@ -206,6 +207,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
   }
 
   function handleCloseTaskForm() {
+    if (taskToEdit) pendingFocus.current = [`task-${taskToEdit.id}`, "task-search"];
     setTaskToEdit(null);
     setShowTaskForm(false);
   }
@@ -292,9 +294,10 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
           />}
           overlays={<>
             {overlays}
-            {showTaskForm && (
+            {showTaskForm && taskToEdit && <TaskDetails key={taskToEdit.id} board={board} task={taskToEdit} onClose={handleCloseTaskForm} dispatch={tryDispatch} onSuccess={handleTaskSaved} onOpenTask={handleEditTask} onDelete={handleDeleteTask}/>}
+            {showTaskForm && !taskToEdit && (
               <TaskForm
-                key={taskToEdit?.id ?? "new"}
+                key="new"
                 board={board}
                 task={taskToEdit}
                 onClose={handleCloseTaskForm}

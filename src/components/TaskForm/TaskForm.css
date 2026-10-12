@@ -196,3 +196,14 @@
 
 /* Interim deletion entry while #45 owns the read-first detail redesign. */
 .editor-danger-area { margin-top: var(--space-5); padding-top: var(--space-4); border-top: var(--border-width) solid var(--color-border); }
+
+/* Focused drafting surface; relationships remain secondary to task content. */
+.task-form-heading { border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-4); margin-bottom: var(--space-2); }
+.task-form-heading p:last-child { color: var(--color-text-muted); font-size: var(--font-size-support); line-height: 1.5; margin: 0; }
+.task-form-heading .board-eyebrow { margin-top: 0; }
+.parent-child-form textarea { font-family: inherit; line-height: 1.5; }
+.parent-child-form .create-task-actions { position: sticky; bottom: calc(-1 * var(--space-6)); background: var(--color-surface); border-top: 1px solid var(--color-border); padding: var(--space-3) 0; }
+.task-status-pill.stage-in-progress { background: var(--color-stage-in-progress-surface); border-color: var(--color-stage-in-progress-text); color: var(--color-stage-in-progress-text); }
+.task-status-pill.stage-in-review { background: var(--color-stage-in-review-surface); border-color: var(--color-stage-in-review-text); color: var(--color-stage-in-review-text); }
+.task-status-pill.stage-done { background: var(--color-stage-done-surface); border-color: var(--color-stage-done-border); color: var(--color-stage-done-text); }
+.task-form-relationship-note { color: var(--color-text-muted); font-size: var(--font-size-support); line-height: 1.5; margin: var(--space-3) 0 0; }

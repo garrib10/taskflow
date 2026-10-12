@@ -16,7 +16,7 @@ it("creates, edits, moves and restores through the full application", async () =
   expect(screen.getByLabelText("Title")).toHaveFocus();
   await createTask(user, "Journey task");
   const id = savedTasks().find(task => task.title === "Journey task")!.id;
-  await user.click(screen.getByRole("button", { name: "Open task Journey task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Journey task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   const dialog = within(screen.getByRole("dialog", { name: "Edit Task" }));
   await user.clear(dialog.getByLabelText("Title"));
   await user.type(dialog.getByLabelText("Title"), "Edited journey");
@@ -48,7 +48,7 @@ it("rejects reverse movement repeatedly and confirms editor deletion after resto
     dismiss.focus(); await user.keyboard("{Enter}");
     expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
   }
-  await user.click(screen.getByRole("button", { name: "Open task Edited journey" }));
+  await user.click(screen.getByRole("button", { name: "Open task Edited journey" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.click(screen.getByRole("button", { name: "Delete Edited journey" }));
   const confirmation = within(screen.getByRole("dialog", { name: "Delete Task" }));
   expect(confirmation.getByRole("button", { name: "Cancel" })).toHaveFocus();

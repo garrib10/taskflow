@@ -3,7 +3,7 @@ import "../../styles/task-dialog.css";
 import "./TaskForm.css";
 import Button from "../ui/Button/Button";
 import Field from "../ui/Field/Field";
-import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
 import type { Board } from "../../domain/board/Board";
 import { findTask, getChildren, getChildProgress, getParent } from "../../domain/board/taskRelationships";
@@ -20,7 +20,7 @@ import { operationVariant } from "../../notifications/notification";
 import { useModalFocus } from "../../accessibility/useModalFocus";
 import { validateTaskContent } from "../../domain/task/taskContent";
 
-interface TaskFormProps {
+export interface TaskFormProps {
   board: Board;
   task?: Task | null;
   parent?: Task | null;
@@ -85,6 +85,13 @@ export default function TaskForm({
     description !== initialDescription ||
     priority !== initialPriority ||
     category !== initialCategory;
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    function warnBeforeLeaving(event: BeforeUnloadEvent) { event.preventDefault(); }
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [hasUnsavedChanges]);
 
   const handleRequestClose = useCallback(() => {
     if (!hasUnsavedChanges) {
@@ -197,13 +204,13 @@ export default function TaskForm({
         aria-labelledby={`${fieldPrefix}-form-title`}
       >
         <form ref={formRef} onSubmit={handleSubmit} noValidate>
-          <h2 id={`${fieldPrefix}-form-title`}>
+          <header className="task-form-heading"><p className="board-eyebrow">{isEditing ? "Task editor" : parent ? "Linked work" : "New work"}</p><h2 id={`${fieldPrefix}-form-title`}>
             {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
-          </h2>
+          </h2><p>{isEditing ? "Update the details below. Changes apply when you save." : parent ? "Create a linked task. Priority and category start with the parent’s values." : "Give this task a clear title and describe what needs to happen."}</p></header>
 
           {(currentTask || isSubtask) && (
             <div className="task-editor-context">
-              <span className={`task-status-pill${currentTask?.status === "done" ? " is-complete" : ""}`}>
+              <span className={`task-status-pill stage-${currentTask?.status ?? "todo"}${currentTask?.status === "done" ? " is-complete" : ""}`}>
                 {statusLabels[currentTask?.status ?? "todo"]}
               </span>
               {linkedParent ? (
@@ -309,6 +316,7 @@ export default function TaskForm({
             </div>
           </div>
 
+          {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from this draft.</p>}
           {currentTask && !isSubtask && (children.length > 0 ? (
             <section className="task-editor-subtasks" aria-label="Subtasks">
               <details open>

@@ -33,7 +33,7 @@ Movement feedback uses one polite live region, repeated outcomes remain announce
 
 ## Integration boundary
 
-Read-first desktop detail drawers/mobile detail sheets and separate editing belong to **#45**. Until that implementation lands, title activation opens the existing editor. Removing board Edit/Delete requires a narrow bridge: Delete and the existing legacy checklist component are available inside that editor, retaining existing confirmation/detachment behavior. This is not a task-form/detail redesign. **#46** retains toolbar/control redesign ownership.
+The [#45 task details implementation](v2-task-details.md) now supplies read-first desktop drawers/mobile sheets and deliberate editing. Title activation opens details; Delete and legacy checklist management are reachable there and inside the editor, retaining existing confirmation/detachment behavior. **#46** retains toolbar/control redesign ownership. The verification below records the original #44 baseline.
 
 ## Verification
 

@@ -50,7 +50,7 @@ async function move(page: Page, title: string, direction = "ArrowRight") {
 test("task lifecycle persists, rejects reverse movement, and allows keyboard warning dismissal", async ({ page }) => {
   await page.getByRole("button", { name: "+ Create Task" }).click();
   await fillTask(page, "Smoke task");
-  await page.getByRole("button", { name: "Open task Smoke task", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke task", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit Task" });
   await editor.getByLabel("Title", { exact: true }).fill("Smoke task edited");
   await editor.getByRole("button", { name: "Save Changes" }).click();
@@ -70,15 +70,16 @@ test("task lifecycle persists, rejects reverse movement, and allows keyboard war
 test("parent and subtask creation survives reload with progress and navigable parent context", async ({ page }) => {
   await page.getByRole("button", { name: "+ Create Task" }).click();
   await fillTask(page, "Smoke parent");
-  await page.getByRole("button", { name: "Open task Smoke parent", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke parent", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await page.getByRole("button", { name: "Add SubTask to Smoke parent" }).click();
   await fillTask(page, "Smoke child", true);
   await page.getByRole("dialog", { name: "Edit Task" }).getByRole("button", { name: "Cancel", exact: true }).click();
   await page.reload();
   await expect(page.getByRole("progressbar", { name: "Subtask completion for Smoke parent" })).toHaveAttribute("aria-valuemax", "1");
-  await page.getByRole("button", { name: "Open task Smoke child", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke child", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit SubTask" })).toBeVisible();
   await page.getByRole("button", { name: "Open parent Smoke parent", exact: true }).click();
+  await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit Task" }).getByLabel("Title", { exact: true })).toHaveValue("Smoke parent");
 });
 

@@ -91,7 +91,7 @@ it("preference-only write failure retains session Manual and permits independent
   expect(screen.getByLabelText("Ordering")).toHaveValue("manual");
   expect(screen.getAllByRole("status").some(node => node.textContent?.includes("ordering choice could not be saved"))).toBe(true);
   expect(screen.queryByRole("region", { name: "Board storage" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Open task Alpha" }));
+  await user.click(screen.getByRole("button", { name: "Open task Alpha" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.clear(screen.getByLabelText("Title")); await user.type(screen.getByLabelText("Title"), "Edited Alpha");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null").board.columns[0].tasks[0].title).toBe("Edited Alpha");
