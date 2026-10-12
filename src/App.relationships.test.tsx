@@ -144,10 +144,12 @@ it("confirms child deletion and parent detachment, restores focus and persists n
     makeTask({ id: "p", title: "Parent" }), makeTask({ id: "a", title: "Child A", parentId: "p" }), makeTask({ id: "b", title: "Child B", parentId: "p" }),
   ]), "deletion"));
   const user = userEvent.setup(); const view = render(<App />);
+  if (!screen.queryByRole("button", { name: "Delete Child A" })) await user.click(screen.getByRole("button", { name: "Open task Child A" }));
   await user.click(screen.getByRole("button", { name: "Delete Child A" }));
   await user.click(within(screen.getByRole("dialog", { name: "Delete Task" })).getByRole("button", { name: "Delete" }));
   expect(savedTasks()).toHaveLength(2);
   expect(screen.getByRole("button", { name: "Open task Child B" })).toHaveFocus();
+  if (!screen.queryByRole("button", { name: "Delete Parent" })) await user.click(screen.getByRole("button", { name: "Open task Parent" }));
   await user.click(screen.getByRole("button", { name: "Delete Parent" }));
   const raw = localStorage.getItem(STORAGE_KEY);
   const confirmation = screen.getByRole("dialog", { name: "Delete Parent Task" });
@@ -155,6 +157,7 @@ it("confirms child deletion and parent detachment, restores focus and persists n
   expect(within(confirmation).getByRole("button", { name: "Cancel" })).toHaveFocus();
   await user.keyboard("{Escape}");
   expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
+  if (!screen.queryByRole("button", { name: "Delete Parent" })) await user.click(screen.getByRole("button", { name: "Open task Parent" }));
   await user.click(screen.getByRole("button", { name: "Delete Parent" }));
   await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Subtasks" }));
   expect(savedTasks()).toHaveLength(1);

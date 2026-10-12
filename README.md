@@ -231,3 +231,5 @@ import/export, authentication, backend/cloud persistence, collaboration, AI,
 analytics/history/assignees/notes, and major visual redesign are outside this
 release. v2.0 planning focuses on the approved frontend/domain/persistence and
 board experience; it does not automatically commit every excluded feature.
+
+The [v2 Kanban board guide](docs/v2-kanban-board.md) documents compact cards, complete-board capacity headers, manual drop feedback and single-stage mobile navigation. Open a task by its title; deletion and legacy checklist editing remain in the existing editor until #45 supplies read-first details.

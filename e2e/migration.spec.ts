@@ -6,6 +6,10 @@ async function seed(page: Page, raw: string) {
   await page.reload();
   await expect(page.getByRole("heading", { name: "TaskFlow", exact: true })).toBeVisible();
 }
+async function stage(page: Page, value: string) {
+  const selector = page.getByLabel("Workflow stage", { exact: true });
+  if (await selector.count()) await selector.selectOption(value);
+}
 async function snapshot(page: Page) {
   return page.evaluate(() => localStorage.getItem("taskflow-board"));
 }
@@ -38,13 +42,17 @@ test("fresh storage and v1.5 upgrade preserve full board, independent ordering a
   const expected = JSON.parse(JSON.stringify(board));
   expected.columns.forEach((column: { manualOrder?: string[] | null }) => { column.manualOrder ??= null; });
   expect(saved.board).toEqual(expected);
+  await stage(page, "in-progress");
   await expect(page.getByRole("heading", { name: "In Progress (7)", exact: true })).toBeVisible();
+  await stage(page, "in-review");
   await expect(page.getByRole("heading", { name: "In Review (5)", exact: true })).toBeVisible();
+  await stage(page, "todo");
   const toDo = page.getByRole("region", { name: "To Do (4)", exact: true });
   await expect(toDo.getByRole("heading", { level: 3 })).toHaveText(["Release checklist", "First high arrival", "Second high arrival", "Low priority arrival"]);
   await page.reload();
   expect(await snapshot(page)).toBe(raw);
   await expect(page.getByText(/Your saved board was upgraded/)).toHaveCount(0);
+  await stage(page, "done");
   await page.getByRole("button", { name: "Open task Completed linked child", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit SubTask" })).toBeVisible();
   await page.getByRole("button", { name: "Open parent Release checklist", exact: true }).click();
@@ -62,8 +70,11 @@ test("legacy checklist conversion is repeat-safe and incomplete children still b
   expect(JSON.parse(raw).schemaVersion).toBe(3);
   await page.reload();
   expect(await snapshot(page)).toBe(raw);
+  await stage(page, "todo");
   await expect(page.getByRole("button", { name: "Open task Remaining work", exact: true })).toHaveCount(1);
+  await stage(page, "done");
   await expect(page.getByRole("button", { name: "Open task Finished work", exact: true })).toHaveCount(1);
+  await stage(page, "in-review");
   const handle = page.getByRole("group", { name: "Move task Legacy parent, In Review", exact: true });
   await handle.focus(); await page.keyboard.press("Space");
   await expect(handle).toHaveAttribute("aria-pressed", "true");
@@ -84,7 +95,7 @@ test("damaged order retains safe tasks and local edits without overwriting saved
   await seed(page, raw);
   await expect(page.getByRole("region", { name: "Board storage" })).toContainText("saving is paused");
   await expect(page.getByRole("button", { name: "Open task Release checklist", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Edit Low priority arrival", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Low priority arrival", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit Task" });
   await editor.getByLabel("Title", { exact: true }).fill("Local unsaved edit");
   await editor.getByRole("button", { name: "Save Changes" }).click();

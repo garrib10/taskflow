@@ -91,7 +91,7 @@ it("preference-only write failure retains session Manual and permits independent
   expect(screen.getByLabelText("Ordering")).toHaveValue("manual");
   expect(screen.getAllByRole("status").some(node => node.textContent?.includes("ordering choice could not be saved"))).toBe(true);
   expect(screen.queryByRole("region", { name: "Board storage" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Edit Alpha" }));
+  await user.click(screen.getByRole("button", { name: "Open task Alpha" }));
   await user.clear(screen.getByLabelText("Title")); await user.type(screen.getByLabelText("Title"), "Edited Alpha");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null").board.columns[0].tasks[0].title).toBe("Edited Alpha");
@@ -116,6 +116,7 @@ it("keeps preference hydration independent of missing/failed boards and never by
 it("reorders only in Manual, persists positions, keeps filters/drafts outside both envelopes", async () => {
   seed(); const user = userEvent.setup(); const view = render(<App />);
   await user.selectOptions(screen.getByLabelText("Ordering"), "manual");
+  await user.click(screen.getByLabelText("Movement actions for Alpha"));
   await user.click(screen.getByRole("button", { name: "Move Alpha later" }));
   expect(titles()).toEqual(["Beta", "Alpha"]);
   await user.type(screen.getByLabelText("Search:"), "Alpha");
