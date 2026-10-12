@@ -7,12 +7,15 @@ import { useNotification } from "./notifications/useNotification";
 import { useBoardReducer } from "./hooks/useBoardReducer";
 import { recoveryDiagnostic } from "./persistence/session";
 import Button from "./components/ui/Button/Button";
+import { useOrderingPreference } from "./hooks/useOrderingPreference";
 
 function App() {
   const [board, dispatch, persistence] = useBoardReducer();
   const [confirmation, setConfirmation] = useState<"reload" | "retry-read" | "replace" | "repair" | null>(null);
   const notice = persistence.notice;
   const recovery = persistence.recovery;
+  const ordering = useOrderingPreference(board, recovery, persistence.initializeManual);
+  const preferenceFeedback = useNotification(ordering.notice);
   const { notification, dismiss } = useNotification(notice);
   const retryTrigger = useRef<HTMLButtonElement | null>(null);
   useLayoutEffect(() => {
@@ -21,7 +24,8 @@ function App() {
     if (trigger && !trigger.isConnected) document.querySelector<HTMLElement>("[data-focus-fallback]")?.focus();
   }, [notice]);
 
-  return <Board board={board} dispatch={dispatch} feedback={<>
+  return <Board board={board} dispatch={dispatch} ordering={ordering} feedback={<>
+    {preferenceFeedback.notification && <Notification key={preferenceFeedback.notification.id} notification={preferenceFeedback.notification} onClose={() => preferenceFeedback.dismiss(preferenceFeedback.notification?.id ?? "")} />}
     {notification && <Notification key={notification.id} notification={notification} onClose={() => dismiss(notification.id)} />}
     {recovery.kind !== "ready" && (
       <section className="board-storage" aria-label="Board storage">

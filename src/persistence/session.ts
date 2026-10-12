@@ -2,6 +2,8 @@ import { createNotification, type NotificationVariant, type TaskNotification } f
 import type { Board } from "../domain/board/Board";
 import { sortTasksByPriority } from "../domain/task/taskPriority";
 import { initialBoard } from "../utils/mockData";
+import { boardReducer } from "../domain/board/boardReducer";
+import { manualOrderState } from "../domain/board/boardOrdering";
 import { browserStorage, commitConfirmedRecovery, decodeBoard, loadBoard, saveBoard, STORAGE_KEY, type BoardStorage, type LoadResult, type SaveResult } from "../utils/storage";
 
 export type RecoveryState =
@@ -99,6 +101,14 @@ export class PersistenceSession {
   retrySave(board: Board): void {
     if (this.recovery.kind !== "write-failed" || this.knownRaw === undefined) return;
     this.finishSave(saveBoard(board, this.knownRaw, this.storage), board);
+  }
+  /** Persist first-switch positions before allowing a saved Manual preference. */
+  initializeManual(board: Board): Board | null {
+    if (!this.writesEnabled) return null;
+    const candidate = boardReducer(board, { type: "INITIALIZE_MANUAL_ORDER", updatedAt: new Date() });
+    if (!candidate.columns.every(column => manualOrderState(column) === "valid")) return null;
+    this.save(candidate);
+    return this.writesEnabled && this.lastSavedBoard === candidate ? candidate : null;
   }
   private finishSave(result: SaveResult, board: Board) {
     switch (result.kind) {

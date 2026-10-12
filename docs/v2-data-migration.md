@@ -35,9 +35,9 @@ Migration deliberately **does not assign positions to never-initialized columns*
 
 Missing required schema-3 order, duplicate/stale/foreign IDs, invalid list values or schema-2 `null` are damaged order. Core validation runs first, so malformed relationships or content are not exposed as safe order-only recovery. A valid core retains all tasks and unaffected valid lists; damaged lists are omitted from the usable domain projection. `PersistenceSession.orderRecovery` retains the raw source, source version and affected columns. All board writes are paused, and the storage boundary independently refuses overwrite even when given the original raw snapshot. Priority edits can remain in memory with an unsaved warning.
 
-There are no Manual UI controls yet. [#115 recovery](v2-persistence-recovery.md) adds confirmed selective repair, confirmed replacement of unusable data, sanitized diagnostics and explicit read/write retries. The #114 migration transformations are unchanged.
+The #114 implementation introduced no Manual UI controls. [#116](v2-view-preferences.md) now supplies the mode selector and minimal earlier/later actions. [#115 recovery](v2-persistence-recovery.md) adds confirmed selective repair, confirmed replacement of unusable data, sanitized diagnostics and explicit read/write retries. The #114 migration transformations are unchanged.
 
-The independent future `taskflow-view-preferences` contract remains #116 work. Board migration neither reads nor writes that key, so malformed/future preferences cannot corrupt or alter the board. No new preference migration is necessary because the current application has never persisted that format. Search/filter criteria remain mount-local.
+The independent `taskflow-view-preferences` contract is now implemented by [#116](v2-view-preferences.md). Board migration neither reads nor writes that key, so malformed/future preferences cannot corrupt or alter the board. No new preference migration is necessary because the current application has never persisted that format. Search/filter criteria remain mount-local.
 
 ## Writeback and failure guarantees
 
@@ -47,7 +47,7 @@ Successful writeback updates the known snapshot and board-identity guard. Repeat
 
 `saveBoard` returns distinct `saved`, `conflict`, `invalid-board`, `unavailable` and `save-failed` results. A migration write exception leaves the original available and triggers existing retry feedback; success is announced only after confirmation. The session retains the complete migrated board for retry. LocalStorage has no compare-and-swap: an external writer can race, and a postflight access failure can occur after a complete write. There is no unsafe rollback or promise that every postflight failure leaves the old bytes intact.
 
-No automatic clearing, reset, backup or import/export is introduced. [#115 now implements the richer recovery flow](v2-persistence-recovery.md); #116 owns independent preferences. Parent #43 remains open.
+No automatic clearing, reset, backup or import/export is introduced. [#115 now implements the richer recovery flow](v2-persistence-recovery.md); [#116 implements independent preferences](v2-view-preferences.md). Parent #43 remains open.
 
 ## Fixtures and verification
 

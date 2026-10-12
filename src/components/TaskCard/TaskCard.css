@@ -255,3 +255,5 @@
   color: var(--color-action-subtle-text);
   text-decoration: underline;
 }
+.task-order-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block: var(--space-3); }
+.task-order-actions p { width: 100%; margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-support); }

@@ -19,6 +19,9 @@ import { useNotification } from "../../notifications/useNotification";
 import { operationVariant, type NotificationVariant } from "../../notifications/notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
+import Field from "../ui/Field/Field";
+import { isOrderingMode } from "../../persistence/viewPreferences";
+import { placeTask, type OrderingMode } from "../../domain/board/boardOrdering";
 
 import { keyboardCoordinates } from "../../accessibility/keyboardCoordinates";
 import { canFocus } from "../../accessibility/useModalFocus";
@@ -29,9 +32,11 @@ interface BoardProps {
   dispatch: React.Dispatch<BoardAction>;
   feedback?: ReactNode;
   overlays?: ReactNode;
+  ordering?: { mode: OrderingMode; selectMode: (mode: OrderingMode) => void };
 }
 
-export default function Board({ board, dispatch, feedback, overlays }: BoardProps) {
+export default function Board({ board, dispatch, feedback, overlays, ordering }: BoardProps) {
+  const orderingMode = ordering?.mode ?? "priority";
   const boardElement = useRef<HTMLDivElement>(null);
   const restrictToBoard: Modifier = ({ transform, draggingNodeRect }) =>
     restrictDragToColumns(transform, draggingNodeRect,
@@ -42,6 +47,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     useSensor(KeyboardSensor, { coordinateGetter: keyboardCoordinates, scrollBehavior: "auto", keyboardCodes: { start: ["Space", "Enter"], end: ["Space", "Enter"], cancel: ["Escape", "Tab"] } }),
   );
   const pendingFocus = useRef<string[]>([]);
+  const reorderedTask = useRef<string | null>(null);
   const lastTaskFocus = useRef<string | null>(null);
   const [announcement, setAnnouncement] = useState({ id: 0, message: "" });
   function announce(message: string) { setAnnouncement(previous => ({ id: previous.id + 1, message })); }
@@ -53,6 +59,11 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
     document.querySelector<HTMLElement>('[data-focus-fallback]')?.focus();
   }
   useLayoutEffect(() => {
+    if (reorderedTask.current) {
+      const target = document.getElementById(`task-${reorderedTask.current}`)?.querySelector<HTMLElement>("[data-task-drag]") ?? null;
+      reorderedTask.current = null;
+      if (canFocus(target)) target.focus();
+    }
     if (pendingFocus.current.length) { const ids = pendingFocus.current; pendingFocus.current = []; if (!document.querySelector('[role="dialog"]:not([inert])')) focusTargets(ids); }
   });
   function dismissFocus() { pendingFocus.current = lastTaskFocus.current ? [lastTaskFocus.current] : ["task-search"]; }
@@ -134,6 +145,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
       taskId,
       newStatus,
       updatedAt: new Date(),
+      ordering: { mode: orderingMode, filtered: isFiltering, input: event.activatorEvent.type.startsWith("key") ? "keyboard" : event.activatorEvent.type.startsWith("touch") ? "touch" : "pointer" },
     });
 
     pendingFocus.current = [`task-${taskId}`, "task-search"];
@@ -227,6 +239,7 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
             )}
           </>}
           toolbar={<BoardToolbar
+            ordering={ordering && <Field controlId="task-ordering-mode" label="Ordering"><select id="task-ordering-mode" value={orderingMode} onChange={event => { if (isOrderingMode(event.target.value)) ordering.selectMode(event.target.value); }}><option value="priority">Priority</option><option value="manual">Manual</option></select></Field>}
             search={<SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />}
             filters={<FilterControls priorityFilter={priorityFilter} categoryFilter={categoryFilter} statusFilter={statusFilter}
               onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
@@ -275,6 +288,17 @@ export default function Board({ board, dispatch, feedback, overlays }: BoardProp
                 onEdit={handleEditTask}
                 onDelete={handleDeleteTask}
                 isFiltering={isFiltering}
+                orderingMode={orderingMode}
+                onReorder={(task, placement) => {
+                  const failure = tryDispatch({ type: "REORDER_TASK", taskId: task.id, placement, mode: orderingMode, filtered: isFiltering, updatedAt: new Date() });
+                  if (failure) showFailure(failure);
+                  else {
+                    reorderedTask.current = task.id;
+                    const fullColumn = board.columns.find(current => current.id === column.id);
+                    const order = placeTask(fullColumn?.manualOrder ?? [], task.id, placement);
+                    announce(`Reordered "${task.title}" in ${column.title}, position ${order.indexOf(task.id) + 1} of ${order.length}.`);
+                  }
+                }}
               />
             ))}
           </div>

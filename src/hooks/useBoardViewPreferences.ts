@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createDefaultBoardFilters, type CategoryFilter, type PriorityFilter, type StatusFilter } from "../domain/board/boardFilters";
 
-/** Mount-local presentation choices. No board actions, URL writes or persistence. */
+/** Mount-local search/filter criteria. Persisted ordering has a separate owner. */
 export function useBoardViewPreferences() {
   const [filters, setFilters] = useState(createDefaultBoardFilters);
   const filterCount = Number(filters.priorityFilter !== "all") +

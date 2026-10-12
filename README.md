@@ -24,7 +24,8 @@ and [release QA report](docs/v1.5-release-qa.md) for readiness and known finding
   unsaved form changes.
 - Search titles/descriptions; combine priority, category, and status filters and
   reset them together. Cards sort High → Medium → Low with stable equal-priority
-  ordering. No user-controlled manual ordering is implemented.
+  ordering by default. Select Manual to retain explicit positions, using named
+  Move earlier/later actions when unfiltered. The selected mode survives refresh.
 - Linked subtasks with independent workflow stages, parent navigation, creation
   from the parent editor, and completed/total progress on parent cards.
 - One-level relationships, completion guards, reassignment/detachment, and parent
@@ -164,7 +165,7 @@ schema-3 board contract and separate future mode preference. The
 [migration guide](docs/v2-data-migration.md) documents supported legacy upgrades,
 safe writeback. The [recovery guide](docs/v2-persistence-recovery.md) explains
 paused writes, explicit retries and confirmed repair/replacement. Independent
-preferences remain future work.
+preferences are documented in the [view-preference guide](docs/v2-view-preferences.md).
 
 - [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
   deletion, reassignment, and independently saved subtask edits.

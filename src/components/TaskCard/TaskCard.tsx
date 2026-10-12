@@ -8,6 +8,7 @@ import type { BoardAction } from "../../domain/board/boardReducer";
 import { priorityStyles } from "../../domain/task/priorityStyles";
 import { categoryStyles } from "../../domain/task/categoryStyles";
 import SubtaskList from "../SubtaskList/SubtaskList";
+import type { ReactNode } from "react";
 
 interface TaskCardProps {
   task: Task;
@@ -15,6 +16,7 @@ interface TaskCardProps {
   dispatch: React.Dispatch<BoardAction>;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
+  orderingActions?: ReactNode;
 }
 
 export default function TaskCard({
@@ -23,6 +25,7 @@ export default function TaskCard({
   dispatch,
   onEdit,
   onDelete,
+  orderingActions,
 }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
@@ -90,6 +93,7 @@ export default function TaskCard({
         </details>
       )}
 
+      {orderingActions}
       <div className="task-footer">
         <div className="task-meta">
           {task.status === "done" ? (

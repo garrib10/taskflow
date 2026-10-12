@@ -2,7 +2,7 @@
 
 ## Status and ownership
 
-Issue [#113](https://github.com/garrib10/taskflow/issues/113) defines this contract under [#43](https://github.com/garrib10/taskflow/issues/43). [#114's implementation](v2-data-migration.md) now reads and writes schema 3 with supported legacy migration and paused order-recovery handoff. [#115 recovery](v2-persistence-recovery.md) now provides confirmed repair/replacement and explicit retries. Separate preference storage remains #116. Application release numbers and persistence schema numbers are independent.
+Issue [#113](https://github.com/garrib10/taskflow/issues/113) defines this contract under [#43](https://github.com/garrib10/taskflow/issues/43). [#114's implementation](v2-data-migration.md) now reads and writes schema 3 with supported legacy migration and paused order-recovery handoff. [#115 recovery](v2-persistence-recovery.md) now provides confirmed repair/replacement and explicit retries. [#116 implements independent ordering preferences](v2-view-preferences.md). Application release numbers and persistence schema numbers are independent.
 
 This contract builds on the completed [state ownership](v2-state-ownership.md), [manual ordering](v2-manual-ordering.md) and [capacity](v2-column-capacity.md) work (#104–#108), and the approved [ordering decisions in #98](https://github.com/garrib10/taskflow/issues/98). It does not redesign relationships, introduce a backend, add multiple boards or enable Manual controls.
 
@@ -114,6 +114,8 @@ Invalid core data and unknown future schemas are not order-only repair cases. Pr
 Diagnostics may contain versions, generic reason codes and field/index paths. Do not log raw payloads, task IDs, titles, descriptions, drafts or unknown values. Recovery UI must accurately distinguish unavailable access, invalid data, future data, conflicts and unsaved changes.
 
 ## Ordering preference contract (#116)
+
+[Implementation and verification](v2-view-preferences.md) follow this contract.
 
 Use a separate `taskflow-view-preferences` key with its own version:
 
