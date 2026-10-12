@@ -321,7 +321,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
 
           </>}
         >
-          <div className="board-workflow-header"><div><span className="board-eyebrow">Workflow</span><p>{board.columns.reduce((sum, column) => sum + column.tasks.length, 0)} tasks · {orderingMode === "manual" ? "Manual order" : "Ordered by priority"}</p></div><span className="board-workflow-rule">To Do → In Progress → In Review → Done</span></div>
+          <div className="board-workflow-header"><div><span className="board-eyebrow">Workflow</span><p>{board.columns.reduce((sum, column) => sum + column.tasks.length, 0)} tasks · {orderingMode === "manual" ? "Manual order" : "Ordered by priority"}</p></div></div>
           {narrow && <Field controlId="workflow-stage" label="Workflow stage"><select id="workflow-stage" value={activeStage} onChange={event => { if (isTaskStatus(event.target.value)) setActiveStage(event.target.value); }}>{filteredColumns.map(column => <option key={column.id} value={column.id}>{column.title} · {column.tasks.length} shown / {getColumnCapacity(board, column.id).count} total</option>)}</select></Field>}
           {narrow && draggedTask && <div className="stage-drop-tray" aria-label="Drag destinations">{board.columns.map(column => <StageDropTarget key={column.id} status={column.id} title={column.title} current={column.id === draggedTask.status} reason={column.id === draggedTask.status ? "Current stage" : validateBoardAction(board, { type: "MOVE_TASK", taskId: draggedTask.id, newStatus: column.id, updatedAt: new Date(), ordering: { mode: orderingMode, filtered: isFiltering, input: "touch" } })?.message ?? null} />)}</div>}
           <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>

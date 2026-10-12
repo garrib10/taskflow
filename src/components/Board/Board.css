@@ -4,7 +4,7 @@
 .board:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .board-workflow-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4) 0; }
 .board-eyebrow { font-size: var(--font-size-support); font-weight: var(--font-weight-label); color: var(--color-text-primary); }
-.board-workflow-header p, .board-workflow-rule { margin: var(--space-1) 0 0; font-size: var(--font-size-metadata); color: var(--color-text-secondary); }
+.board-workflow-header p { margin: var(--space-1) 0 0; font-size: var(--font-size-metadata); color: var(--color-text-secondary); }
 .board-scroll-hint { display: none; margin: 0 0 var(--space-2); color: var(--color-text-secondary); font-size: var(--font-size-metadata); }
 #workflow-stage { width: 100%; min-height: var(--size-touch-target); padding: var(--space-2); font: inherit; color: var(--color-text-primary); background: var(--color-surface); border: var(--border-width) solid var(--color-control-border); border-radius: var(--radius-control); margin-bottom: var(--space-4); }
 .task-drag-overlay { display: grid; gap: var(--space-2); max-width: 330px; padding: var(--space-4); border: 2px solid var(--color-focus); border-radius: var(--radius-control); background: var(--color-surface); box-shadow: var(--shadow-raised); overflow-wrap: anywhere; }
@@ -15,5 +15,5 @@
 .stage-drop-target[data-drop-state="invalid"] { border-style: dashed; }
 .stage-drop-target[data-over] { outline: var(--focus-ring); }
 @media (min-width: 601px) and (max-width: 1150px) { .board-scroll-hint { display: block; } }
-@media (max-width: 600px) { .board { grid-template-columns: minmax(0,1fr); overflow-x: visible; } .board-workflow-rule { display: none; } }
+@media (max-width: 600px) { .board { grid-template-columns: minmax(0,1fr); overflow-x: visible; } }
 @media (prefers-reduced-motion: reduce) { .board { scroll-behavior: auto; } }
