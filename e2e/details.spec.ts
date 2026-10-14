@@ -157,7 +157,7 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     const fieldRects=await fields.evaluateAll(nodes=>nodes.map(node=>({top:node.getBoundingClientRect().top,right:node.getBoundingClientRect().right})));
     expect(Math.max(...fieldRects.map(r=>r.top))-Math.min(...fieldRects.map(r=>r.top))).toBeLessThan(1);
     expect(fieldRects.every(rect=>rect.right<=width)).toBe(true);
-    const buttons=editor.locator(".create-task-actions button");await expect(buttons).toHaveText(["Delete task","Cancel","Save Changes"]);
+    const buttons=editor.locator(".create-task-actions button");await expect(buttons).toHaveText(["Delete task","Save Changes"]);
     const tops=await buttons.evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().top));
     expect(Math.max(...tops)-Math.min(...tops)).toBeLessThan(1);
     await expect(editor.getByText("Stage changes save immediately and move this task on the board.",{exact:true})).toHaveCount(0);

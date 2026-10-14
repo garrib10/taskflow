@@ -69,3 +69,9 @@ Metadata-order verification: 30 affected component tests and 12 desktop/mobile d
 Task details now use the editor’s bordered, collapsible Subtasks section and the same subtle blue Add SubTask button. Both lists start expanded and retain completed-only checkmarks and plain child titles with hover/focus links. The “Independent task” label and content-draft explanation are removed; draft and relationship behavior is unchanged.
 
 Verification: 30 affected component tests passed, along with lint, strict TypeScript and the production build. All 12 existing desktop/mobile details browser journeys passed. Production Chromium checks at 1440, 390 and 320px verified mouse collapse, keyboard expansion, identical Add SubTask colors/padding/touch targets in both views and no horizontal overflow. Desktop/mobile screenshots were refreshed.
+
+## Editor exit control
+
+Edit Task and Edit SubTask now have Delete task and Save Changes in the footer. The header × is the exit control and retains Keep Editing / Discard for unsaved changes, as does Escape. Creation forms retain Cancel. Existing cancellation journeys now exercise × instead of the removed editor Cancel button.
+
+Verification: 30 affected component tests and 22 desktop/mobile details and task-lifecycle browser checks passed, along with lint, strict TypeScript and production build. Editor screenshots were refreshed.

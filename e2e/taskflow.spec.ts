@@ -73,7 +73,7 @@ test("parent and subtask creation survives reload with progress and navigable pa
   await page.getByRole("button", { name: "Open task Smoke parent", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await page.getByRole("button", { name: "Add SubTask to Smoke parent" }).click();
   await fillTask(page, "Smoke child", true);
-  await page.getByRole("dialog", { name: "Edit Task" }).getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("dialog", { name: "Edit Task" }).getByRole("button", { name: "Close task editor", exact: true }).click();
   await page.reload();
   await expect(page.getByRole("progressbar", { name: "Subtask completion for Smoke parent" })).toHaveAttribute("aria-valuemax", "1");
   await page.getByRole("button", { name: "Open task Smoke child", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();

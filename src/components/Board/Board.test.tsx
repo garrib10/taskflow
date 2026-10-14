@@ -64,7 +64,7 @@ describe("linked task board interactions", () => {
     for (const title of ["Independent work", "Parent work"]) {
       await user.click(card(title).getByRole("button", { name: `Open task ${title}` })); await user.click(screen.getByRole("button", { name: "Edit task" }));
       expect(within(screen.getByRole("dialog", { name: "Edit Task" })).getByLabelText("Title")).toHaveValue(title);
-      await user.click(screen.getByRole("button", { name: "Cancel" }));
+      await user.click(screen.getByRole("button", { name: "Close task editor" }));
     }
     card("Child work").getByRole("button", { name: "Open task Child work" }).focus();
     await user.keyboard("{Enter}");
@@ -298,7 +298,7 @@ describe("linked task board interactions", () => {
     await user.type(subtaskForm.getByLabelText("Title"), "Saved subtask");
     await user.type(subtaskForm.getByLabelText("Description"), "Saved independently");
     await user.click(subtaskForm.getByRole("button", { name: "Create SubTask" }));
-    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    await user.click(screen.getByRole("button", { name: "Close task editor" }));
     await user.click(screen.getByRole("button", { name: "Discard" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(card("Saved subtask").getByRole("button", { name: "Open task Saved subtask" })).toBeInTheDocument();

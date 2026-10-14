@@ -361,9 +361,9 @@ export default function TaskForm({
           </div>
           <div className="create-task-actions">
             {currentTask && onDelete && <Button className="editor-delete-action" variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
-            <Button variant="secondary" onClick={handleRequestClose}>
+            {!isEditing && <Button variant="secondary" onClick={handleRequestClose}>
               Cancel
-            </Button>
+            </Button>}
 
             <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
