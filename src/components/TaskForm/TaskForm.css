@@ -36,13 +36,6 @@
   cursor: pointer;
 }
 
-.task-editor-context {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) 16px;
-}
-
 .task-status-pill {
   display: inline-flex;
   align-items: center;
@@ -61,39 +54,6 @@
   background: var(--color-stage-done-surface);
 }
 
-.editor-parent-pill {
-  min-height: var(--size-touch-target);
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-  max-width: 100%;
-  padding: 6px 12px;
-  border: 1px solid var(--color-selected-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-selected-surface);
-  color: var(--color-text-secondary);
-  font: inherit;
-  font-size: var(--font-size-support);
-  cursor: pointer;
-}
-.editor-parent-pill:hover { border-color: var(--color-selected-border-hover); background: var(--color-action-subtle); }
-.editor-parent-pill:focus-visible {
-  outline: var(--focus-ring);
-  box-shadow: var(--focus-shadow);
-  outline-offset: var(--focus-offset-inset);
-}
-.parent-pill-icon { flex-shrink: 0; color: var(--color-progress-fill); }
-.parent-pill-icon.is-complete { color: var(--color-selected-border-hover); }
-.editor-parent-pill > span:not(.parent-pill-title) { flex-shrink: 0; white-space: nowrap; }
-.parent-pill-title {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-  font-weight: var(--font-weight-medium);
-}
 .editor-manage-parent {
   min-height: var(--size-touch-target);
   justify-self: start;
@@ -235,3 +195,4 @@
   .task-editor-dialog .task-form-heading p { display: none; }
   .task-editor-dialog .create-task-actions { padding: 8px 16px; }
 }
+.task-form-stage-note { color: var(--color-text-muted); font-size: var(--font-size-support); line-height: 1.5; }

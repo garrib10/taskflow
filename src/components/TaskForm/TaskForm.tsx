@@ -3,6 +3,9 @@ import "../../styles/task-dialog.css";
 import "./TaskForm.css";
 import Button from "../ui/Button/Button";
 import CloseButton from "../ui/CloseButton/CloseButton";
+import TaskParentLink from "../TaskParentLink/TaskParentLink";
+import { taskStatuses } from "../../domain/task/Task";
+import { isTaskStatus } from "../../utils/typeGuards";
 import Field from "../ui/Field/Field";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
@@ -30,6 +33,7 @@ export interface TaskFormProps {
   onSuccess: (message: string, taskId?: string) => void;
   onOpenTask: (task: Task) => void;
   onDelete?: (taskId: string) => void;
+  onChangeStage?: (task: Task, status: TaskStatus) => BoardOperationError | null;
 }
 
 const statusLabels: Record<TaskStatus, string> = {
@@ -48,6 +52,7 @@ export default function TaskForm({
   onSuccess,
   onOpenTask,
   onDelete,
+  onChangeStage,
 }: TaskFormProps) {
   const isEditing = Boolean(task);
   const currentTask = task ? findTask(board, task.id) ?? task : null;
@@ -208,28 +213,20 @@ export default function TaskForm({
           <header className="task-form-heading">
             <div><h2 id={`${fieldPrefix}-form-title`}>
               {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
-            </h2><p>{parent ? `Linked to ${parent.title}` : isEditing ? "Update the task’s content and details." : "What needs to get done?"}</p></div>
+            </h2><p>{parent ? `Linked to ${parent.title}` : isEditing ? "Update the task’s content and details." : "What needs to get done?"}</p>{linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask}/>}</div>
             <CloseButton label={isEditing ? "Close task editor" : "Close task creation"} onClick={handleRequestClose}/>
           </header>
           <div className="task-form-content">
 
-          {(currentTask || isSubtask) && (
-            <div className="task-editor-context">
-              <span className={`task-status-pill stage-${currentTask?.status ?? "todo"}${currentTask?.status === "done" ? " is-complete" : ""}`}>
-                {statusLabels[currentTask?.status ?? "todo"]}
-              </span>
-              {linkedParent ? (
-                <button type="button" className="editor-parent-pill" onClick={() => handleOpenTask(linkedParent)} aria-label={`Open parent ${linkedParent.title}`} title={`Parent: ${linkedParent.title}`}>
-                  <svg className={`parent-pill-icon${linkedParent.status === "done" ? " is-complete" : ""}`} width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                    <circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                    <circle cx="9" cy="9" r="1.5" fill="currentColor" />
-                  </svg>
-                  <span>Parent:{" "}</span>
-                  <span className="parent-pill-title">{linkedParent.title}</span>
-                </button>
-              ) : currentTask?.parentId !== undefined && <p>Parent unavailable</p>}
-            </div>
-          )}
+          {currentTask && onChangeStage ? <Field controlId={`${fieldPrefix}-stage`} label="Stage">
+            <select id={`${fieldPrefix}-stage`} value={currentTask.status} aria-invalid={invalidField === "stage" || undefined} aria-describedby={`${fieldPrefix}-stage-note${invalidField === "stage" ? ` ${fieldPrefix}-error` : ""}`} onChange={event => {
+              if (!isTaskStatus(event.target.value)) return;
+              const failure = onChangeStage(currentTask, event.target.value);
+              if (failure) fail("stage", failure.message);
+              else { setError(""); setInvalidField(null); }
+            }}>{taskStatuses.map(status => <option key={status} value={status}>{statusLabels[status]}</option>)}</select>
+            <small id={`${fieldPrefix}-stage-note`} className="task-form-stage-note">Stage changes save immediately and move this task on the board.</small>
+          </Field> : currentTask && <span className={`task-status-pill stage-${currentTask.status}`}>{statusLabels[currentTask.status]}</span>}
 
           {error && (notification ? (
             <Notification key={notification.id} notification={notification}
@@ -321,7 +318,7 @@ export default function TaskForm({
             </div>
           </div>
 
-          {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from this draft.</p>}
+          {currentTask && <p className="task-form-relationship-note">Stage, subtask and parent changes save separately from the content draft.</p>}
           {currentTask && !isSubtask && (children.length > 0 ? (
             <section className="task-editor-subtasks" aria-label="Subtasks">
               <details open>
@@ -412,6 +409,7 @@ export default function TaskForm({
           dispatch={dispatch}
           onSuccess={onSuccess}
           onDelete={onDelete}
+          onChangeStage={onChangeStage}
           onClose={() => setSubtaskEditor(null)}
           onOpenTask={(nextTask) => {
             if (nextTask.id === currentTask.id) setSubtaskEditor(null);

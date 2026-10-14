@@ -14,15 +14,12 @@
 .detail-priority.priority-high::before { background: var(--color-priority-high-text); }
 .detail-priority.priority-medium::before { background: var(--color-priority-medium-text); }
 .detail-priority.priority-low::before { background: var(--color-priority-low-text); }
-.task-details-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); }
 .task-details-muted, .task-details-dates { color: var(--color-text-muted); }
 .task-details-content progress { width: 100%; accent-color: var(--color-progress-fill); height: 6px; }
 .task-details-children { list-style: none; margin: var(--space-3) 0; padding: 0; }
 .task-details-children li { display: flex; align-items: center; gap: var(--space-3); border-bottom: 1px solid var(--color-border); }
 .task-details-children button { min-height: var(--size-touch-target); flex: 1; min-width: 0; }
 .task-details-children li > span { flex-shrink: 0; font-size: var(--font-size-support); color: var(--color-text-muted); }
-.task-details-parent { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.task-details-parent button { min-height: var(--size-touch-target); }
 .task-details-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); border-top: 1px solid var(--color-border); padding: var(--space-4) var(--space-6); background: var(--color-surface); flex-shrink: 0; }
 @media (max-width: 600px) {
   .task-details-overlay { align-items: flex-end; }
@@ -40,3 +37,5 @@
 .detail-order-actions p { width: 100%; font-size: var(--font-size-support); color: var(--color-text-muted); }
 .task-details-metadata { align-items: start; }
 .task-details-metadata dd { min-height: var(--size-touch-target); display: flex; align-items: center; }
+.task-details-children .relationship-link { color: var(--color-text-primary); text-decoration: none; }
+.task-details-children .relationship-link:hover, .task-details-children .relationship-link:focus-visible { color: var(--color-action-subtle-text); text-decoration: underline; }

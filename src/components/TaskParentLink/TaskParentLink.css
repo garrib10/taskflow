@@ -1,0 +1,34 @@
+.editor-parent-pill {
+  min-height: var(--size-touch-target);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--color-selected-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-selected-surface);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--font-size-support);
+  cursor: pointer;
+}
+.editor-parent-pill:hover { border-color: var(--color-selected-border-hover); background: var(--color-action-subtle); }
+.editor-parent-pill:focus-visible {
+  outline: var(--focus-ring);
+  box-shadow: var(--focus-shadow);
+  outline-offset: var(--focus-offset-inset);
+}
+.parent-pill-icon { flex-shrink: 0; color: var(--color-progress-fill); }
+.parent-pill-icon.is-complete { color: var(--color-selected-border-hover); }
+.editor-parent-pill > span:not(.parent-pill-title) { flex-shrink: 0; white-space: nowrap; }
+.parent-pill-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+}
+.editor-parent-pill { margin-top: var(--space-3); }

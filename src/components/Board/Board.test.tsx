@@ -54,7 +54,7 @@ describe("linked task board interactions", () => {
     simulateDrop(newer.id, "in-progress");
     expect(section.getAllByRole("listitem").map((row) => row.textContent)).toEqual(["First created", "Second created"]);
     await user.click(section.getByRole("button", { name: "Open subtask Second created" }));
-    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("In Progress");
+    expect(within(screen.getByRole("dialog", { name: "Edit SubTask" })).getByLabelText("Stage")).toHaveValue("in-progress");
   });
 
   it("opens independent, parent, and subtask editors from board titles, including keyboard activation", async () => {
@@ -283,7 +283,7 @@ describe("linked task board interactions", () => {
     expect(editor.getByRole("button", { name: "Open subtask Completed subtask" })).toBeInTheDocument();
     await user.click(editor.getByRole("button", { name: "Open subtask Completed subtask" }));
     const subtaskEditor = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
-    expect(subtaskEditor.getByText("Done")).toBeInTheDocument();
+    expect(subtaskEditor.getByLabelText("Stage")).toHaveValue("done");
     await user.click(subtaskEditor.getByRole("button", { name: "Open parent Parent work" }));
     expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
   });
@@ -310,7 +310,7 @@ describe("linked task board interactions", () => {
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     await user.click(card("Child work").getByRole("button", { name: "Open task Child work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     const editor = within(screen.getByRole("dialog", { name: "Edit SubTask" }));
-    expect(editor.getByText("To Do")).toBeInTheDocument();
+    expect(editor.getByLabelText("Stage")).toHaveValue("todo");
     await user.type(editor.getByLabelText("Title"), " draft");
     await user.click(editor.getByRole("button", { name: "Open parent Parent work" }));
     expect(screen.getByRole("dialog", { name: "Discard Changes?" })).toBeInTheDocument();
