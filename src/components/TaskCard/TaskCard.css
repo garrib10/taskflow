@@ -17,7 +17,7 @@
 .priority-high { color: var(--color-priority-high-text); }
 .priority-medium { color: var(--color-priority-medium-text); }
 .priority-low { color: var(--color-priority-low-text); }
-.task-category { border-left: var(--border-width) solid var(--color-border); padding-left: var(--space-3); }
+.task-meta > span + span { border-left: var(--border-width) solid var(--color-border); padding-left: var(--space-3); }
 .task-relationship, .task-family { margin: var(--space-3) 0 0 36px; color: var(--color-text-secondary); font-size: var(--font-size-metadata); }
 .task-relationship { display: flex; gap: var(--space-1); min-width: 0; }
 .task-relationship-kind, .task-relationship > span[aria-hidden] { flex-shrink: 0; }

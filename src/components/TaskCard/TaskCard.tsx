@@ -29,7 +29,7 @@ export default function TaskCard({ task, stage, context, excerpt, manual, select
       <h3 id={`task-heading-${task.id}`}><button type="button" className="task-title-link" data-task-title aria-label={`Open task ${task.title}`} onClick={() => onEdit(task)}>{task.parentId && task.status === "done" && <span aria-hidden="true"><CompletionMark complete/></span>}{task.title}</button></h3>
 
     </div>
-    <div className="task-meta"><span className={`task-priority priority-${task.priority}`}><span aria-hidden="true"/> {priority.label}</span><span className="task-category">{category.label}</span></div>
+    <div className="task-meta"><span className="task-category">{category.label}</span><span className={`task-priority priority-${task.priority}`}><span aria-hidden="true"/> {priority.label}</span></div>
     {context?.parentTitle && <p className="task-relationship" title={context.parentTitle}><span className="task-relationship-kind">Subtask</span> <span aria-hidden="true">↳</span> <span>Parent: {context.parentTitle}</span></p>}
     {context && context.childCount > 0 && <div className="task-family"><span>Parent · {context.completedChildren} of {context.childCount} subtasks complete</span><div className="task-progress-track" role="progressbar" aria-label={`Subtask completion for ${task.title}`} aria-valuemin={0} aria-valuemax={context.childCount} aria-valuenow={context.completedChildren}><span style={{ width: `${context.completedChildren / context.childCount * 100}%` }}/></div></div>}
     {task.subtasks.length > 0 && <p className="task-relationship">Checklist · {task.subtasks.filter(item => item.completed).length} of {task.subtasks.length} complete</p>}

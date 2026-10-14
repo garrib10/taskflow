@@ -75,3 +75,7 @@ Verification: 30 affected component tests passed, along with lint, strict TypeSc
 Edit Task and Edit SubTask now have Delete task and Save Changes in the footer. The header × is the exit control and retains Keep Editing / Discard for unsaved changes, as does Escape. Creation forms retain Cancel. Existing cancellation journeys now exercise × instead of the removed editor Cancel button.
 
 Verification: 30 affected component tests and 22 desktop/mobile details and task-lifecycle browser checks passed, along with lint, strict TypeScript and production build. Editor screenshots were refreshed.
+
+## Board card metadata order
+
+Board cards now show Category → Priority, matching the details and editor metadata order. The divider remains between the two values and the priority dot/color is retained. Seven existing board-presentation checks passed, along with lint, strict TypeScript and the production build.
