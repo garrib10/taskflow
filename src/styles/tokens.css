@@ -47,7 +47,7 @@
   --color-parent-border-hover: #60a5fa;
   --color-parent-text: #4b5563;
   --color-parent-icon: #3b82f6;
-  --color-linked-completion: #2563eb;
+  --color-linked-completion: var(--color-action-primary);
   --color-action-danger-quiet-text: #98505a;
   --color-action-danger-quiet-hover: #f9eeef;
   --color-focus-halo: #ffffff;
