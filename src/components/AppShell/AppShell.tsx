@@ -24,7 +24,7 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
           <p>Rule-Based Workflow Board</p>
           <p className="last-updated">Last updated: <time dateTime={lastUpdated.toISOString()}>{updated}</time></p>
         </div>
-        <Button className="shell-create-task" data-focus-fallback onClick={onCreateTask}>+ Create Task</Button>
+        <Button icon="plus" aria-label="+ Create Task" className="shell-create-task" data-focus-fallback onClick={onCreateTask}>Create Task</Button>
       </header>
       <main className="app-shell-main" aria-label="Task board">
         <div className="app-shell-feedback">{feedback}</div>

@@ -1,3 +1,4 @@
+import ActionIcon from "../ui/ActionIcon/ActionIcon";
 import SubtaskList from "../SubtaskList/SubtaskList";
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
@@ -355,11 +356,11 @@ export default function TaskForm({
 
           </div>
           <div className="create-task-actions task-action-footer">
-            {currentTask && !isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add Subtask</button>}
+            {currentTask && !isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}><ActionIcon name="plus"/>Add Subtask</button>}
             <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
             </Button>
-            {currentTask && onDelete && <Button variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
+            {currentTask && onDelete && <Button icon="trash" variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
           </div>
         </form>
       </div>

@@ -6,22 +6,22 @@
   min-width: 0;
   max-width: 100%;
   padding: 6px 12px;
-  border: 1px solid var(--color-selected-border);
+  border: 1px solid var(--color-parent-border);
   border-radius: var(--radius-pill);
-  background: var(--color-selected-surface);
-  color: var(--color-text-secondary);
+  background: var(--color-parent-surface);
+  color: var(--color-parent-text);
   font: inherit;
   font-size: var(--font-size-support);
   cursor: pointer;
 }
-.editor-parent-pill:hover { border-color: var(--color-selected-border-hover); background: var(--color-action-subtle); }
+.editor-parent-pill:hover { border-color: var(--color-parent-border-hover); background: var(--color-parent-hover); }
 .editor-parent-pill:focus-visible {
   outline: var(--focus-ring);
   box-shadow: var(--focus-shadow);
   outline-offset: var(--focus-offset-inset);
 }
-.parent-pill-icon { flex-shrink: 0; color: var(--color-progress-fill); }
-.parent-pill-icon.is-complete { color: var(--color-selected-border-hover); }
+.parent-pill-icon { flex-shrink: 0; color: var(--color-parent-icon); }
+.parent-pill-icon.is-complete { color: var(--color-parent-border-hover); }
 .editor-parent-pill > span:not(.parent-pill-title) { flex-shrink: 0; white-space: nowrap; }
 .parent-pill-title {
   min-width: 0;

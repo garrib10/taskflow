@@ -103,7 +103,7 @@
 
 .subtask-status-icon.is-complete {
   border-radius: 50%;
-  background: var(--color-progress-fill);
+  background: var(--color-linked-completion);
   color: var(--color-text-on-action);
 }
 

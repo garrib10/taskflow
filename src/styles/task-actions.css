@@ -20,12 +20,13 @@
   white-space: nowrap;
 }
 .task-action-footer .ui-button--danger {
-  background: var(--color-action-danger-subtle);
-  color: var(--color-action-danger-text);
-  border-color: var(--color-action-danger-border);
+  background: transparent;
+  color: var(--color-action-danger-quiet-text);
+  border-color: transparent;
 }
-.task-action-footer .ui-button--danger:hover:not(:disabled) {
-  background: var(--color-action-danger-subtle-hover);
+.task-action-footer .ui-button--danger:hover:not(:disabled),
+.task-action-footer .ui-button--danger:active:not(:disabled) {
+  background: var(--color-action-danger-quiet-hover);
 }
 @media (max-width: 360px) {
   .task-details-footer.task-action-footer,
@@ -36,3 +37,5 @@
     font-size: var(--font-size-compact);
   }
 }
+
+@media (max-width: 420px) { .task-action-footer .action-icon { display: none; } }

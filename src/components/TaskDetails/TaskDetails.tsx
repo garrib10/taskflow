@@ -1,3 +1,4 @@
+import ActionIcon from "../ui/ActionIcon/ActionIcon";
 import { useId, useRef, useState, type ReactNode } from "react";
 import { type TaskStatus, type Task } from "../../domain/task/Task";
 import { findTask, getChildren, getChildProgress, getParent } from "../../domain/board/taskRelationships";
@@ -59,9 +60,9 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
             <dl className="task-details-dates"><div><dt>Created</dt><dd>{task.createdAt.toLocaleString()}</dd></div></dl>
           </div>
           <footer className="task-details-footer task-action-footer">
-            {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add Subtask</button>}
-            <Button id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button>
-            {onDelete && <Button variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
+            {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}><ActionIcon name="plus"/>Add Subtask</button>}
+            <Button icon="edit" id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button>
+            {onDelete && <Button icon="trash" variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
           </footer></>}
         </div>
       </div>

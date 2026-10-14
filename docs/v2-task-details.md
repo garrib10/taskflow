@@ -125,3 +125,15 @@ Owner approved the Parent-field mockup with one exception: linked subtasks retai
 Verification: 467/467 unit/component/integration tests in 43 files passed before pushing, with unchanged timeouts/assertions. Lint, strict TypeScript and production build passed. Production checks at 1440/390/320px verified choosing a parent, changing/detaching it, original blue chip/icon, editor-only relationship actions, aligned 44px targets and no overflow.
 
 Final verification: all 46 desktop/mobile production browser checks passed after the Choose/Change accessible-label update. The 50 affected application/relationship/accessibility tests also passed with the new labels. Both labels include their visible text for speech/assistive navigation. Screenshots show the approved original parent chip with the compact action, plus None / Choose parent for unlinked tasks.
+
+## Warm clay identity (option C)
+
+Owner selected the Warm clay mockup after comparing teal, ink/cobalt, clay and favicon blue. The base palette now uses clay primary actions (#8a4b38), ivory canvas, white surfaces, warm borders and neutral secondary actions. Footer Delete is a quieter red text action with a subtle hover treatment. Buttons use restrained depth, consistent typography and decorative plus/edit/trash icons; narrow footers retain text labels and hide decorative icons to preserve fit and 44px targets.
+
+Brand accents, links, focus and progress use the warm palette. Status, priority, validation and feedback meanings are retained. The specifically approved blue parent-name chip/circle and completed-subtask checks stay blue through dedicated tokens. The existing TF favicon, PNG sizes and Apple touch icon are recolored to clay without changing glyphs, dimensions, transparency or ICO masks. A favicon version query refreshes the cached browser icon.
+
+This is the chosen base visual identity, not a theme selector. Task relationships, content, workflow, ordering, persistence and recovery behavior are unchanged.
+
+Verification: the full 467-test suite passed with unchanged timeouts/assertions after an initial draft-guard timeout passed on its isolated rerun. Lint, strict TypeScript and the production build passed. Production checks at 1440/390/320px verified the clay CTA, aligned readable 44px footer targets, decorative icons, retained blue parent/completion cues and no errors/overflow. All favicon assets decode in Chromium; original alpha, dimensions, antialiased glyph pixels and ICO headers/masks are preserved. Representative text contrast checks passed: primary white/clay 6.68:1, muted text/ivory 4.85:1, quiet Delete/white 5.78:1, main text/white 10.97:1.
+
+All 46 final production desktop/mobile browser checks passed. Creation/discard/focus-return and independent-task action checks also passed at 1440/390/320px. Actual screenshots: [desktop clay board](images/v2-task-details/desktop-board-clay.png), [mobile clay board](images/v2-task-details/mobile-board-clay.png), and the refreshed detail/editor/creation images above. Footer icons are hidden only at narrow phone widths; text labels and target sizes remain intact.
