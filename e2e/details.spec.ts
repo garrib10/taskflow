@@ -19,9 +19,9 @@ test("read-first details, child management and guarded editing preserve saved wo
   await expect(detail.getByRole("button",{name:"Add SubTask to Release plan"})).toBeFocused();
   await detail.getByRole("button",{name:"Open subtask Review release"}).click();
   const child=page.getByRole("dialog",{name:"Review release",exact:true});
-  await expect(child.getByRole("button",{name:"Manage parent of Review release"})).toHaveCount(0);
+  await expect(child.getByRole("button",{name:"Change parent of Review release"})).toHaveCount(0);
   await child.getByRole("button",{name:"Edit task",exact:true}).click();
-  await page.getByRole("button",{name:"Manage parent of Review release"}).click();
+  await page.getByRole("button",{name:"Change parent of Review release"}).click();
   await page.getByLabel("Parent",{exact:true}).selectOption("");await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog",{name:"Discard Relationship Changes?"})).toBeVisible();
   await page.getByRole("button",{name:"Keep Editing",exact:true}).click();
@@ -117,13 +117,13 @@ test("parent context is consistent and editor stage changes move saved work with
   const badge=page.getByRole("button",{name:"Open parent Consistent parent",exact:true});
   await expect(badge).toHaveClass("editor-parent-pill");
   expect(await badge.evaluate(node=>!!node.closest(".task-parent-field"))).toBe(true);
-  await expect(page.getByRole("button",{name:"Manage parent of Consistent child",exact:true})).toHaveCount(0);
+  await expect(page.getByRole("button",{name:"Change parent of Consistent child",exact:true})).toHaveCount(0);
   const style=await badge.evaluate(node=>({background:getComputedStyle(node).backgroundColor,border:getComputedStyle(node).borderRadius}));
   await page.getByRole("button",{name:"Edit task",exact:true}).click();
   await expect(badge).toHaveClass("editor-parent-pill");
   expect(await badge.evaluate(node=>!!node.closest(".task-parent-field"))).toBe(true);
   expect(await badge.evaluate(node=>({background:getComputedStyle(node).backgroundColor,border:getComputedStyle(node).borderRadius}))).toEqual(style);
-  await expect(page.getByRole("button",{name:"Manage parent of Consistent child",exact:true})).toBeVisible();
+  await expect(page.getByRole("button",{name:"Change parent of Consistent child",exact:true})).toBeVisible();
   const editor=page.getByRole("dialog",{name:"Edit SubTask",exact:true});
   await editor.getByLabel("Title",{exact:true}).fill("Edited consistent child");
   await editor.getByLabel("Stage",{exact:true}).selectOption("in-progress");

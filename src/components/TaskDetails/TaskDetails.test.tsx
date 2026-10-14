@@ -53,9 +53,9 @@ it("returns child creation to updated details, retains focus and protects relati
   expect(screen.getByRole("dialog",{name:"Release plan"})).toHaveTextContent("0 of 2 subtasks complete");
   expect(screen.getByRole("button",{name:"Add SubTask to Release plan"})).toHaveFocus();
   await user.click(screen.getByRole("button",{name:"Open subtask New child"}));
-  expect(screen.queryByRole("button",{name:"Manage parent of New child"})).not.toBeInTheDocument();
+  expect(screen.queryByRole("button",{name:"Change parent of New child"})).not.toBeInTheDocument();
   await user.click(screen.getByRole("button",{name:"Edit task"}));
-  await user.click(screen.getByRole("button",{name:"Manage parent of New child"}));
+  await user.click(screen.getByRole("button",{name:"Change parent of New child"}));
   await user.selectOptions(screen.getByLabelText("Parent"),"");await user.keyboard("{Escape}");
   expect(screen.getByRole("dialog",{name:"Discard Relationship Changes?"})).toBeInTheDocument();
   const leaving = new Event("beforeunload",{cancelable:true});window.dispatchEvent(leaving);expect(leaving.defaultPrevented).toBe(true);
@@ -128,11 +128,11 @@ it("uses one parent badge in details and editing and moves from the editor witho
   const badge=screen.getByRole("button",{name:"Open parent Release plan"});
   expect(badge).toHaveClass("editor-parent-pill");
   expect(badge.closest(".task-parent-field")).not.toBeNull();
-  expect(screen.queryByRole("button",{name:"Manage parent of Review release"})).not.toBeInTheDocument();
+  expect(screen.queryByRole("button",{name:"Change parent of Review release"})).not.toBeInTheDocument();
   await user.click(screen.getByRole("button",{name:"Edit task"}));
   expect(screen.getByRole("button",{name:"Open parent Release plan"})).toHaveClass("editor-parent-pill");
   expect(screen.getByRole("button",{name:"Open parent Release plan"}).closest(".task-parent-field")).not.toBeNull();
-  expect(screen.getByRole("button",{name:"Manage parent of Review release"})).toBeInTheDocument();
+  expect(screen.getByRole("button",{name:"Change parent of Review release"})).toBeInTheDocument();
   await user.type(screen.getByLabelText("Title")," draft");
   await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
   expect(screen.getByLabelText("Title")).toHaveValue("Review release draft");

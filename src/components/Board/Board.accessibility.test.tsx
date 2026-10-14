@@ -54,7 +54,7 @@ it('uses unique nested field IDs and returns child actions to useful parent cont
  const title=screen.getByRole('button',{name:'Open subtask Child work'});await user.click(title);await user.type(within(screen.getByRole('dialog',{name:'Edit SubTask'})).getByLabelText('Description'),' updated');await user.click(screen.getByRole('button',{name:'Save Changes'}));expect(title).toHaveFocus();
 });
 it('contains relationship focus and restores its manage-parent trigger', async () => {
- const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'Open task Child work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));const manage=screen.getByRole('button',{name:'Manage parent of Child work'});await user.click(manage);
+ const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'Open task Child work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));const manage=screen.getByRole('button',{name:'Change parent of Child work'});await user.click(manage);
  const dialog=screen.getByRole('dialog',{name:'Manage Parent'});expect(within(dialog).getByLabelText('Parent')).toHaveFocus();expect(dialog).toHaveAccessibleDescription(/Detaching keeps/);await user.keyboard('{Escape}');expect(manage).toHaveFocus();
 });
 it('returns deletion cancellation to its opener and deletion to a surviving task', async () => {

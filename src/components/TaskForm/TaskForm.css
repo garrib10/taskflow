@@ -54,20 +54,6 @@
   background: var(--color-stage-done-surface);
 }
 
-.editor-manage-parent {
-  min-height: var(--size-touch-target);
-  justify-self: start;
-  border: 1px solid var(--color-action-subtle-border);
-  border-radius: var(--radius-control);
-  padding: 6px 12px;
-  background: var(--color-action-subtle);
-  color: #000;
-  font: inherit;
-  font-size: var(--font-size-support);
-  cursor: pointer;
-}
-.editor-manage-parent:hover { background: var(--color-action-subtle-hover); }
-
 .task-editor-subtasks {
   padding: var(--space-3);
   border: 1px solid var(--color-border);
@@ -199,6 +185,3 @@
   .task-editor-dialog .has-stage select { font-size: .8rem; padding: 8px 2px; }
   .task-editor-dialog .create-task-actions { gap: 6px; flex-wrap: nowrap; }
 }
-
-.task-editor-dialog .editor-related-actions { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.task-editor-dialog .editor-related-actions > button { flex: 0 1 auto; width: auto; min-width: 0; padding: 8px 12px; font-size: var(--font-size-support); white-space: nowrap; }

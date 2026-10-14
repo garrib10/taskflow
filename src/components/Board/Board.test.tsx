@@ -163,7 +163,7 @@ describe("linked task board interactions", () => {
     render(<Harness initialBoard={makeBoard([parent, child, other])} />);
     await user.click(card("Child work").getByRole("button", { name: "Open task Child work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     await user.type(screen.getByLabelText("Title"), " draft");
-    const manage = screen.getByRole("button", { name: "Manage parent of Child work" });
+    const manage = screen.getByRole("button", { name: "Change parent of Child work" });
     manage.focus();
     await user.keyboard("{Enter}");
     const selector = screen.getByLabelText("Parent", { selector: "select" });
@@ -174,7 +174,7 @@ describe("linked task board interactions", () => {
     await user.keyboard("{Enter}");
     expect(screen.getByRole("button", { name: "Open parent Other parent" })).toBeInTheDocument();
     expect(screen.getByLabelText("Title")).toHaveValue("Child work draft");
-    await user.click(screen.getByRole("button", { name: "Manage parent of Child work" }));
+    await user.click(screen.getByRole("button", { name: "Change parent of Child work" }));
     await user.selectOptions(screen.getByLabelText("Parent", { selector: "select" }), "");
     await user.click(screen.getByRole("button", { name: "Save Relationship" }));
     expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();

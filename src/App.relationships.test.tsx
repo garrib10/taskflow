@@ -119,14 +119,14 @@ it("excludes invalid parents from management and persists valid reassignment wit
   const user = userEvent.setup(); render(<App />);
   const original = localStorage.getItem(STORAGE_KEY);
   await user.click(screen.getByRole("button", { name: "Open task Other" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
-  await user.click(screen.getByRole("button", { name: "Manage parent of Other" }));
+  await user.click(screen.getByRole("button", { name: "Choose parent for Other" }));
   const parentSelect = within(screen.getByRole("dialog", { name: "Manage Parent" })).getByLabelText("Parent");
   expect(within(parentSelect).getByRole("option", { name: "Parent" })).toBeInTheDocument();
   expect(within(parentSelect).queryByRole("option", { name: "Child" })).not.toBeInTheDocument();
   expect(within(parentSelect).queryByRole("option", { name: "Other" })).not.toBeInTheDocument();
   await user.keyboard("{Escape}"); await user.keyboard("{Escape}");
   await user.click(screen.getByRole("button", { name: "Open task Child" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
-  await user.click(screen.getByRole("button", { name: "Manage parent of Child" }));
+  await user.click(screen.getByRole("button", { name: "Change parent of Child" }));
   const dialog = within(screen.getByRole("dialog", { name: "Manage Parent" }));
   const select = dialog.getByLabelText("Parent");
   expect(within(select).queryByRole("option", { name: "Child" })).not.toBeInTheDocument();

@@ -269,7 +269,11 @@ export default function TaskForm({
             </small>
           </Field>
 
-          {linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask} action={currentTask && children.length === 0 ? <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button> : undefined}/>}
+          {linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask} action={currentTask && children.length === 0 ? <button type="button" className="parent-field-action" onClick={() => setShowRelationshipForm(true)} aria-label={`Change parent of ${currentTask.title}`}>Change</button> : undefined}/>}
+          {currentTask && !linkedParent && children.length === 0 && <div className="task-parent-field">
+            <span>Parent</span>
+            <div className="task-parent-row unlinked-parent-row"><span className="parent-field-empty">None</span><button type="button" className="parent-field-action" onClick={() => setShowRelationshipForm(true)} aria-label={`Choose parent for ${currentTask.title}`}>Choose parent</button></div>
+          </div>}
           <div className={`task-form-select-row${currentTask && onChangeStage ? " has-stage" : ""}`}>
             <div className="task-form-field">
               <label htmlFor={`${fieldPrefix}-category`}>Category</label>
@@ -346,10 +350,6 @@ export default function TaskForm({
               </details>
             </section>
           )}
-
-          {currentTask && !linkedParent && children.length === 0 && <div className="editor-related-actions">
-            <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button>
-          </div>}
 
           {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
 

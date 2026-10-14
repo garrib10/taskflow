@@ -37,4 +37,10 @@
 
 .task-parent-row { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
 .task-parent-row .editor-parent-pill { flex: 0 1 auto; }
-.task-parent-row .editor-manage-parent { flex-shrink: 0; white-space: nowrap; }
+/* Relationship editing stays beside the parent value, outside the action footer. */
+.task-parent-row.has-parent-action, .unlinked-parent-row { width: 100%; justify-content: space-between; }
+.unlinked-parent-row { min-height: var(--size-touch-target); border-bottom: 1px solid var(--color-border); }
+.parent-field-empty { color: var(--color-text-muted); font-size: var(--font-size-support); }
+.parent-field-action { flex-shrink: 0; min-height: var(--size-touch-target); min-width: var(--size-touch-target); padding: 0 4px; border: 0; border-radius: var(--radius-compact); background: transparent; color: var(--color-action-subtle-text); font: inherit; font-size: var(--font-size-support); font-weight: var(--font-weight-medium); white-space: nowrap; cursor: pointer; }
+.parent-field-action:hover { text-decoration: underline; }
+.parent-field-action:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); box-shadow: var(--focus-shadow); }
