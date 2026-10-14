@@ -42,11 +42,17 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
             </dl>
             {props.orderingActions && <section className="detail-order-actions" aria-label="Task order">{props.orderingActions(task)}</section>}
             <section aria-labelledby={`${id}-description`}><h3 id={`${id}-description`}>Description</h3><p className="task-details-description">{task.description}</p></section>
-            {!parent && <section aria-labelledby={`${id}-relationships`}>
-              <h3 id={`${id}-relationships`}>Related work</h3>
-              {!parent && <p className="task-details-muted">{task.parentId ? "Parent unavailable" : "Independent task"}</p>}
-              {children.length > 0 && <><p>{progress.completed} of {progress.total} subtasks complete</p><progress aria-label={`Subtask completion for ${task.title}`} value={progress.completed} max={progress.total}/><ul className="task-details-children">{children.map(child => <li key={child.id}>{child.status === "done" ? <CompletionMark complete/> : <span className="completion-placeholder" aria-hidden="true"/>}<button className="relationship-link" aria-label={`Open subtask ${child.title}`} onClick={() => onOpenTask(child)}>{child.title}</button><span>{stages[child.status]}</span></li>)}</ul></>}
-              {!task.parentId && task.status !== "done" && <Button id={`${id}-child`} variant="secondary" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</Button>}
+            {!parent && <section aria-label="Related work">
+              {task.parentId && <p className="task-details-muted">Parent unavailable</p>}
+              {children.length > 0 ? <div className="task-editor-subtasks">
+                <details open>
+                  <summary><span>Subtasks</span><span className="subtask-progress">{progress.completed} of {progress.total}</span></summary>
+                  <p>{progress.completed} of {progress.total} subtasks complete</p>
+                  <progress aria-label={`Subtask completion for ${task.title}`} value={progress.completed} max={progress.total}/>
+                  <ul className="task-details-children">{children.map(child => <li key={child.id}>{child.status === "done" ? <CompletionMark complete/> : <span className="completion-placeholder" aria-hidden="true"/>}<button className="relationship-link" aria-label={`Open subtask ${child.title}`} onClick={() => onOpenTask(child)}>{child.title}</button><span>{stages[child.status]}</span></li>)}</ul>
+                  {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</button>}
+                </details>
+              </div> : !task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</button>}
               {task.status === "done" && !task.parentId && <p className="task-details-muted">Completed tasks cannot accept new subtasks.</p>}
             </section>}
             {task.subtasks.length > 0 && <section aria-label="Legacy checklist"><h3>Legacy checklist</h3><SubtaskList task={task} dispatch={dispatch} allowCreate={task.status !== "done"}/></section>}

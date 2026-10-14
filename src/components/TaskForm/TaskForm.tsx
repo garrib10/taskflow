@@ -319,7 +319,6 @@ export default function TaskForm({
 
           </div>
 
-          {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from the content draft.</p>}
           {currentTask && !isSubtask && children.length > 0 && (
             <section className="task-editor-subtasks" aria-label="Subtasks">
               <details open>

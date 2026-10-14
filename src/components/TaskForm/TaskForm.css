@@ -165,7 +165,6 @@
 .task-status-pill.stage-in-progress { background: var(--color-stage-in-progress-surface); border-color: var(--color-stage-in-progress-text); color: var(--color-stage-in-progress-text); }
 .task-status-pill.stage-in-review { background: var(--color-stage-in-review-surface); border-color: var(--color-stage-in-review-text); color: var(--color-stage-in-review-text); }
 .task-status-pill.stage-done { background: var(--color-stage-done-surface); border-color: var(--color-stage-done-border); color: var(--color-stage-done-text); }
-.task-form-relationship-note { color: var(--color-text-muted); font-size: var(--font-size-support); line-height: 1.5; margin: var(--space-3) 0 0; }
 
 /* Compact composer with a fixed action frame and a separately scrolling draft. */
 .task-editor-dialog form { width: 520px; padding: 0; gap: 0; overflow: hidden; border-radius: 14px; }

@@ -63,3 +63,9 @@ When an edited task can both create a child and manage its parent, Add SubTask a
 Owner review settled on Category → Priority → Stage for task details and editing (creation uses Category → Priority). Linked tasks show Parent immediately above that row as a matching labeled field, using the same navigation control in details and editing. The parent title no longer crowds the heading. A separate parent row preserves room for long titles and keeps mobile metadata readable instead of squeezing four fields together. Stage remains read-only in details and editable only in the editor; all previous action eligibility and draft/movement rules are retained.
 
 Metadata-order verification: 30 affected component tests and 12 desktop/mobile detail browser journeys passed. Four long-content/row-layout checks were repeated after the final mobile three-column adjustment. Lint, strict TypeScript, build and diff checks passed. Synthetic preview checks also retained aligned related-work buttons and working actions at 1440, 390 and 320px. Screenshots were refreshed from the final build.
+
+## Matching subtask sections
+
+Task details now use the editor’s bordered, collapsible Subtasks section and the same subtle blue Add SubTask button. Both lists start expanded and retain completed-only checkmarks and plain child titles with hover/focus links. The “Independent task” label and content-draft explanation are removed; draft and relationship behavior is unchanged.
+
+Verification: 30 affected component tests passed, along with lint, strict TypeScript and the production build. All 12 existing desktop/mobile details browser journeys passed. Production Chromium checks at 1440, 390 and 320px verified mouse collapse, keyboard expansion, identical Add SubTask colors/padding/touch targets in both views and no horizontal overflow. Desktop/mobile screenshots were refreshed.
