@@ -356,10 +356,6 @@ export default function TaskForm({
           </div>
           <div className="create-task-actions task-action-footer">
             {currentTask && !isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add Subtask</button>}
-            {!isEditing && <Button variant="secondary" onClick={handleRequestClose}>
-              Cancel
-            </Button>}
-
             <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
             </Button>

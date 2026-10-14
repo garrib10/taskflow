@@ -111,3 +111,9 @@ Save Changes stays blue and Add Subtask stays subtle blue. Green is reserved for
 Verification: the final full unit/component/integration rerun passed 467/467 across 43 files using one worker and unchanged timeouts/assertions. The initial parallel run hit the existing 5-second application-journey timeout; the unchanged journey passed in isolation before the full rerun. Production checks at 1440, 390 and 320px cover parent tasks, tasks without subtasks, linked subtasks and completed tasks in both details and editors: adjacent footer spacing, matching Delete colors, readable labels, 44px targets, child creation and focus return all passed. Lint, strict TypeScript and the production build passed.
 
 All 46 production desktop/mobile browser checks passed on the final build. Existing footer assertions now verify the same Delete palette and adjacent gaps in details/editing at 1440, 390, 375 and 320px. Updated screenshots include all detail/editor variants and the task-without-subtasks editor.
+
+## Creation exit control
+
+Create New Task and Add SubTask now use the header × to exit, matching the editors. Their footer contains only the Create action. Keep Editing / Discard still protects unsaved input, and Escape follows the same guard. Confirmation and relationship dialogs retain their existing actions.
+
+Verification before pushing: all 467 tests in 43 files passed with unchanged timeouts/assertions; lint, strict TypeScript and production build passed. Four focused desktop/mobile Chromium journeys passed. Additional production checks at 1440/390/320px verified both creation footers contain only Create, Keep Editing preserves the draft, Discard closes it and focus returns to the opener. [Desktop Add SubTask](images/v2-task-details/desktop-subtask-create.png) · [Mobile Add SubTask](images/v2-task-details/mobile-subtask-create.png). Creation screenshots were refreshed. Manage Parent placement is unchanged pending the next design decision.
