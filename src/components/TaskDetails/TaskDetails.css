@@ -38,14 +38,3 @@
 .task-details-children .relationship-link { color: var(--color-text-primary); text-decoration: none; }
 .task-details-children .relationship-link:hover, .task-details-children .relationship-link:focus-visible { color: var(--color-action-subtle-text); text-decoration: underline; }
 .completion-placeholder { display: inline-block; flex-shrink: 0; width: 18px; height: 18px; }
-
-/* Task actions stay visible beside one another while related work scrolls. */
-.task-details-task-actions { flex-wrap: nowrap; justify-content: flex-end; gap: 8px; }
-.task-details-task-actions > button { flex: 0 1 auto; padding: 8px 12px; font-size: var(--font-size-support); white-space: nowrap; }
-.task-details-task-actions > .add-editor-subtask { margin-right: auto; }
-.task-details-task-actions .task-detail-delete { background: var(--color-action-danger-subtle); color: var(--color-action-danger-text); border-color: var(--color-action-danger-border); }
-.task-details-task-actions .task-detail-delete:hover:not(:disabled) { background: var(--color-action-danger-subtle-hover); }
-@media (max-width: 360px) {
-  .task-details-task-actions { gap: 6px; }
-  .task-details-task-actions > button { padding: 8px; font-size: var(--font-size-compact); }
-}

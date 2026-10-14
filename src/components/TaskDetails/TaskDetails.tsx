@@ -8,6 +8,7 @@ import SubtaskList from "../SubtaskList/SubtaskList";
 import Button from "../ui/Button/Button";
 import "../TaskForm/TaskForm.css";
 import "./TaskDetails.css";
+import "../../styles/task-actions.css";
 import CloseButton from "../ui/CloseButton/CloseButton";
 import CompletionMark from "../ui/CompletionMark/CompletionMark";
 import type { BoardOperationError } from "../../domain/board/boardValidation";
@@ -57,11 +58,10 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
             {task.subtasks.length > 0 && <section aria-label="Legacy checklist"><h3>Legacy checklist</h3><SubtaskList task={task} dispatch={dispatch} allowCreate={task.status !== "done"}/></section>}
             <dl className="task-details-dates"><div><dt>Created</dt><dd>{task.createdAt.toLocaleString()}</dd></div></dl>
           </div>
-          <footer className={`task-details-footer${!task.parentId ? " task-details-task-actions" : ""}`}>
+          <footer className="task-details-footer task-action-footer">
             {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add Subtask</button>}
-            {task.parentId && onDelete && <Button variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
             <Button id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button>
-            {!task.parentId && onDelete && <Button className="task-detail-delete" variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
+            {onDelete && <Button variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
           </footer></>}
         </div>
       </div>

@@ -1,0 +1,38 @@
+/* Shared footer sizing and action hierarchy for task details and composers. */
+.task-details-footer.task-action-footer,
+.task-editor-dialog .create-task-actions.task-action-footer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+.task-details-footer.task-action-footer > button,
+.task-editor-dialog .create-task-actions.task-action-footer > button {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: var(--size-touch-target);
+  min-height: var(--size-touch-target);
+  margin: 0;
+  padding: 8px 12px;
+  font-size: var(--font-size-support);
+  white-space: nowrap;
+}
+.task-action-footer .ui-button--danger {
+  background: var(--color-action-danger-subtle);
+  color: var(--color-action-danger-text);
+  border-color: var(--color-action-danger-border);
+}
+.task-action-footer .ui-button--danger:hover:not(:disabled) {
+  background: var(--color-action-danger-subtle-hover);
+}
+@media (max-width: 360px) {
+  .task-details-footer.task-action-footer,
+  .task-editor-dialog .create-task-actions.task-action-footer { gap: 6px; }
+  .task-details-footer.task-action-footer > button,
+  .task-editor-dialog .create-task-actions.task-action-footer > button {
+    padding: 8px;
+    font-size: var(--font-size-compact);
+  }
+}

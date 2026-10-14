@@ -155,6 +155,9 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     const actionRects=await taskActions.evaluateAll(nodes=>nodes.map(node=>{const rect=node.getBoundingClientRect();return {top:rect.top,right:rect.right,height:rect.height};}));
     expect(Math.max(...actionRects.map(rect=>rect.top))-Math.min(...actionRects.map(rect=>rect.top))).toBeLessThan(1);
     expect(actionRects.every(rect=>rect.height>=44&&rect.right<=width)).toBe(true);
+    const gaps=await taskActions.evaluateAll(nodes=>nodes.slice(1).map((node,i)=>node.getBoundingClientRect().left-nodes[i].getBoundingClientRect().right));
+    expect(gaps.every(gap=>gap<=8.1&&gap>=5.9)).toBe(true);
+    const deleteStyle=await taskActions.last().evaluate(el=>{const s=getComputedStyle(el);return [s.color,s.backgroundColor,s.borderColor];});
     await detail.locator("summary").click();
     await expect(detail.getByRole("button",{name:"Add SubTask to Aligned parent",exact:true})).toBeVisible();
     await detail.getByRole("button",{name:"Edit task",exact:true}).click();
@@ -164,7 +167,10 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     const fieldRects=await fields.evaluateAll(nodes=>nodes.map(node=>({top:node.getBoundingClientRect().top,right:node.getBoundingClientRect().right})));
     expect(Math.max(...fieldRects.map(r=>r.top))-Math.min(...fieldRects.map(r=>r.top))).toBeLessThan(1);
     expect(fieldRects.every(rect=>rect.right<=width)).toBe(true);
-    const buttons=editor.locator(".create-task-actions button");await expect(buttons).toHaveText(["Delete task","Save Changes"]);
+    const buttons=editor.locator(".create-task-actions button");await expect(buttons).toHaveText(["Add Subtask","Save Changes","Delete task"]);
+    expect(await buttons.last().evaluate(el=>{const s=getComputedStyle(el);return [s.color,s.backgroundColor,s.borderColor];})).toEqual(deleteStyle);
+    const editorGaps=await buttons.evaluateAll(nodes=>nodes.slice(1).map((node,i)=>node.getBoundingClientRect().left-nodes[i].getBoundingClientRect().right));
+    expect(editorGaps.every(gap=>gap<=8.1&&gap>=5.9)).toBe(true);
     const tops=await buttons.evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().top));
     expect(Math.max(...tops)-Math.min(...tops)).toBeLessThan(1);
     await expect(editor.getByText("Stage changes save immediately and move this task on the board.",{exact:true})).toHaveCount(0);

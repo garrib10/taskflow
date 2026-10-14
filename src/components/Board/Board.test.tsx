@@ -50,7 +50,7 @@ describe("linked task board interactions", () => {
     await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     const section = within(screen.getByRole("region", { name: "Subtasks" }));
     expect(section.getAllByRole("button").map((button) => button.getAttribute("aria-label") ?? button.textContent))
-      .toEqual(["Open subtask First created", "Open subtask Second created", "Add SubTask to Parent work"]);
+      .toEqual(["Open subtask First created", "Open subtask Second created"]);
     simulateDrop(newer.id, "in-progress");
     expect(section.getAllByRole("listitem").map((row) => row.textContent)).toEqual(["First created", "Second created"]);
     await user.click(section.getByRole("button", { name: "Open subtask Second created" }));

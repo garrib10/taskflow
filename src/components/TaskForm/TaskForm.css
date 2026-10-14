@@ -181,12 +181,10 @@
 .task-editor-dialog textarea { min-height: 96px; }
 .task-editor-dialog .task-form-select-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .task-editor-dialog .create-task-actions { position: static; flex-shrink: 0; margin: 0; padding: 14px 24px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
-.task-editor-dialog .create-task-actions > button { font-size: var(--font-size-label); }
 @media (max-width: 600px) {
   .task-editor-dialog { padding: 12px; }
   .task-editor-dialog .task-form-heading, .task-editor-dialog .task-form-content { padding: 16px; }
   .task-editor-dialog .create-task-actions { padding: 12px 16px; flex-direction: row; }
-  .task-editor-dialog .create-task-actions > button { width: auto; flex: 1; }
 }
 @media (max-height: 450px) {
   .task-editor-dialog .task-form-heading { padding: 10px 16px; }
@@ -196,13 +194,10 @@
 
 .task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: 1fr .85fr 1.2fr; gap: 10px; }
 .task-editor-dialog .has-stage select { padding: 8px 6px; }
-.task-editor-dialog .editor-delete-action { margin-right: auto; }
 @media (max-width: 600px) {
   .task-editor-dialog .task-form-select-row.has-stage { gap: 6px; }
   .task-editor-dialog .has-stage select { font-size: .8rem; padding: 8px 2px; }
   .task-editor-dialog .create-task-actions { gap: 6px; flex-wrap: nowrap; }
-  .task-editor-dialog .create-task-actions > button { flex: 0 1 auto; padding: 8px; font-size: .8rem; white-space: nowrap; }
-  .task-editor-dialog .create-task-actions > button:last-child { margin-left: auto; }
 }
 
 .task-editor-dialog .editor-related-actions { display: flex; align-items: center; gap: 8px; min-width: 0; }

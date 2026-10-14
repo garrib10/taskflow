@@ -1,6 +1,7 @@
 import SubtaskList from "../SubtaskList/SubtaskList";
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
+import "../../styles/task-actions.css";
 import Button from "../ui/Button/Button";
 import CloseButton from "../ui/CloseButton/CloseButton";
 import TaskParentLink from "../TaskParentLink/TaskParentLink";
@@ -342,25 +343,19 @@ export default function TaskForm({
                     </li>
                   ))}
                 </ul>
-                {currentTask.status !== "done" && (
-                  <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask?.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>
-                    Add SubTask
-                  </button>
-                )}
               </details>
             </section>
           )}
 
           {currentTask && !linkedParent && children.length === 0 && <div className="editor-related-actions">
-            {!isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add SubTask</button>}
             <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button>
           </div>}
 
           {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
 
           </div>
-          <div className="create-task-actions">
-            {currentTask && onDelete && <Button className="editor-delete-action" variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
+          <div className="create-task-actions task-action-footer">
+            {currentTask && !isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add Subtask</button>}
             {!isEditing && <Button variant="secondary" onClick={handleRequestClose}>
               Cancel
             </Button>}
@@ -368,6 +363,7 @@ export default function TaskForm({
             <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
             </Button>
+            {currentTask && onDelete && <Button variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
           </div>
         </form>
       </div>

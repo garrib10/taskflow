@@ -101,3 +101,13 @@ Task details consolidate Add Subtask → Edit task → Delete task into one comp
 The reported Frontend CI failure was an application relationship journey still querying the removed editor Cancel button (`src/App.relationships.test.tsx:34`). That journey now exits through × and retains its saved parent/child assertions. The full unit/component/integration suite passed 467/467 across 43 files before pushing. Lint, strict TypeScript and production build passed. Production footer checks at 1440, 390 and 320px verified action order, 44px targets, no overflow, child creation and focus return, deliberate editing, deletion cancellation and unchanged subtask details actions.
 
 The full production Chromium suite also passed 46/46 on desktop/mobile before pushing. Updated layout assertions cover the compact task detail footer at 1440, 390, 375 and 320px. Screenshots were refreshed from the tested production build.
+
+## Consistent grouped action footers
+
+Details and composers share one footer style: adjacent, right-aligned buttons with an 8px gap (6px on the narrowest screens), matching sizing, blue primary actions and subtle red Delete actions. Task details show Add Subtask → Edit task → Delete task; task editors show Add Subtask → Save Changes → Delete task. The same task footer applies with or without linked children. Subtask views omit Add Subtask and use the same primary/Delete order and colors. Add Subtask is no longer duplicated inside editor relationship sections. Creation keeps Cancel and Create together. Manage Parent remains in its relationship field with black text.
+
+Save Changes stays blue and Add Subtask stays subtle blue. Green is reserved for status/success cues. Movement, draft/discard guards, deletion confirmation and child eligibility remain unchanged.
+
+Verification: the final full unit/component/integration rerun passed 467/467 across 43 files using one worker and unchanged timeouts/assertions. The initial parallel run hit the existing 5-second application-journey timeout; the unchanged journey passed in isolation before the full rerun. Production checks at 1440, 390 and 320px cover parent tasks, tasks without subtasks, linked subtasks and completed tasks in both details and editors: adjacent footer spacing, matching Delete colors, readable labels, 44px targets, child creation and focus return all passed. Lint, strict TypeScript and the production build passed.
+
+All 46 production desktop/mobile browser checks passed on the final build. Existing footer assertions now verify the same Delete palette and adjacent gaps in details/editing at 1440, 390, 375 and 320px. Updated screenshots include all detail/editor variants and the task-without-subtasks editor.

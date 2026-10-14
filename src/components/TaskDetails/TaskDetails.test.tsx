@@ -154,6 +154,6 @@ it("keeps details read-only, marks only completed children and groups editor con
   const editor=within(screen.getByRole("dialog",{name:"Edit Task"}));
   expect(editor.getAllByRole("combobox").map(control=>(control as HTMLSelectElement).labels?.[0].textContent)).toEqual(["Category","Priority","Stage"]);
   const footer=editor.getByRole("button",{name:"Save Changes"}).closest(".create-task-actions")!;
-  expect(within(footer as HTMLElement).getAllByRole("button").map(button=>button.textContent)).toEqual(["Delete task","Save Changes"]);
+  expect(within(footer as HTMLElement).getAllByRole("button").map(button=>button.textContent)).toEqual(["Add Subtask","Save Changes","Delete task"]);
   expect(editor.queryByText("Stage changes save immediately and move this task on the board.")).not.toBeInTheDocument();
 });
