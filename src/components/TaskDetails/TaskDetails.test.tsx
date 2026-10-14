@@ -93,7 +93,7 @@ it("changes stages in editing, retains relationship rules and restores completio
   await user.selectOptions(screen.getByLabelText("Stage"),"done");
   expect(screen.getByLabelText("Stage")).toHaveValue("done");
   await user.click(screen.getByRole("button",{name:"Close task editor"}));
-  expect(screen.getByRole("article",{name:"Review release"}).querySelector(".completion-mark.is-complete")).toBeInTheDocument();
+  expect(screen.getByRole("article",{name:"Review release"}).querySelector(".completion-mark")).not.toBeInTheDocument();
   expect(screen.queryByLabelText("Movement actions for Release plan")).not.toBeInTheDocument();
 });
 it("the editor × keeps the same safe draft cancellation as Escape", async () => {

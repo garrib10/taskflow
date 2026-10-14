@@ -1,5 +1,4 @@
 import "./TaskCard.css";
-import CompletionMark from "../ui/CompletionMark/CompletionMark";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import type { Task } from "../../domain/task/Task";
 import { priorityStyles } from "../../domain/task/priorityStyles";
@@ -26,7 +25,7 @@ export default function TaskCard({ task, stage, context, excerpt, manual, select
       <div ref={setActivatorNodeRef} id={`move-task-${task.id}`} data-task-drag={task.id} {...listeners} {...attributes} role="group" aria-label={`Move task ${task.title}, ${stage}`} aria-describedby="board-movement-help" className="task-grip">
         <svg width="14" height="22" viewBox="0 0 14 22" aria-hidden="true" fill="currentColor"><circle cx="4" cy="5" r="1.5"/><circle cx="10" cy="5" r="1.5"/><circle cx="4" cy="11" r="1.5"/><circle cx="10" cy="11" r="1.5"/><circle cx="4" cy="17" r="1.5"/><circle cx="10" cy="17" r="1.5"/></svg>
       </div>
-      <h3 id={`task-heading-${task.id}`}><button type="button" className="task-title-link" data-task-title aria-label={`Open task ${task.title}`} onClick={() => onEdit(task)}>{task.parentId && task.status === "done" && <span aria-hidden="true"><CompletionMark complete/></span>}{task.title}</button></h3>
+      <h3 id={`task-heading-${task.id}`}><button type="button" className="task-title-link" data-task-title aria-label={`Open task ${task.title}`} onClick={() => onEdit(task)}>{task.title}</button></h3>
 
     </div>
     <div className="task-meta"><span className="task-category">{category.label}</span><span className={`task-priority priority-${task.priority}`}><span aria-hidden="true"/> {priority.label}</span></div>

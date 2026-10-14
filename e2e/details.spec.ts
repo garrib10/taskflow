@@ -102,7 +102,7 @@ test("stage selection lives in editing, blocks incomplete parents and retains co
   await page.getByRole("button",{name:"Close task editor",exact:true}).click();
   await expect(page.locator(".task-movement-actions")).toHaveCount(0);
   await page.reload();if(await stage.count())await stage.selectOption("done");
-  await expect(page.getByRole("button",{name:"Open task Stage child",exact:true}).locator(".completion-mark.is-complete")).toHaveCount(1);
+  await expect(page.getByRole("button",{name:"Open task Stage child",exact:true}).locator(".completion-mark")).toHaveCount(0);
 });
 
 test("parent context is consistent and editor stage changes move saved work without discarding its draft",async({page})=>{

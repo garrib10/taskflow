@@ -79,3 +79,9 @@ Verification: 30 affected component tests and 22 desktop/mobile details and task
 ## Board card metadata order
 
 Board cards now show Category → Priority, matching the details and editor metadata order. The divider remains between the two values and the priority dot/color is retained. Seven existing board-presentation checks passed, along with lint, strict TypeScript and the production build.
+
+## Completion marks inside parent tasks
+
+Completed-subtask checkmarks appear in the opened parent’s subtask list in details/editing. Board cards no longer render a checkmark beside the title. The Done column and relationship text still provide board context.
+
+Verification: nine existing details component tests and two focused desktop/mobile Chromium journeys passed, including retained parent-list marks and absent board-card marks. Lint, strict TypeScript, production build and diff checks passed.

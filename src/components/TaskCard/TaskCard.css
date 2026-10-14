@@ -30,4 +30,3 @@
 .task-card[data-drop-position="after"]::before { bottom: -6px; }
 @media (prefers-reduced-motion: reduce) { .task-card { transition: none; } }
 @media (max-width: 420px) { .task-card-header { grid-template-columns: 32px minmax(0,1fr); } }
-.task-title-link .completion-mark { margin-right: var(--space-2); }
