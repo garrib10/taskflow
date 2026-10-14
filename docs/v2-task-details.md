@@ -93,3 +93,11 @@ In Edit SubTask, Manage Parent sits beside the linked parent name above metadata
 Verification: 30 affected component tests passed. Production Chromium checks at 1440, 390 and 320px confirmed aligned parent/action buttons, 44px targets, full parent labels, working parent management and no horizontal overflow. Lint, strict TypeScript and production build passed. Subtask editor screenshots were refreshed.
 
 Manage Parent’s text is black following owner review; its subtle blue background, border and hover remain. Task action layout alternatives are awaiting owner selection.
+
+## Task detail action footer
+
+Task details consolidate Add Subtask → Edit task → Delete task into one compact fixed footer. Add Subtask uses subtle blue, Edit task remains the primary blue action, and Delete task uses red text with a light border/background. Add Subtask is removed from the scrollable child panel and remains available when that panel is collapsed. Completed tasks still cannot add children. Subtask details and editor footer actions retain their existing layout.
+
+The reported Frontend CI failure was an application relationship journey still querying the removed editor Cancel button (`src/App.relationships.test.tsx:34`). That journey now exits through × and retains its saved parent/child assertions. The full unit/component/integration suite passed 467/467 across 43 files before pushing. Lint, strict TypeScript and production build passed. Production footer checks at 1440, 390 and 320px verified action order, 44px targets, no overflow, child creation and focus return, deliberate editing, deletion cancellation and unchanged subtask details actions.
+
+The full production Chromium suite also passed 46/46 on desktop/mobile before pushing. Updated layout assertions cover the compact task detail footer at 1440, 390, 375 and 320px. Screenshots were refreshed from the tested production build.

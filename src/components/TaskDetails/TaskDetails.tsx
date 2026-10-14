@@ -50,15 +50,19 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
                   <p>{progress.completed} of {progress.total} subtasks complete</p>
                   <progress aria-label={`Subtask completion for ${task.title}`} value={progress.completed} max={progress.total}/>
                   <ul className="task-details-children">{children.map(child => <li key={child.id}>{child.status === "done" ? <CompletionMark complete/> : <span className="completion-placeholder" aria-hidden="true"/>}<button className="relationship-link" aria-label={`Open subtask ${child.title}`} onClick={() => onOpenTask(child)}>{child.title}</button><span>{stages[child.status]}</span></li>)}</ul>
-                  {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</button>}
                 </details>
-              </div> : !task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</button>}
+              </div> : null}
               {task.status === "done" && !task.parentId && <p className="task-details-muted">Completed tasks cannot accept new subtasks.</p>}
             </section>}
             {task.subtasks.length > 0 && <section aria-label="Legacy checklist"><h3>Legacy checklist</h3><SubtaskList task={task} dispatch={dispatch} allowCreate={task.status !== "done"}/></section>}
             <dl className="task-details-dates"><div><dt>Created</dt><dd>{task.createdAt.toLocaleString()}</dd></div></dl>
           </div>
-          <footer className="task-details-footer">{onDelete && <Button variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}<Button id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button></footer></>}
+          <footer className={`task-details-footer${!task.parentId ? " task-details-task-actions" : ""}`}>
+            {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add Subtask</button>}
+            {task.parentId && onDelete && <Button variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
+            <Button id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button>
+            {!task.parentId && onDelete && <Button className="task-detail-delete" variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
+          </footer></>}
         </div>
       </div>
     </div>

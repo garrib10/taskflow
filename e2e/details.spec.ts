@@ -150,6 +150,13 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     await expect(detail.getByRole("img",{name:"Completed subtask",exact:true})).toHaveCount(1);
     await expect(detail.getByRole("img",{name:"Incomplete subtask",exact:true})).toHaveCount(0);
     await expect(detail.locator(".completion-placeholder")).toHaveCount(1);
+    const taskActions=detail.locator(".task-details-footer button");
+    await expect(taskActions).toHaveText(["Add Subtask","Edit task","Delete task"]);
+    const actionRects=await taskActions.evaluateAll(nodes=>nodes.map(node=>{const rect=node.getBoundingClientRect();return {top:rect.top,right:rect.right,height:rect.height};}));
+    expect(Math.max(...actionRects.map(rect=>rect.top))-Math.min(...actionRects.map(rect=>rect.top))).toBeLessThan(1);
+    expect(actionRects.every(rect=>rect.height>=44&&rect.right<=width)).toBe(true);
+    await detail.locator("summary").click();
+    await expect(detail.getByRole("button",{name:"Add SubTask to Aligned parent",exact:true})).toBeVisible();
     await detail.getByRole("button",{name:"Edit task",exact:true}).click();
     const editor=page.getByRole("dialog",{name:"Edit Task",exact:true});
     const fields=editor.locator(".task-form-select-row select");

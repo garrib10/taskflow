@@ -31,7 +31,7 @@ it("creates linked parent and child tasks through the full application", async (
     await user.click(screen.getByRole("button", { name: "Add SubTask to Release parent" }));
     await createTask(user, title, true);
   }
-  await user.click(within(screen.getByRole("dialog", { name: "Edit Task" })).getByRole("button", { name: "Cancel" }));
+  await user.click(within(screen.getByRole("dialog", { name: "Edit Task" })).getByRole("button", { name: "Close task editor" }));
   const tasks = savedTasks();
   const parent = tasks.find(task => task.title === "Release parent")!;
   expect(parent).toMatchObject({ status: "todo", description: "Release parent description" });
