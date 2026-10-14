@@ -318,7 +318,7 @@ export default function TaskForm({
           </div>
 
           {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from the content draft.</p>}
-          {currentTask && !isSubtask && (children.length > 0 ? (
+          {currentTask && !isSubtask && children.length > 0 && (
             <section className="task-editor-subtasks" aria-label="Subtasks">
               <details open>
                 <summary>
@@ -348,17 +348,12 @@ export default function TaskForm({
                 )}
               </details>
             </section>
-          ) : currentTask.status !== "done" ? (
-            <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask?.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>
-              Add SubTask
-            </button>
-          ) : null)}
-
-          {currentTask && children.length === 0 && (
-            <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>
-              Manage Parent
-            </button>
           )}
+
+          {currentTask && children.length === 0 && <div className="editor-related-actions">
+            {!isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add SubTask</button>}
+            <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button>
+          </div>}
 
           {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
 
