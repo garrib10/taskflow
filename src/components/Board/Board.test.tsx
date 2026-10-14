@@ -69,7 +69,7 @@ describe("linked task board interactions", () => {
     card("Child work").getByRole("button", { name: "Open task Child work" }).focus();
     await user.keyboard("{Enter}");
     await user.click(screen.getByRole("button", { name: "Edit task" }));
-    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("Parent: Parent work");
+    expect(within(screen.getByRole("dialog", { name: "Edit SubTask" })).getByRole("button", {name:"Open parent Parent work"})).toBeInTheDocument();
   });
 
   it("creates a child from its parent with inherited defaults, independent card, and progress", async () => {
@@ -79,7 +79,7 @@ describe("linked task board interactions", () => {
     screen.getByRole("button", { name: "Add SubTask to Parent work" }).focus();
     await user.keyboard("{Enter}");
     const subtaskForm = within(screen.getByRole("dialog", { name: "Add SubTask" }));
-    expect(screen.getByRole("dialog", { name: "Add SubTask" })).toHaveTextContent("Parent: Parent work");
+    expect(within(screen.getByRole("dialog", { name: "Add SubTask" })).getByRole("button", {name:"Open parent Parent work"})).toBeInTheDocument();
     expect(subtaskForm.getByLabelText("Priority")).toHaveValue("high");
     expect(subtaskForm.getByLabelText("Category")).toHaveValue("bug");
     await user.type(subtaskForm.getByLabelText("Title"), "New linked child");
@@ -213,7 +213,7 @@ describe("linked task board interactions", () => {
     await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     await user.click(screen.getByRole("button", { name: "Open subtask Child work" }));
     expect(screen.getByLabelText("Search:")).toHaveValue("Parent work");
-    expect(screen.getByRole("dialog", { name: "Edit SubTask" })).toHaveTextContent("Parent: Parent work");
+    expect(within(screen.getByRole("dialog", { name: "Edit SubTask" })).getByRole("button", {name:"Open parent Parent work"})).toBeInTheDocument();
   });
 
   it("unknown drag destinations are ignored and a valid child move keeps context", () => {

@@ -26,7 +26,8 @@
   .task-details-panel { height: calc(100dvh - 16px); border-radius: var(--radius-panel) var(--radius-panel) 0 0; }
   .task-details-header, .task-details-content { padding: var(--space-4); }
   .task-details-footer { padding: var(--space-3) var(--space-4); }
-  .task-details-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .task-details-metadata { grid-template-columns: 1fr .9fr 1.25fr; gap: 8px; }
+  .task-details-metadata dd { font-size: var(--font-size-label); }
   .task-details-children li { flex-wrap: wrap; padding: var(--space-2) 0; }
 }
 @media (max-height: 450px) { .task-details-header { padding: var(--space-3); } .task-details-panel { height: 100dvh; } }

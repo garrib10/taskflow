@@ -31,4 +31,6 @@
   text-align: left;
   font-weight: var(--font-weight-medium);
 }
-.editor-parent-pill { margin-top: var(--space-3); }
+.task-parent-field { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.task-parent-field > span { color: var(--color-text-muted); font-size: var(--font-size-support); }
+.task-parent-field .editor-parent-pill { margin-top: 0; border-radius: var(--radius-control); }

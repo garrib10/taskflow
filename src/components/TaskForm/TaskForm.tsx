@@ -213,7 +213,7 @@ export default function TaskForm({
           <header className="task-form-heading">
             <div><h2 id={`${fieldPrefix}-form-title`}>
               {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
-            </h2><p>{parent ? `Linked to ${parent.title}` : isEditing ? "Update the task’s content and details." : "What needs to get done?"}</p>{linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask}/>}</div>
+            </h2><p>{parent ? `Linked to ${parent.title}` : isEditing ? "Update the task’s content and details." : "What needs to get done?"}</p></div>
             <CloseButton label={isEditing ? "Close task editor" : "Close task creation"} onClick={handleRequestClose}/>
           </header>
           <div className="task-form-content">
@@ -268,33 +268,8 @@ export default function TaskForm({
             </small>
           </Field>
 
+          {linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask}/>}
           <div className={`task-form-select-row${currentTask && onChangeStage ? " has-stage" : ""}`}>
-          {currentTask && onChangeStage ? <div className="task-form-field"><label htmlFor={`${fieldPrefix}-stage`}>Stage</label>
-            <select id={`${fieldPrefix}-stage`} value={currentTask.status} aria-invalid={invalidField === "stage" || undefined} aria-describedby={invalidField === "stage" ? `${fieldPrefix}-error` : undefined} onChange={event => {
-              if (!isTaskStatus(event.target.value)) return;
-              const failure = onChangeStage(currentTask, event.target.value);
-              if (failure) fail("stage", failure.message);
-              else { setError(""); setInvalidField(null); }
-            }}>{taskStatuses.map(status => <option key={status} value={status}>{statusLabels[status]}</option>)}</select>
-          </div> : null}
-            <div className="task-form-field">
-              <label htmlFor={`${fieldPrefix}-priority`}>Priority</label>
-
-              <select
-                id={`${fieldPrefix}-priority`}
-                aria-invalid={invalidField === "priority" || undefined}
-                aria-describedby={invalidField === "priority" ? `${fieldPrefix}-error` : undefined}
-                value={priority}
-                onChange={(event) =>
-                  setPriority(event.target.value as Priority)
-                }
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-
             <div className="task-form-field">
               <label htmlFor={`${fieldPrefix}-category`}>Category</label>
 
@@ -315,6 +290,33 @@ export default function TaskForm({
                 <option value="devops">DevOps</option>
               </select>
             </div>
+            <div className="task-form-field">
+              <label htmlFor={`${fieldPrefix}-priority`}>Priority</label>
+
+              <select
+                id={`${fieldPrefix}-priority`}
+                aria-invalid={invalidField === "priority" || undefined}
+                aria-describedby={invalidField === "priority" ? `${fieldPrefix}-error` : undefined}
+                value={priority}
+                onChange={(event) =>
+                  setPriority(event.target.value as Priority)
+                }
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+          {currentTask && onChangeStage ? <div className="task-form-field"><label htmlFor={`${fieldPrefix}-stage`}>Stage</label>
+            <select id={`${fieldPrefix}-stage`} value={currentTask.status} aria-invalid={invalidField === "stage" || undefined} aria-describedby={invalidField === "stage" ? `${fieldPrefix}-error` : undefined} onChange={event => {
+              if (!isTaskStatus(event.target.value)) return;
+              const failure = onChangeStage(currentTask, event.target.value);
+              if (failure) fail("stage", failure.message);
+              else { setError(""); setInvalidField(null); }
+            }}>{taskStatuses.map(status => <option key={status} value={status}>{statusLabels[status]}</option>)}</select>
+          </div> : null}
+
           </div>
 
           {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from the content draft.</p>}

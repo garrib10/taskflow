@@ -57,3 +57,9 @@ Final layout verification: 467 unit/component tests in 43 files passed; the fina
 ## Compact related-work actions
 
 When an edited task can both create a child and manage its parent, Add SubTask and Manage Parent share a compact row with natural button widths. Eligibility remains unchanged: existing parents retain child creation within their list, and linked subtasks retain parent management only. Verified alignment, 44px targets and both dialog actions at 1440, 390 and 320px against the production build; the 21 existing Board relationship tests, lint, strict TypeScript, build and diff checks passed. [Desktop row](images/v2-task-details/desktop-related-actions.png) · [Mobile row](images/v2-task-details/mobile-related-actions.png).
+
+## Metadata order and parent field
+
+Owner review settled on Category → Priority → Stage for task details and editing (creation uses Category → Priority). Linked tasks show Parent immediately above that row as a matching labeled field, using the same navigation control in details and editing. The parent title no longer crowds the heading. A separate parent row preserves room for long titles and keeps mobile metadata readable instead of squeezing four fields together. Stage remains read-only in details and editable only in the editor; all previous action eligibility and draft/movement rules are retained.
+
+Metadata-order verification: 30 affected component tests and 12 desktop/mobile detail browser journeys passed. Four long-content/row-layout checks were repeated after the final mobile three-column adjustment. Lint, strict TypeScript, build and diff checks passed. Synthetic preview checks also retained aligned related-work buttons and working actions at 1440, 390 and 320px. Screenshots were refreshed from the final build.

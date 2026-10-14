@@ -116,12 +116,12 @@ test("parent context is consistent and editor stage changes move saved work with
   await childLink.click();
   const badge=page.getByRole("button",{name:"Open parent Consistent parent",exact:true});
   await expect(badge).toHaveClass("editor-parent-pill");
-  expect(await badge.evaluate(node=>!!node.closest("header"))).toBe(true);
+  expect(await badge.evaluate(node=>!!node.closest(".task-parent-field"))).toBe(true);
   await expect(page.getByRole("button",{name:"Manage parent of Consistent child",exact:true})).toHaveCount(0);
   const style=await badge.evaluate(node=>({background:getComputedStyle(node).backgroundColor,border:getComputedStyle(node).borderRadius}));
   await page.getByRole("button",{name:"Edit task",exact:true}).click();
   await expect(badge).toHaveClass("editor-parent-pill");
-  expect(await badge.evaluate(node=>!!node.closest("header"))).toBe(true);
+  expect(await badge.evaluate(node=>!!node.closest(".task-parent-field"))).toBe(true);
   expect(await badge.evaluate(node=>({background:getComputedStyle(node).backgroundColor,border:getComputedStyle(node).borderRadius}))).toEqual(style);
   await expect(page.getByRole("button",{name:"Manage parent of Consistent child",exact:true})).toBeVisible();
   const editor=page.getByRole("dialog",{name:"Edit SubTask",exact:true});

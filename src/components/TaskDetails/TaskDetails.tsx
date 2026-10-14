@@ -30,14 +30,15 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
       <div className="task-details-overlay" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
         <div ref={ref} className="task-details-panel" role={view === "details" ? "dialog" : undefined} aria-modal={view === "details" ? true : undefined} aria-labelledby={`${id}-title`} tabIndex={-1}>
           {view === "details" && <><header className="task-details-header">
-            <div><p className="board-eyebrow">{parent ? "Subtask details" : "Task details"}</p><h2 id={`${id}-title`} tabIndex={-1} data-initial-focus>{task.title}</h2>{parent && <TaskParentLink parent={parent} onOpen={onOpenTask}/>}</div>
+            <div><p className="board-eyebrow">{parent ? "Subtask details" : "Task details"}</p><h2 id={`${id}-title`} tabIndex={-1} data-initial-focus>{task.title}</h2></div>
             <CloseButton label="Close task details" onClick={onClose}/>
           </header>
           <div className="task-details-content">
+            {parent && <TaskParentLink parent={parent} onOpen={onOpenTask}/>}
             <dl className="task-details-metadata">
-              <div><dt>Stage</dt><dd><span className={`task-status-pill stage-${task.status}`}>{stages[task.status]}</span></dd></div>
-              <div><dt>Priority</dt><dd className={`detail-priority priority-${task.priority}`}>{task.priority[0].toUpperCase() + task.priority.slice(1)}</dd></div>
               <div><dt>Category</dt><dd>{categories[task.category]}</dd></div>
+              <div><dt>Priority</dt><dd className={`detail-priority priority-${task.priority}`}>{task.priority[0].toUpperCase() + task.priority.slice(1)}</dd></div>
+              <div><dt>Stage</dt><dd><span className={`task-status-pill stage-${task.status}`}>{stages[task.status]}</span></dd></div>
             </dl>
             {props.orderingActions && <section className="detail-order-actions" aria-label="Task order">{props.orderingActions(task)}</section>}
             <section aria-labelledby={`${id}-description`}><h3 id={`${id}-description`}>Description</h3><p className="task-details-description">{task.description}</p></section>

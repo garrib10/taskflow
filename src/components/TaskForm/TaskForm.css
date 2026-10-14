@@ -195,7 +195,7 @@
   .task-editor-dialog .create-task-actions { padding: 8px 16px; }
 }
 
-.task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: 1.2fr .85fr 1fr; gap: 10px; }
+.task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: 1fr .85fr 1.2fr; gap: 10px; }
 .task-editor-dialog .has-stage select { padding: 8px 6px; }
 .task-editor-dialog .editor-delete-action { margin-right: auto; }
 @media (max-width: 600px) {

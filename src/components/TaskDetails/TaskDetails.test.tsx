@@ -127,11 +127,11 @@ it("uses one parent badge in details and editing and moves from the editor witho
   await user.click(screen.getByRole("button",{name:"Open task Review release"}));
   const badge=screen.getByRole("button",{name:"Open parent Release plan"});
   expect(badge).toHaveClass("editor-parent-pill");
-  expect(badge.closest("header")).not.toBeNull();
+  expect(badge.closest(".task-parent-field")).not.toBeNull();
   expect(screen.queryByRole("button",{name:"Manage parent of Review release"})).not.toBeInTheDocument();
   await user.click(screen.getByRole("button",{name:"Edit task"}));
   expect(screen.getByRole("button",{name:"Open parent Release plan"})).toHaveClass("editor-parent-pill");
-  expect(screen.getByRole("button",{name:"Open parent Release plan"}).closest("header")).not.toBeNull();
+  expect(screen.getByRole("button",{name:"Open parent Release plan"}).closest(".task-parent-field")).not.toBeNull();
   expect(screen.getByRole("button",{name:"Manage parent of Review release"})).toBeInTheDocument();
   await user.type(screen.getByLabelText("Title")," draft");
   await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
@@ -152,7 +152,7 @@ it("keeps details read-only, marks only completed children and groups editor con
   expect(detail.queryByRole("img",{name:"Incomplete subtask"})).not.toBeInTheDocument();
   await user.click(detail.getByRole("button",{name:"Edit task"}));
   const editor=within(screen.getByRole("dialog",{name:"Edit Task"}));
-  expect(editor.getAllByRole("combobox").map(control=>(control as HTMLSelectElement).labels?.[0].textContent)).toEqual(["Stage","Priority","Category"]);
+  expect(editor.getAllByRole("combobox").map(control=>(control as HTMLSelectElement).labels?.[0].textContent)).toEqual(["Category","Priority","Stage"]);
   const footer=editor.getByRole("button",{name:"Save Changes"}).closest(".create-task-actions")!;
   expect(within(footer as HTMLElement).getAllByRole("button").map(button=>button.textContent)).toEqual(["Delete task","Cancel","Save Changes"]);
   expect(editor.queryByText("Stage changes save immediately and move this task on the board.")).not.toBeInTheDocument();
