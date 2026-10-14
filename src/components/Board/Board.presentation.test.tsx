@@ -58,8 +58,9 @@ it("provides a single mobile stage, explicit movement and continued focus withou
   const user=userEvent.setup();render(<Harness tasks={[makeTask({title:"Mobile work"})]}/>);
   expect(within(screen.getByRole("region",{name:"Workflow columns"})).getAllByRole("heading",{level:2})).toHaveLength(1);
   await user.click(screen.getByRole("button",{name:"Open task Mobile work"}));
+  await user.click(screen.getByRole("button",{name:"Edit task"}));
   await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
-  await user.click(screen.getByRole("button",{name:"Close task details"}));
+  await user.click(screen.getByRole("button",{name:"Close task editor"}));
   expect(screen.getByLabelText("Workflow stage")).toHaveValue("in-progress");
   expect(screen.getByRole("button",{name:"Open task Mobile work"})).toHaveFocus();
   await user.selectOptions(screen.getByLabelText("Workflow stage"),"done");

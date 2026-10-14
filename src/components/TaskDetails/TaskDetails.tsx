@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type ReactNode } from "react";
-import { taskStatuses, type TaskStatus, type Task } from "../../domain/task/Task";
+import { type TaskStatus, type Task } from "../../domain/task/Task";
 import { findTask, getChildren, getChildProgress, getParent } from "../../domain/board/taskRelationships";
 import { useModalFocus } from "../../accessibility/useModalFocus";
 import TaskForm, { type TaskFormProps } from "../TaskForm/TaskForm";
@@ -10,7 +10,6 @@ import "../TaskForm/TaskForm.css";
 import "./TaskDetails.css";
 import CloseButton from "../ui/CloseButton/CloseButton";
 import CompletionMark from "../ui/CompletionMark/CompletionMark";
-import { isTaskStatus } from "../../utils/typeGuards";
 import type { BoardOperationError } from "../../domain/board/boardValidation";
 
 const stages = { todo: "To Do", "in-progress": "In Progress", "in-review": "In Review", done: "Done" };
@@ -20,7 +19,6 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
   const { board, onClose, onOpenTask, onDelete, dispatch } = props;
   const task = findTask(board, props.task.id) ?? props.task;
   const [view, setView] = useState<"details" | "edit" | "child">("details");
-  const [stageError, setStageError] = useState<string | null>(null);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   useModalFocus(ref, onClose, view === "details");
@@ -37,20 +35,16 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
           </header>
           <div className="task-details-content">
             <dl className="task-details-metadata">
-              <div><dt><label htmlFor={`${id}-stage`}>Stage</label></dt><dd><select id={`${id}-stage`} className={`detail-stage-select stage-${task.status}`} value={task.status} aria-invalid={!!stageError || undefined} aria-describedby={`${id}-stage-note${stageError ? ` ${id}-stage-error` : ""}`} onChange={event => {
-                if (isTaskStatus(event.target.value)) setStageError(props.onChangeStage(task, event.target.value)?.message ?? null);
-              }}>{taskStatuses.map(status => <option key={status} value={status}>{stages[status]}</option>)}</select></dd></div>
+              <div><dt>Stage</dt><dd><span className={`task-status-pill stage-${task.status}`}>{stages[task.status]}</span></dd></div>
               <div><dt>Priority</dt><dd className={`detail-priority priority-${task.priority}`}>{task.priority[0].toUpperCase() + task.priority.slice(1)}</dd></div>
               <div><dt>Category</dt><dd>{categories[task.category]}</dd></div>
             </dl>
-            <p id={`${id}-stage-note`} className="task-details-muted detail-stage-note">Changes save immediately. Move through stages in order.</p>
-            {stageError && <p id={`${id}-stage-error`} className="form-error">{stageError}</p>}
             {props.orderingActions && <section className="detail-order-actions" aria-label="Task order">{props.orderingActions(task)}</section>}
             <section aria-labelledby={`${id}-description`}><h3 id={`${id}-description`}>Description</h3><p className="task-details-description">{task.description}</p></section>
             {!parent && <section aria-labelledby={`${id}-relationships`}>
               <h3 id={`${id}-relationships`}>Related work</h3>
               {!parent && <p className="task-details-muted">{task.parentId ? "Parent unavailable" : "Independent task"}</p>}
-              {children.length > 0 && <><p>{progress.completed} of {progress.total} subtasks complete</p><progress aria-label={`Subtask completion for ${task.title}`} value={progress.completed} max={progress.total}/><ul className="task-details-children">{children.map(child => <li key={child.id}><CompletionMark complete={child.status === "done"}/><button className="relationship-link" aria-label={`Open subtask ${child.title}`} onClick={() => onOpenTask(child)}>{child.title}</button><span>{stages[child.status]}</span></li>)}</ul></>}
+              {children.length > 0 && <><p>{progress.completed} of {progress.total} subtasks complete</p><progress aria-label={`Subtask completion for ${task.title}`} value={progress.completed} max={progress.total}/><ul className="task-details-children">{children.map(child => <li key={child.id}>{child.status === "done" ? <CompletionMark complete/> : <span className="completion-placeholder" aria-hidden="true"/>}<button className="relationship-link" aria-label={`Open subtask ${child.title}`} onClick={() => onOpenTask(child)}>{child.title}</button><span>{stages[child.status]}</span></li>)}</ul></>}
               {!task.parentId && task.status !== "done" && <Button id={`${id}-child`} variant="secondary" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}>Add SubTask</Button>}
               {task.status === "done" && !task.parentId && <p className="task-details-muted">Completed tasks cannot accept new subtasks.</p>}
             </section>}

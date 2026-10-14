@@ -218,15 +218,6 @@ export default function TaskForm({
           </header>
           <div className="task-form-content">
 
-          {currentTask && onChangeStage ? <Field controlId={`${fieldPrefix}-stage`} label="Stage">
-            <select id={`${fieldPrefix}-stage`} value={currentTask.status} aria-invalid={invalidField === "stage" || undefined} aria-describedby={`${fieldPrefix}-stage-note${invalidField === "stage" ? ` ${fieldPrefix}-error` : ""}`} onChange={event => {
-              if (!isTaskStatus(event.target.value)) return;
-              const failure = onChangeStage(currentTask, event.target.value);
-              if (failure) fail("stage", failure.message);
-              else { setError(""); setInvalidField(null); }
-            }}>{taskStatuses.map(status => <option key={status} value={status}>{statusLabels[status]}</option>)}</select>
-            <small id={`${fieldPrefix}-stage-note`} className="task-form-stage-note">Stage changes save immediately and move this task on the board.</small>
-          </Field> : currentTask && <span className={`task-status-pill stage-${currentTask.status}`}>{statusLabels[currentTask.status]}</span>}
 
           {error && (notification ? (
             <Notification key={notification.id} notification={notification}
@@ -277,7 +268,15 @@ export default function TaskForm({
             </small>
           </Field>
 
-          <div className="task-form-select-row">
+          <div className={`task-form-select-row${currentTask && onChangeStage ? " has-stage" : ""}`}>
+          {currentTask && onChangeStage ? <div className="task-form-field"><label htmlFor={`${fieldPrefix}-stage`}>Stage</label>
+            <select id={`${fieldPrefix}-stage`} value={currentTask.status} aria-invalid={invalidField === "stage" || undefined} aria-describedby={invalidField === "stage" ? `${fieldPrefix}-error` : undefined} onChange={event => {
+              if (!isTaskStatus(event.target.value)) return;
+              const failure = onChangeStage(currentTask, event.target.value);
+              if (failure) fail("stage", failure.message);
+              else { setError(""); setInvalidField(null); }
+            }}>{taskStatuses.map(status => <option key={status} value={status}>{statusLabels[status]}</option>)}</select>
+          </div> : null}
             <div className="task-form-field">
               <label htmlFor={`${fieldPrefix}-priority`}>Priority</label>
 
@@ -318,7 +317,7 @@ export default function TaskForm({
             </div>
           </div>
 
-          {currentTask && <p className="task-form-relationship-note">Stage, subtask and parent changes save separately from the content draft.</p>}
+          {currentTask && <p className="task-form-relationship-note">Subtask and parent changes save separately from the content draft.</p>}
           {currentTask && !isSubtask && (children.length > 0 ? (
             <section className="task-editor-subtasks" aria-label="Subtasks">
               <details open>
@@ -334,11 +333,7 @@ export default function TaskForm({
                           <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
                             <path d="M3 8l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
-                        ) : (
-                          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-                            <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                          </svg>
-                        )}
+                        ) : null}
                       </span>
                       <button type="button" className="relationship-link subtask-title" onClick={() => setSubtaskEditor({ type: "edit", task: child })} aria-label={`Open subtask ${child.title}`}>
                         {child.title}
@@ -366,9 +361,10 @@ export default function TaskForm({
           )}
 
           {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
-          {currentTask && onDelete && <div className="editor-danger-area"><Button variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button></div>}
+
           </div>
           <div className="create-task-actions">
+            {currentTask && onDelete && <Button className="editor-delete-action" variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
             <Button variant="secondary" onClick={handleRequestClose}>
               Cancel
             </Button>

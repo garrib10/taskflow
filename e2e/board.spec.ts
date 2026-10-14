@@ -26,8 +26,9 @@ test("explicit stage actions work without dragging and preserve focus and saved 
   const parent=makeTask({id:"parent",title:"Release parent"});const child=makeTask({id:"child",title:"Linked child",parentId:parent.id});
   await seed(page,currentBoardRaw(makeBoard([parent,child])));
   await page.getByRole("button",{name:"Open task Linked child",exact:true}).click();
+  await page.getByRole("button",{name:"Edit task",exact:true}).click();
   await page.getByLabel("Stage",{exact:true}).selectOption("in-progress");
-  await page.getByRole("button",{name:"Close task details",exact:true}).click();
+  await page.getByRole("button",{name:"Close task editor",exact:true}).click();
   await expect(page.getByRole("button",{name:"Open task Linked child",exact:true})).toBeFocused();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("taskflow-board")!).board);
   expect(saved.columns[1].tasks[0]).toMatchObject({id:"child",parentId:"parent",status:"in-progress"});

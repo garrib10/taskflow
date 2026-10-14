@@ -72,23 +72,27 @@ it("shows the complete long child list without truncating relationship names", a
   expect(detail.getByRole("button",{name:`Open subtask Child 29 ${"x".repeat(130)}`})).toBeInTheDocument();
 });
 
-it("changes stages inside details, retains relationship rules and restores completion marks", async () => {
+it("changes stages in editing, retains relationship rules and restores completion marks", async () => {
   const user = userEvent.setup();
   render(<Harness tasks={[{...parent, status:"in-review"}, child]}/>);
   await user.click(screen.getByRole("button",{name:"Open task Release plan"}));
+  await user.click(screen.getByRole("button",{name:"Edit task"}));
   await user.selectOptions(screen.getByLabelText("Stage"),"done");
   expect(screen.getByLabelText("Stage")).toHaveValue("in-review");
-  expect(screen.getByRole("dialog",{name:"Release plan"})).toHaveTextContent("Finish these subtasks");
-  await user.click(screen.getByRole("button",{name:"Open subtask Review release"}));
+  expect(screen.getByRole("dialog",{name:"Edit Task"})).toHaveTextContent("Finish these subtasks");
+  await user.click(screen.getByRole("button",{name:"Close task editor"}));
+  await user.click(screen.getByRole("button",{name:"Open task Review release"}));
+  await user.click(screen.getByRole("button",{name:"Edit task"}));
   for(const stage of ["in-progress","in-review","done"]) await user.selectOptions(screen.getByLabelText("Stage"),stage);
   expect(screen.getByLabelText("Stage")).toHaveValue("done");
   await user.selectOptions(screen.getByLabelText("Stage"),"todo");
   expect(screen.getByLabelText("Stage")).toHaveValue("done");
   await user.click(screen.getByRole("button",{name:"Open parent Release plan"}));
   expect(screen.getByRole("img",{name:"Completed subtask"})).toHaveClass("is-complete");
+  await user.click(screen.getByRole("button",{name:"Edit task"}));
   await user.selectOptions(screen.getByLabelText("Stage"),"done");
   expect(screen.getByLabelText("Stage")).toHaveValue("done");
-  await user.click(screen.getByRole("button",{name:"Close task details"}));
+  await user.click(screen.getByRole("button",{name:"Close task editor"}));
   expect(screen.getByRole("article",{name:"Review release"}).querySelector(".completion-mark.is-complete")).toBeInTheDocument();
   expect(screen.queryByLabelText("Movement actions for Release plan")).not.toBeInTheDocument();
 });
@@ -104,16 +108,17 @@ it("the editor × keeps the same safe draft cancellation as Escape", async () =>
   await user.click(screen.getByRole("button",{name:"Discard"}));
   expect(screen.getByRole("button",{name:"Open task Release plan"})).toHaveFocus();
 });
-it("detail stage changes cannot bypass capacity when search hides the occupants", async () => {
+it("editor stage changes cannot bypass capacity when search hides the occupants", async () => {
   const user=userEvent.setup();
   const full=Array.from({length:5},(_,i)=>makeTask({id:`full-${i}`,title:`Occupant ${i}`,status:"in-progress"}));
   render(<Harness tasks={[parent,child,...full]}/>);
   await user.type(screen.getByLabelText("Search:"),"Review release");
   await user.click(screen.getByRole("button",{name:"Open task Review release"}));
+  await user.click(screen.getByRole("button",{name:"Edit task"}));
   await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
   expect(screen.getByLabelText("Stage")).toHaveValue("todo");
-  expect(screen.getByRole("dialog",{name:"Review release"})).toHaveTextContent("in-progress is full (5-task limit)");
-  await user.click(screen.getByRole("button",{name:"Close task details"}));
+  expect(screen.getByRole("dialog",{name:"Edit SubTask"})).toHaveTextContent("in-progress is full (5-task limit)");
+  await user.click(screen.getByRole("button",{name:"Close task editor"}));
   expect(screen.getByRole("region",{name:"in-progress (5)"})).toHaveTextContent("0 shown · 5 total");
 });
 
@@ -137,4 +142,18 @@ it("uses one parent badge in details and editing and moves from the editor witho
   expect(screen.getByLabelText("Title")).toHaveValue("Review release draft");
   await user.click(screen.getByRole("button",{name:"Save Changes"}));
   expect(within(screen.getByRole("region",{name:"in-progress (1)"})).getByRole("button",{name:"Open task Review release draft"})).toBeInTheDocument();
+});
+it("keeps details read-only, marks only completed children and groups editor controls/actions", async () => {
+  const user=userEvent.setup();render(<Harness tasks={[parent,child,makeTask({id:"finished",title:"Finished child",parentId:parent.id,status:"done"})]}/>);
+  await user.click(screen.getByRole("button",{name:"Open task Release plan"}));
+  const detail=within(screen.getByRole("dialog",{name:"Release plan"}));
+  expect(detail.queryByRole("combobox")).not.toBeInTheDocument();
+  expect(detail.getAllByRole("img",{name:"Completed subtask"})).toHaveLength(1);
+  expect(detail.queryByRole("img",{name:"Incomplete subtask"})).not.toBeInTheDocument();
+  await user.click(detail.getByRole("button",{name:"Edit task"}));
+  const editor=within(screen.getByRole("dialog",{name:"Edit Task"}));
+  expect(editor.getAllByRole("combobox").map(control=>(control as HTMLSelectElement).labels?.[0].textContent)).toEqual(["Stage","Priority","Category"]);
+  const footer=editor.getByRole("button",{name:"Save Changes"}).closest(".create-task-actions")!;
+  expect(within(footer as HTMLElement).getAllByRole("button").map(button=>button.textContent)).toEqual(["Delete task","Cancel","Save Changes"]);
+  expect(editor.queryByText("Stage changes save immediately and move this task on the board.")).not.toBeInTheDocument();
 });

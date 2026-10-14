@@ -155,7 +155,6 @@
 }
 
 /* Interim deletion entry while #45 owns the read-first detail redesign. */
-.editor-danger-area { margin-top: var(--space-5); padding-top: var(--space-4); border-top: var(--border-width) solid var(--color-border); }
 
 /* Focused drafting surface; relationships remain secondary to task content. */
 .task-form-heading { border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-4); margin-bottom: var(--space-2); }
@@ -195,4 +194,14 @@
   .task-editor-dialog .task-form-heading p { display: none; }
   .task-editor-dialog .create-task-actions { padding: 8px 16px; }
 }
-.task-form-stage-note { color: var(--color-text-muted); font-size: var(--font-size-support); line-height: 1.5; }
+
+.task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: 1.2fr .85fr 1fr; gap: 10px; }
+.task-editor-dialog .has-stage select { padding: 8px 6px; }
+.task-editor-dialog .editor-delete-action { margin-right: auto; }
+@media (max-width: 600px) {
+  .task-editor-dialog .task-form-select-row.has-stage { gap: 6px; }
+  .task-editor-dialog .has-stage select { font-size: .8rem; padding: 8px 2px; }
+  .task-editor-dialog .create-task-actions { gap: 6px; flex-wrap: nowrap; }
+  .task-editor-dialog .create-task-actions > button { flex: 0 1 auto; padding: 8px; font-size: .8rem; white-space: nowrap; }
+  .task-editor-dialog .create-task-actions > button:last-child { margin-left: auto; }
+}
