@@ -57,16 +57,16 @@
 .editor-manage-parent {
   min-height: var(--size-touch-target);
   justify-self: start;
-  border: 1px solid var(--color-control-border);
+  border: 1px solid var(--color-action-subtle-border);
   border-radius: var(--radius-control);
   padding: 6px 12px;
-  background: var(--color-surface-subtle);
-  color: var(--color-text-secondary);
+  background: var(--color-action-subtle);
+  color: var(--color-action-subtle-text);
   font: inherit;
   font-size: var(--font-size-support);
   cursor: pointer;
 }
-.editor-manage-parent:hover { background: var(--color-surface-hover); }
+.editor-manage-parent:hover { background: var(--color-action-subtle-hover); }
 
 .task-editor-subtasks {
   padding: var(--space-3);

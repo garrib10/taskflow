@@ -268,7 +268,7 @@ export default function TaskForm({
             </small>
           </Field>
 
-          {linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask}/>}
+          {linkedParent && <TaskParentLink parent={linkedParent} onOpen={handleOpenTask} action={currentTask && children.length === 0 ? <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button> : undefined}/>}
           <div className={`task-form-select-row${currentTask && onChangeStage ? " has-stage" : ""}`}>
             <div className="task-form-field">
               <label htmlFor={`${fieldPrefix}-category`}>Category</label>
@@ -351,7 +351,7 @@ export default function TaskForm({
             </section>
           )}
 
-          {currentTask && children.length === 0 && <div className="editor-related-actions">
+          {currentTask && !linkedParent && children.length === 0 && <div className="editor-related-actions">
             {!isSubtask && currentTask.status !== "done" && <button type="button" id={`${fieldPrefix}-add-subtask`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${currentTask.title}`} onClick={() => setSubtaskEditor({ type: "create" })}>Add SubTask</button>}
             <button type="button" className="editor-manage-parent" onClick={() => setShowRelationshipForm(true)} aria-label={`Manage parent of ${currentTask.title}`}>Manage Parent</button>
           </div>}

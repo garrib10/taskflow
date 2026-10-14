@@ -85,3 +85,9 @@ Board cards now show Category → Priority, matching the details and editor meta
 Completed-subtask checkmarks appear in the opened parent’s subtask list in details/editing. Board cards no longer render a checkmark beside the title. The Done column and relationship text still provide board context.
 
 Verification: nine existing details component tests and two focused desktop/mobile Chromium journeys passed, including retained parent-list marks and absent board-card marks. Lint, strict TypeScript, production build and diff checks passed.
+
+## Compact parent management
+
+In Edit SubTask, Manage Parent sits beside the linked parent name above metadata. Long names truncate visually while retaining their full accessible name and tooltip. Manage Parent uses the same subtle blue background, text, border and hover colors as Add SubTask. Details keep the parent navigation control without a management action; independent-task editors retain the compact Add SubTask/Manage Parent row.
+
+Verification: 30 affected component tests passed. Production Chromium checks at 1440, 390 and 320px confirmed aligned parent/action buttons, 44px targets, full parent labels, working parent management and no horizontal overflow. Lint, strict TypeScript and production build passed. Subtask editor screenshots were refreshed.

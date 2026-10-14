@@ -34,3 +34,7 @@
 .task-parent-field { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .task-parent-field > span { color: var(--color-text-muted); font-size: var(--font-size-support); }
 .task-parent-field .editor-parent-pill { margin-top: 0; border-radius: var(--radius-control); }
+
+.task-parent-row { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
+.task-parent-row .editor-parent-pill { flex: 0 1 auto; }
+.task-parent-row .editor-manage-parent { flex-shrink: 0; white-space: nowrap; }
