@@ -2,6 +2,7 @@ import SubtaskList from "../SubtaskList/SubtaskList";
 import "../../styles/task-dialog.css";
 import "./TaskForm.css";
 import Button from "../ui/Button/Button";
+import CloseButton from "../ui/CloseButton/CloseButton";
 import Field from "../ui/Field/Field";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Priority, Task, TaskStatus } from "../../domain/task/Task";
@@ -198,15 +199,19 @@ export default function TaskForm({
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className="create-task-modal parent-child-form"
+        className="create-task-modal parent-child-form task-editor-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${fieldPrefix}-form-title`}
       >
         <form ref={formRef} onSubmit={handleSubmit} noValidate>
-          <header className="task-form-heading"><p className="board-eyebrow">{isEditing ? "Task editor" : parent ? "Linked work" : "New work"}</p><h2 id={`${fieldPrefix}-form-title`}>
-            {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
-          </h2><p>{isEditing ? "Update the details below. Changes apply when you save." : parent ? "Create a linked task. Priority and category start with the parent’s values." : "Give this task a clear title and describe what needs to happen."}</p></header>
+          <header className="task-form-heading">
+            <div><h2 id={`${fieldPrefix}-form-title`}>
+              {isEditing ? isSubtask ? "Edit SubTask" : "Edit Task" : parent ? "Add SubTask" : "Create New Task"}
+            </h2><p>{parent ? `Linked to ${parent.title}` : isEditing ? "Update the task’s content and details." : "What needs to get done?"}</p></div>
+            <CloseButton label={isEditing ? "Close task editor" : "Close task creation"} onClick={handleRequestClose}/>
+          </header>
+          <div className="task-form-content">
 
           {(currentTask || isSubtask) && (
             <div className="task-editor-context">
@@ -365,6 +370,7 @@ export default function TaskForm({
 
           {currentTask && currentTask.subtasks.length > 0 && <details className="task-editor-subtasks"><summary>Legacy checklist ({currentTask.subtasks.length})</summary><SubtaskList task={currentTask} dispatch={dispatch} allowCreate={currentTask.status !== "done"}/></details>}
           {currentTask && onDelete && <div className="editor-danger-area"><Button variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button></div>}
+          </div>
           <div className="create-task-actions">
             <Button variant="secondary" onClick={handleRequestClose}>
               Cancel

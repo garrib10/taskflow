@@ -57,10 +57,11 @@ it("provides a single mobile stage, explicit movement and continued focus withou
   vi.stubGlobal("matchMedia", vi.fn(() => ({matches:true,addEventListener:vi.fn(),removeEventListener:vi.fn()})));
   const user=userEvent.setup();render(<Harness tasks={[makeTask({title:"Mobile work"})]}/>);
   expect(within(screen.getByRole("region",{name:"Workflow columns"})).getAllByRole("heading",{level:2})).toHaveLength(1);
-  await user.click(screen.getByLabelText("Movement actions for Mobile work"));
-  await user.click(screen.getByRole("button",{name:"Move to in-progress"}));
+  await user.click(screen.getByRole("button",{name:"Open task Mobile work"}));
+  await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
+  await user.click(screen.getByRole("button",{name:"Close task details"}));
   expect(screen.getByLabelText("Workflow stage")).toHaveValue("in-progress");
-  expect(screen.getByRole("group",{name:"Move task Mobile work, in-progress"})).toHaveFocus();
+  expect(screen.getByRole("button",{name:"Open task Mobile work"})).toHaveFocus();
   await user.selectOptions(screen.getByLabelText("Workflow stage"),"done");
   expect(screen.getByRole("region",{name:"done (0)"})).toHaveTextContent("No tasks in this stage");
 });

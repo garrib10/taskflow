@@ -116,11 +116,14 @@ it("keeps preference hydration independent of missing/failed boards and never by
 it("reorders only in Manual, persists positions, keeps filters/drafts outside both envelopes", async () => {
   seed(); const user = userEvent.setup(); const view = render(<App />);
   await user.selectOptions(screen.getByLabelText("Ordering"), "manual");
-  await user.click(screen.getByLabelText("Movement actions for Alpha"));
+  await user.click(screen.getByRole("button", {name:"Open task Alpha"}));
   await user.click(screen.getByRole("button", { name: "Move Alpha later" }));
+  await user.click(screen.getByRole("button", {name:"Close task details"}));
   expect(titles()).toEqual(["Beta", "Alpha"]);
   await user.type(screen.getByLabelText("Search:"), "Alpha");
+  await user.click(screen.getByRole("button", {name:"Open task Alpha"}));
   expect(screen.getByRole("button", { name: "Move Alpha earlier" })).toBeDisabled();
+  await user.click(screen.getByRole("button", {name:"Close task details"}));
   await user.click(screen.getByRole("button", { name: "+ Create Task" }));
   await user.type(screen.getByLabelText("Title"), "Unsaved draft");
   expect(JSON.parse(localStorage.getItem(VIEW_PREFERENCES_KEY) ?? "null")).toEqual({ schemaVersion: 1, orderingMode: "manual" });

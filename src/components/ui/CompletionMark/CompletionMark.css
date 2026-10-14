@@ -1,0 +1,2 @@
+.completion-mark { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 18px; height: 18px; border: 1.5px solid var(--color-control-border); border-radius: 50%; vertical-align: middle; }
+.completion-mark.is-complete { background: var(--color-action-primary); border-color: var(--color-action-primary); color: var(--color-text-on-action); }

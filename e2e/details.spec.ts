@@ -58,3 +58,43 @@ test("long details and all child rows stay reachable in drawers and short mobile
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   }
 });
+
+test("compact task creation keeps actions reachable and × protects an unfinished draft", async ({page})=>{
+  await page.goto("/");
+  for(const [width,height] of [[1440,900],[390,844],[320,568],[375,300]]) {
+    await page.setViewportSize({width,height});
+    await page.getByRole("button",{name:"+ Create Task",exact:true}).click();
+    const composer=page.getByRole("dialog",{name:"Create New Task",exact:true});
+    await expect(composer.getByLabel("Title",{exact:true})).toBeFocused();
+    await expect(composer.getByRole("button",{name:"Create Task",exact:true})).toBeInViewport();
+    await composer.getByLabel("Category",{exact:true}).selectOption("devops");
+    await composer.getByRole("button",{name:"Close task creation",exact:true}).click();
+    await expect(page.getByRole("dialog",{name:"Discard Changes?",exact:true})).toBeVisible();
+    await page.getByRole("button",{name:"Keep Editing",exact:true}).click();
+    await expect(composer.getByLabel("Category",{exact:true})).toHaveValue("devops");
+    await composer.getByRole("button",{name:"Close task creation",exact:true}).click();
+    await page.getByRole("button",{name:"Discard",exact:true}).click();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+});
+
+test("stage selection lives in details, blocks incomplete parents and retains completed-child marks",async({page})=>{
+  const parent=makeTask({id:"stage-parent",title:"Stage parent",status:"in-review"});
+  const child=makeTask({id:"stage-child",title:"Stage child",parentId:parent.id});
+  await page.goto("/");await page.evaluate(raw=>localStorage.setItem("taskflow-board",raw),currentBoardRaw(makeBoard([parent,child])));await page.reload();
+  const stage=page.getByLabel("Workflow stage",{exact:true});if(await stage.count())await stage.selectOption("in-review");
+  await page.getByRole("button",{name:"Open task Stage parent",exact:true}).click();
+  await page.getByLabel("Stage",{exact:true}).selectOption("done");
+  await expect(page.getByLabel("Stage",{exact:true})).toHaveValue("in-review");
+  await expect(page.getByRole("dialog",{name:"Stage parent",exact:true})).toContainText("Finish these subtasks");
+  await page.getByRole("button",{name:"Open subtask Stage child",exact:true}).click();
+  for(const status of ["in-progress","in-review","done"])await page.getByLabel("Stage",{exact:true}).selectOption(status);
+  await page.getByRole("button",{name:"Open parent Stage parent",exact:true}).click();
+  await expect(page.getByRole("img",{name:"Completed subtask",exact:true})).toHaveClass(/is-complete/);
+  await page.getByLabel("Stage",{exact:true}).selectOption("done");
+  await expect(page.getByLabel("Stage",{exact:true})).toHaveValue("done");
+  await page.getByRole("button",{name:"Close task details",exact:true}).click();
+  await expect(page.locator(".task-movement-actions")).toHaveCount(0);
+  await page.reload();if(await stage.count())await stage.selectOption("done");
+  await expect(page.getByRole("button",{name:"Open task Stage child",exact:true}).locator(".completion-mark.is-complete")).toHaveCount(1);
+});

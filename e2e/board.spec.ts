@@ -25,9 +25,10 @@ test("compact workload remains readable across responsive stages, text scaling a
 test("explicit stage actions work without dragging and preserve focus and saved relationships",async({page})=>{
   const parent=makeTask({id:"parent",title:"Release parent"});const child=makeTask({id:"child",title:"Linked child",parentId:parent.id});
   await seed(page,currentBoardRaw(makeBoard([parent,child])));
-  await page.getByLabel("Movement actions for Linked child",{exact:true}).click();
-  await page.getByRole("button",{name:"Move to in-progress",exact:true}).click();
-  await expect(page.getByRole("group",{name:"Move task Linked child, in-progress",exact:true})).toBeFocused();
+  await page.getByRole("button",{name:"Open task Linked child",exact:true}).click();
+  await page.getByLabel("Stage",{exact:true}).selectOption("in-progress");
+  await page.getByRole("button",{name:"Close task details",exact:true}).click();
+  await expect(page.getByRole("button",{name:"Open task Linked child",exact:true})).toBeFocused();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("taskflow-board")!).board);
   expect(saved.columns[1].tasks[0]).toMatchObject({id:"child",parentId:"parent",status:"in-progress"});
   const selector=page.getByLabel("Workflow stage",{exact:true});if(await selector.count()) await expect(selector).toHaveValue("in-progress");
