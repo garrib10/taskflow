@@ -20,7 +20,7 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
     <div className="app-shell">
       <header className="app-shell-header">
         <div className="app-shell-identity">
-          <h1>TaskFlow</h1>
+          <h1><img className="app-shell-brand-mark" src="/favicon-32x32.png?v=clay" alt="" width="32" height="32" />TaskFlow</h1>
           <p>Rule-Based Workflow Board</p>
           <p className="last-updated">Last updated: <time dateTime={lastUpdated.toISOString()}>{updated}</time></p>
         </div>

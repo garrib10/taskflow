@@ -14,11 +14,15 @@
 }
 .app-shell-identity { min-width: 0; overflow-wrap: anywhere; }
 .app-shell-header h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   margin: 0;
   font-size: var(--font-size-identity);
   font-weight: var(--font-weight-heading);
   letter-spacing: -0.025em;
 }
+.app-shell-brand-mark { width: 1em; height: 1em; flex-shrink: 0; }
 .app-shell-header p { margin: var(--space-1) 0 0; }
 .last-updated { font-size: var(--font-size-metadata); color: var(--color-text-secondary); }
 .shell-create-task { flex-shrink: 0; }
