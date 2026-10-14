@@ -91,3 +91,5 @@ Verification: nine existing details component tests and two focused desktop/mobi
 In Edit SubTask, Manage Parent sits beside the linked parent name above metadata. Long names truncate visually while retaining their full accessible name and tooltip. Manage Parent uses the same subtle blue background, text, border and hover colors as Add SubTask. Details keep the parent navigation control without a management action; independent-task editors retain the compact Add SubTask/Manage Parent row.
 
 Verification: 30 affected component tests passed. Production Chromium checks at 1440, 390 and 320px confirmed aligned parent/action buttons, 44px targets, full parent labels, working parent management and no horizontal overflow. Lint, strict TypeScript and production build passed. Subtask editor screenshots were refreshed.
+
+Manage Parent’s text is black following owner review; its subtle blue background, border and hover remain. Task action layout alternatives are awaiting owner selection.

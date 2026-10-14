@@ -61,7 +61,7 @@
   border-radius: var(--radius-control);
   padding: 6px 12px;
   background: var(--color-action-subtle);
-  color: var(--color-action-subtle-text);
+  color: #000;
   font: inherit;
   font-size: var(--font-size-support);
   cursor: pointer;
