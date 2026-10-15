@@ -182,6 +182,22 @@ quota failure, untouched bytes, successful replacement and refresh. No assertion
 application behavior, retry policy or timeout was weakened. No product defect
 was established and no application fix was made.
 
+### Playwright screenshots
+
+Captured during the passing QA runs above on October 15, 2026, against the
+production build. The board images use the **300-task synthetic stress fixture**:
+long/repeated text and over-capacity columns are deliberate test data. The editor
+image shows the focused Save action after scrolling at **actual 400% tab zoom**;
+it is a viewport capture, not the entire form. Images are unedited browser captures.
+Regenerate with `scripts/qa/regression.cjs` and `scripts/qa-browser-zoom.cjs`.
+
+| Case | Screenshot (open for full resolution) |
+| --- | --- |
+| Desktop, 1920×1080 | [![300-task desktop board](images/v2-performance-regression/desktop-300-tasks.png)](images/v2-performance-regression/desktop-300-tasks.png) |
+| Tablet, 768×1024; intentional board scroller | [![300-task tablet board](images/v2-performance-regression/tablet-300-tasks.png)](images/v2-performance-regression/tablet-300-tasks.png) |
+| Mobile, 390×844; single-stage navigation | [![300-task mobile board](images/v2-performance-regression/mobile-300-tasks.png)](images/v2-performance-regression/mobile-300-tasks.png) |
+| Editor at 400% browser zoom; wrapped footer and keyboard focus | [![Editor footer at 400 percent browser zoom](images/v2-performance-regression/editor-400-percent-zoom.png)](images/v2-performance-regression/editor-400-percent-zoom.png) |
+
 ## Lighthouse and v1.5 comparison
 
 Lighthouse **13.5.0**, installed Chrome **155.0.8059.40**, local production
