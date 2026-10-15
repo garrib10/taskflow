@@ -70,7 +70,7 @@ it("edits related tasks without changing their identities or links and restores 
 it("blocks parent completion when filtering hides its incomplete children without changing saved data", async () => {
   const { parent, children } = seedFamily("in-review");
   const user = userEvent.setup(); render(<App />);
-  await user.type(screen.getByLabelText("Search:"), "Release parent");
+  await user.type(screen.getByLabelText("Search tasks"), "Release parent");
   for (const child of children) {
     expect(screen.queryByRole("button", { name: `Open task ${child.title}` })).not.toBeInTheDocument();
   }

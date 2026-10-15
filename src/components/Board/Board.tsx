@@ -10,7 +10,9 @@ import Column from "../Column/Column";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import FilterControls from "../FilterControls/FilterControls";
 import AppShell from "../AppShell/AppShell";
-import BoardToolbar from "../BoardToolbar/BoardToolbar";
+import BoardToolbar, { BoardResults, type ActiveCondition } from "../BoardToolbar/BoardToolbar";
+import { categoryStyles } from "../../domain/task/categoryStyles";
+import { getPriorityLabel } from "../../domain/task/taskPriority";
 import { filterBoardColumns } from "../../domain/board/boardFilters";
 import { useBoardViewPreferences } from "../../hooks/useBoardViewPreferences";
 import type { TaskStatus } from "../../domain/task/Task";
@@ -96,6 +98,14 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
     (total, column) => total + column.tasks.length,
     0,
   );
+  const firstMatchingStage = filteredColumns.find(column => column.tasks.length > 0);
+  const totalTaskCount = board.columns.reduce((total, column) => total + column.tasks.length, 0);
+  const activeConditions: ActiveCondition[] = [
+    ...(searchTerm.trim() ? [{ id: "search", focusId: "task-search", label: `Search: “${searchTerm.trim()}”`, onRemove: () => setSearchTerm("") }] : []),
+    ...(categoryFilter !== "all" ? [{ id: "category", focusId: "category-filter", label: `Category: ${categoryStyles[categoryFilter].label}`, onRemove: () => setCategoryFilter("all") }] : []),
+    ...(priorityFilter !== "all" ? [{ id: "priority", focusId: "priority-filter", label: `Priority: ${getPriorityLabel(priorityFilter)}`, onRemove: () => setPriorityFilter("all") }] : []),
+    ...(statusFilter !== "all" ? [{ id: "status", focusId: "status-filter", label: `Status: ${board.columns.find(column => column.id === statusFilter)?.title}`, onRemove: () => setStatusFilter("all") }] : []),
+  ];
   const pendingChildren = taskPendingDeletion ? getChildren(board, taskPendingDeletion.id) : [];
 
   function showFeedback(variant: NotificationVariant, message: string) {
@@ -279,13 +289,16 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
             )}
           </>}
           toolbar={<BoardToolbar
-            ordering={ordering && <Field controlId="task-ordering-mode" label="Ordering"><select id="task-ordering-mode" value={orderingMode} onChange={event => { if (isOrderingMode(event.target.value)) ordering.selectMode(event.target.value); }}><option value="priority">Priority</option><option value="manual">Manual</option></select></Field>}
+            ordering={ordering && <Field controlId="task-ordering-mode" label="Ordering"><select id="task-ordering-mode" aria-describedby={orderingMode === "manual" ? "task-ordering-help" : undefined} aria-controls="taskflow-board" value={orderingMode} onChange={event => { if (isOrderingMode(event.target.value)) ordering.selectMode(event.target.value); }}><option value="priority">Priority</option><option value="manual">Manual</option></select></Field>}
             search={<SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />}
             filters={<FilterControls priorityFilter={priorityFilter} categoryFilter={categoryFilter} statusFilter={statusFilter}
               onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
+            activeConditions={activeConditions}
             filterCount={filterCount}
             activeCriteria={isFiltering} onReset={handleResetControls}
-            resultSummary={isFiltering ? <p aria-live="polite">{matchingTaskCount} {matchingTaskCount === 1 ? "task" : "tasks"} found</p> : null}
+            resultSummary={<BoardResults total={totalTaskCount} matching={matchingTaskCount} filtered={isFiltering} />}
+            orderingHelp={ordering && orderingMode === "manual" && <p id="task-ordering-help" className="toolbar-ordering-help">{isFiltering ? "Manual order · Clear search and filters to reorder tasks within a stage."
+              : "Manual order · Arrange tasks within each stage. Switching modes keeps your positions."}</p>}
           />}
           overlays={<>
             {overlays}
@@ -322,8 +335,17 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
 
           </>}
         >
-          <div className="board-workflow-header"><div><span className="board-eyebrow">Workflow</span><p>{board.columns.reduce((sum, column) => sum + column.tasks.length, 0)} tasks · {orderingMode === "manual" ? "Manual order" : "Ordered by priority"}</p></div></div>
+          <div className="board-workflow-header"><span className="board-eyebrow">Workflow</span></div>
+          {totalTaskCount > 0 && matchingTaskCount === 0 && <section className="board-filtered-empty" aria-labelledby="filtered-empty-title">
+            <h2 id="filtered-empty-title">No tasks match your search and filters</h2>
+            <p>Your {totalTaskCount} {totalTaskCount === 1 ? "task is" : "tasks are"} still on the board. Try a different search or remove an active condition above.</p>
+            <Button variant="secondary" onClick={handleResetControls}>Show all tasks</Button>
+          </section>}
           {narrow && <Field controlId="workflow-stage" label="Workflow stage"><select id="workflow-stage" value={activeStage} onChange={event => { if (isTaskStatus(event.target.value)) setActiveStage(event.target.value); }}>{filteredColumns.map(column => <option key={column.id} value={column.id}>{column.title} · {column.tasks.length} shown / {getColumnCapacity(board, column.id).count} total</option>)}</select></Field>}
+          {narrow && isFiltering && firstMatchingStage && !filteredColumns.find(column => column.id === activeStage)?.tasks.length && <section className="board-stage-matches" aria-label="Matches in other stages">
+            <p>No matches in this stage. Matching tasks are available in other stages.</p>
+            <Button variant="secondary" onClick={() => { setActiveStage(firstMatchingStage.id); pendingFocus.current = ["workflow-stage"]; }}>View {firstMatchingStage.title}</Button>
+          </section>}
           {narrow && draggedTask && <div className="stage-drop-tray" aria-label="Drag destinations">{board.columns.map(column => <StageDropTarget key={column.id} status={column.id} title={column.title} current={column.id === draggedTask.status} reason={column.id === draggedTask.status ? "Current stage" : validateBoardAction(board, { type: "MOVE_TASK", taskId: draggedTask.id, newStatus: column.id, updatedAt: new Date(), ordering: { mode: orderingMode, filtered: isFiltering, input: "touch" } })?.message ?? null} />)}</div>}
           <p className="board-scroll-hint">Scroll sideways to view all four columns.</p>
           <div className="board" id="taskflow-board" role="region" aria-label="Workflow columns" tabIndex={0}>

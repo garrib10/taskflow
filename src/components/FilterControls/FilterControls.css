@@ -1,19 +1,20 @@
 /* Board filter groups and controls. */
 .filter-controls {
   min-width: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
   max-width: 100%;
   display: flex;
   align-items: flex-end;
   gap: var(--space-4);
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: min(12rem, 100%);
+  min-width: 0;
+  flex: 1 1 10rem;
 }
 
 .filter-group label {
@@ -60,5 +61,6 @@
   .filter-group {
     width: 100%;
     min-width: 0;
+    flex: 0 1 auto;
   }
 }

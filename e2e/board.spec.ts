@@ -43,9 +43,14 @@ test("pointer grip shows a valid overlay, applies manual gap placement and rejec
   const from=(await grip.boundingBox())!;
   await page.mouse.move(from.x+from.width/2,from.y+from.height/2);await page.mouse.down();await page.mouse.move(from.x+from.width/2+10,from.y+from.height/2);
   await expect(page.locator(".task-drag-overlay")).toContainText("Incoming");
-  const target=(await page.locator("#task-first").boundingBox())!;
-  await page.mouse.move(target.x+target.width/2,target.y+target.height-8,{steps:8});
-  await expect(page.locator("#task-first")).toHaveAttribute("data-drop-position","after");
+  // The toolbar/drop feedback can start page autoscroll. Follow the live card gap
+  // rather than a stale viewport coordinate while the page is still moving.
+  await expect.poll(async () => {
+    const target=(await page.locator("#task-first").boundingBox())!;
+    await page.mouse.move(target.x+target.width/2,target.y+target.height-8,{steps:8});
+    await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+    return page.locator("#task-first").getAttribute("data-drop-position");
+  }).toBe("after");
   await page.mouse.up();
   await expect(page.getByRole("region",{name:"in-progress (3)",exact:true}).getByRole("heading",{level:3})).toHaveText(["First","Incoming","Last"]);
   const saved=await page.evaluate(()=>localStorage.getItem("taskflow-board"));

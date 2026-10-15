@@ -23,7 +23,7 @@ it("shows four connected stages, full counts, and meaningful limited/unlimited c
 it("keeps hidden occupants in counts and distinguishes filtered emptiness from an empty stage", async () => {
   const user=userEvent.setup();
   render(<Harness tasks={Array.from({length:5},(_,index)=>makeTask({id:`occupant-${index}`,status:"in-progress",title:`Occupied ${index}`}))}/>);
-  await user.type(screen.getByLabelText("Search:"),"unmatched");
+  await user.type(screen.getByLabelText("Search tasks"),"unmatched");
   const full=screen.getByRole("region",{name:"in-progress (5)"});
   expect(full).toHaveTextContent("5 / 5Full");
   expect(full).toHaveTextContent("0 shown · 5 total");
@@ -47,9 +47,9 @@ it("shows contextual description excerpts only for description-only matches", as
   const user=userEvent.setup();const task=makeTask({title:"Brief title",description:"Context with a unique needle in this description"});
   render(<Harness tasks={[task]}/>);
   expect(screen.queryByText(task.description)).not.toBeInTheDocument();
-  await user.type(screen.getByLabelText("Search:"),"needle");
+  await user.type(screen.getByLabelText("Search tasks"),"needle");
   expect(screen.getByText(task.description)).toBeInTheDocument();
-  await user.clear(screen.getByLabelText("Search:"));await user.type(screen.getByLabelText("Search:"),"Brief");
+  await user.clear(screen.getByLabelText("Search tasks"));await user.type(screen.getByLabelText("Search tasks"),"Brief");
   expect(screen.queryByText(task.description)).not.toBeInTheDocument();
   expect(descriptionMatch(task,"Brief")).toBeNull();
 });

@@ -65,19 +65,19 @@ it("searches titles and descriptions, combines and resets filters without changi
   ]), "filters"));
   const user = userEvent.setup(); render(<App />);
   const raw = localStorage.getItem(STORAGE_KEY);
-  await user.type(screen.getByLabelText("Search:"), "alpha");
-  expect(screen.getByText("2 tasks found")).toBeInTheDocument();
+  await user.type(screen.getByLabelText("Search tasks"), "alpha");
+  expect(screen.getByText("Showing 2 of 3 tasks", { selector: "p" })).toBeInTheDocument();
   await user.selectOptions(screen.getByLabelText("Priority"), "high");
   await user.selectOptions(screen.getByLabelText("Category"), "devops");
   await user.selectOptions(screen.getByLabelText("Status"), "todo");
-  expect(screen.getByText("1 task found")).toBeInTheDocument();
+  expect(screen.getByText("Showing 1 of 3 tasks", { selector: "p" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Open task Alpha deployment" })).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Reset" }));
+  await user.click(screen.getByRole("button", { name: "Clear all search and filters" }));
   for (const [label, value, title] of [["Priority", "low", "Beta"], ["Category", "feature", "Gamma"], ["Status", "in-review", "Beta"]]) {
     await user.selectOptions(screen.getByLabelText(label), value);
-    expect(screen.getByText("1 task found")).toBeInTheDocument();
+    expect(screen.getByText("Showing 1 of 3 tasks", { selector: "p" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: `Open task ${title}` })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await user.click(screen.getByRole("button", { name: "Clear all search and filters" }));
   }
   expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(3);
   expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);

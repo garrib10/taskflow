@@ -91,16 +91,16 @@ test("keyboard dialogs and primary controls fit the viewport without accidental 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(create).toBeFocused();
-  await page.getByLabel("Search:", { exact: true }).fill("keyboard");
+  await page.getByLabel("Search tasks", { exact: true }).fill("keyboard");
   const filters = page.getByRole("button", { name: /^Filters \(/ });
   if (await filters.count()) await filters.click();
   await page.getByLabel("Priority", { exact: true }).selectOption("medium");
   await page.getByLabel("Category", { exact: true }).selectOption("feature");
   await page.getByLabel("Status", { exact: true }).selectOption("todo");
   if (await filters.count()) await page.getByRole("button", { name: "Done", exact: true }).click();
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
-  await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
-  await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
+  await expect(page.getByLabel("Search tasks", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Search tasks", { exact: true })).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
@@ -110,7 +110,7 @@ test("shell landmarks and responsive filter presentation preserve criteria and r
   await expect(page.getByRole("region", { name: "Workflow columns", exact: true })).toBeVisible();
   const trigger = page.getByRole("button", { name: /^Filters \(/ });
   const narrow = await trigger.count() > 0;
-  await page.getByLabel("Search:", { exact: true }).fill("authentication");
+  await page.getByLabel("Search tasks", { exact: true }).fill("authentication");
   if (narrow) {
     await trigger.focus(); await page.keyboard.press("Enter");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
@@ -126,9 +126,9 @@ test("shell landmarks and responsive filter presentation preserve criteria and r
     await page.setViewportSize({ width: 1280, height: 720 });
   }
   await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("high");
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
-  await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
-  await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
+  await expect(page.getByLabel("Search tasks", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Search tasks", { exact: true })).toBeFocused();
   await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("all");
 });
 
@@ -147,14 +147,14 @@ test("full destination stays blocked when search hides occupants and becomes usa
     return value;
   }, COLUMN_CAPACITY["in-progress"]);
   await page.reload();
-  await page.getByLabel("Search:", { exact: true }).fill("Incoming");
+  await page.getByLabel("Search tasks", { exact: true }).fill("Incoming");
   await move(page, "Incoming task");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`In Progress is full (${COLUMN_CAPACITY["in-progress"]}-task limit).`);
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Tasks hidden by search or filters still count");
   await expect(page.getByRole("group", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);
   await page.getByRole("button", { name: /Dismiss notification/ }).click();
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
   await stage(page, "in-progress");
   await move(page, "Occupant 0");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Occupant 0" to In Review');

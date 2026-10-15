@@ -13,7 +13,7 @@ it("keeps criteria and an open draft during an external-storage notice, then hyd
   const user = userEvent.setup();
   const view = render(<App />);
   const criteria = within(screen.getByRole("search", { name: "Search and filter tasks" }));
-  await user.type(screen.getByLabelText("Search:"), "Build");
+  await user.type(screen.getByLabelText("Search tasks"), "Build");
   await user.selectOptions(screen.getByLabelText("Priority"), "medium");
   await user.click(screen.getByRole("button", { name: "Open task Build search" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   const dialog = within(screen.getByRole("dialog", { name: "Edit Task" }));
@@ -26,7 +26,7 @@ it("keeps criteria and an open draft during an external-storage notice, then hyd
   act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY, newValue: external })));
   expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
   expect(dialog.getByLabelText("Title")).toHaveValue("Draft title");
-  expect(screen.getByLabelText("Search:")).toHaveValue("Build");
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("Build");
   expect(criteria.getByLabelText("Priority")).toHaveValue("medium");
   expect(screen.getByRole("region", { name: "Board storage", hidden: true })).toHaveTextContent("Saving is paused");
   expect(localStorage.getItem(STORAGE_KEY)).toBe(external);
@@ -34,7 +34,7 @@ it("keeps criteria and an open draft during an external-storage notice, then hyd
   view.unmount();
   render(<App />);
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  expect(screen.getByLabelText("Search:")).toHaveValue("");
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("");
   expect(screen.getByLabelText("Priority")).toHaveValue("all");
   expect(screen.getByRole("button", { name: "Open task External work" })).toBeInTheDocument();
   expect(localStorage.getItem(STORAGE_KEY)).toBe(external);
