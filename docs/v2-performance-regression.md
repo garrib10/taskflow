@@ -198,6 +198,23 @@ Regenerate with `scripts/qa/regression.cjs` and `scripts/qa-browser-zoom.cjs`.
 | Mobile, 390×844; single-stage navigation | [![300-task mobile board](images/v2-performance-regression/mobile-300-tasks.png)](images/v2-performance-regression/mobile-300-tasks.png) |
 | Editor at 400% browser zoom; wrapped footer and keyboard focus | [![Editor footer at 400 percent browser zoom](images/v2-performance-regression/editor-400-percent-zoom.png)](images/v2-performance-regression/editor-400-percent-zoom.png) |
 
+### Workflow videos
+
+Short, silent Playwright recordings of the same production application, captured
+on October 15, 2026, with **eight synthetic demo tasks**. Reading pauses and slower
+automated actions make the workflows visible; these clips are demonstrations,
+not performance measurements. Playback dimensions/duration and seeking were
+verified, and decoded frames were visually inspected. Open or download the WebM
+files using the links below.
+
+- [Desktop task workflow — 15.52s, 1280×800](videos/v2-performance-regression/desktop-task-workflow.webm): subtask collapse/expand, content edit, keyboard move to In Progress, then refresh confirming the saved stage.
+- [Mobile filtering — 12.44s, 390×844](videos/v2-performance-regression/mobile-filtering.webm): search, Category/Priority filters in the mobile sheet, clear-all with focus restoration, and stage navigation.
+- [Recording metadata and file hashes](videos/v2-performance-regression/manifest.json).
+
+| Desktop preview | Mobile preview |
+| --- | --- |
+| [![Desktop task workflow preview](images/v2-performance-regression/desktop-video-preview.png)](videos/v2-performance-regression/desktop-task-workflow.webm) | [![Mobile filtering workflow preview](images/v2-performance-regression/mobile-video-preview.png)](videos/v2-performance-regression/mobile-filtering.webm) |
+
 ## Lighthouse and v1.5 comparison
 
 Lighthouse **13.5.0**, installed Chrome **155.0.8059.40**, local production
