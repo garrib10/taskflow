@@ -76,7 +76,7 @@ test("legacy checklist conversion is repeat-safe and incomplete children still b
   await stage(page, "done");
   await expect(page.getByRole("button", { name: "Open task Finished work", exact: true })).toHaveCount(1);
   await stage(page, "in-review");
-  const handle = page.getByRole("group", { name: "Move task Legacy parent, In Review", exact: true });
+  const handle = page.getByRole("button", { name: "Move task Legacy parent, In Review", exact: true });
   await handle.focus(); await page.keyboard.press("Space");
   await expect(handle).toHaveAttribute("aria-pressed", "true");
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
@@ -84,7 +84,7 @@ test("legacy checklist conversion is repeat-safe and incomplete children still b
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Destination:");
   await page.keyboard.press("Space");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("subtask");
-  await expect(page.getByRole("group", { name: "Move task Legacy parent, In Review", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Move task Legacy parent, In Review", exact: true })).toBeVisible();
   expect(await snapshot(page)).toBe(raw);
 });
 

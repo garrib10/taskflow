@@ -39,7 +39,7 @@ test("pointer grip shows a valid overlay, applies manual gap placement and rejec
   const incoming=makeTask({id:"incoming",title:"Incoming"});const first=makeTask({id:"first",title:"First",status:"in-progress"});const last=makeTask({id:"last",title:"Last",status:"in-progress"});
   await seed(page,currentBoardRaw(makeBoard([incoming,first,last])));
   await page.getByLabel("Ordering",{exact:true}).selectOption("manual");
-  const grip=page.getByRole("group",{name:"Move task Incoming, todo",exact:true});
+  const grip=page.getByRole("button",{name:"Move task Incoming, todo",exact:true});
   const from=(await grip.boundingBox())!;
   await page.mouse.move(from.x+from.width/2,from.y+from.height/2);await page.mouse.down();await page.mouse.move(from.x+from.width/2+10,from.y+from.height/2);
   await expect(page.locator(".task-drag-overlay")).toContainText("Incoming");
@@ -54,7 +54,7 @@ test("pointer grip shows a valid overlay, applies manual gap placement and rejec
   await page.mouse.up();
   await expect(page.getByRole("region",{name:"in-progress (3)",exact:true}).getByRole("heading",{level:3})).toHaveText(["First","Incoming","Last"]);
   const saved=await page.evaluate(()=>localStorage.getItem("taskflow-board"));
-  const movedGrip=page.getByRole("group",{name:"Move task Incoming, in-progress",exact:true});
+  const movedGrip=page.getByRole("button",{name:"Move task Incoming, in-progress",exact:true});
   await movedGrip.focus();await page.keyboard.press("Space");await expect(movedGrip).toHaveAttribute("aria-pressed","true");
   await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
   await page.keyboard.press("ArrowLeft");
@@ -68,7 +68,7 @@ test("touch hold uses the mobile destination tray and continues at the moved gri
   await seed(page,currentBoardRaw(makeBoard([makeTask({id:"touch",title:"Touch work"})])));
   const session=await page.context().newCDPSession(page);
   await session.send("Emulation.setTouchEmulationEnabled",{enabled:true});
-  const grip=page.getByRole("group",{name:"Move task Touch work, todo",exact:true});
+  const grip=page.getByRole("button",{name:"Move task Touch work, todo",exact:true});
   await grip.scrollIntoViewIfNeeded();const from=(await grip.boundingBox())!;
   await session.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:from.x+from.width/2,y:from.y+from.height/2}]});
   // Wait for the configured deliberate hold to activate, rather than sleeping.
@@ -79,5 +79,5 @@ test("touch hold uses the mobile destination tray and continues at the moved gri
   await expect(destination).toHaveAttribute("data-over","true");
   await session.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]});
   await expect(page.getByLabel("Workflow stage",{exact:true})).toHaveValue("in-progress");
-  await expect(page.getByRole("group",{name:"Move task Touch work, in-progress",exact:true})).toBeFocused();
+  await expect(page.getByRole("button",{name:"Move task Touch work, in-progress",exact:true})).toBeFocused();
 });

@@ -37,7 +37,7 @@ it("keeps cards compact with separate movement/title controls and full relations
   const card=screen.getByRole("heading",{name:"Parent",level:3}).closest("article")!;
   expect(card).not.toHaveTextContent(parent.description);
   expect(within(card).getByRole("button",{name:"Open task Parent"})).toBeInTheDocument();
-  expect(within(card).getByRole("group",{name:"Move task Parent, todo"})).toHaveAccessibleDescription(/Drag with the grip/);
+  expect(within(card).getByRole("button",{name:"Move task Parent, todo"})).toHaveAccessibleDescription(/Drag with the grip/);
   expect(within(card).queryByRole("button",{name:/Delete|Edit/})).not.toBeInTheDocument();
   expect(card).toHaveTextContent("Parent · 1 of 1 subtasks complete");
   expect(screen.getByRole("region",{name:"done (1)"})).toHaveTextContent("Parent: Parent");

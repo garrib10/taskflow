@@ -1,0 +1,29 @@
+[
+  {
+    "browserZoom": 1,
+    "width": 1280,
+    "height": 813,
+    "dpr": 1,
+    "overflow": false,
+    "descriptionAndLastChildReachable": true,
+    "editorStageAndAllFooterActionsReachable": true
+  },
+  {
+    "browserZoom": 2,
+    "width": 640,
+    "height": 406,
+    "dpr": 2,
+    "overflow": false,
+    "descriptionAndLastChildReachable": true,
+    "editorStageAndAllFooterActionsReachable": true
+  },
+  {
+    "browserZoom": 3.9999999999999996,
+    "width": 320,
+    "height": 203,
+    "dpr": 4,
+    "overflow": false,
+    "descriptionAndLastChildReachable": true,
+    "editorStageAndAllFooterActionsReachable": true
+  }
+]

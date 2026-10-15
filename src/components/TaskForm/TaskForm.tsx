@@ -360,7 +360,7 @@ export default function TaskForm({
             <Button type="submit">
               {isEditing ? "Save Changes" : parent ? "Create SubTask" : "Create Task"}
             </Button>
-            {currentTask && onDelete && <Button icon="trash" variant="danger" aria-label={`Delete ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
+            {currentTask && onDelete && <Button icon="trash" variant="danger" aria-label={`Delete task ${currentTask.title}`} onClick={() => onDelete(currentTask.id)}>Delete task</Button>}
           </div>
         </form>
       </div>

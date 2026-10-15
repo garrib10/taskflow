@@ -15,7 +15,7 @@
 .stage-drop-target[data-drop-state="invalid"] { border-style: dashed; }
 .stage-drop-target[data-over] { outline: var(--focus-ring); }
 @media (min-width: 601px) and (max-width: 1150px) { .board-scroll-hint { display: block; } }
-@media (max-width: 600px) { .board { grid-template-columns: minmax(0,1fr); overflow-x: visible; } }
+@media (max-width: 600px), (max-height: 450px) and (pointer: coarse) { .board { grid-template-columns: minmax(0,1fr); overflow-x: visible; } }
 @media (prefers-reduced-motion: reduce) { .board { scroll-behavior: auto; } }
 
 .board-filtered-empty { padding: var(--space-5); margin-bottom: var(--space-4); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-control); background: var(--color-surface); overflow-wrap: anywhere; }
@@ -23,3 +23,7 @@
 .board-filtered-empty p { color: var(--color-text-secondary); font-size: var(--font-size-support); }
 
 .board-stage-matches { margin-bottom: var(--space-4); font-size: var(--font-size-support); color: var(--color-text-secondary); }
+
+.board-movement-help { display: none; padding: var(--space-3); margin: var(--space-3) 0; border: 1px solid var(--color-control-border); border-radius: var(--radius-control); background: var(--color-surface); color: var(--color-text-secondary); font-size: var(--font-size-support); }
+.app-shell:has(.task-grip:focus-visible) .board-movement-help { display: block; }
+@media (max-height: 450px) and (pointer: coarse) { .board-scroll-hint { display: none; } }

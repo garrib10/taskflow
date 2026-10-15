@@ -132,12 +132,12 @@ describe("linked task board interactions", () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     if (!screen.queryByRole("dialog", { name: "Edit Task" })) { await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" })); }
-    await user.click(screen.getByRole("button", { name: "Delete Parent work" }));
+    await user.click(screen.getByRole("button", { name: "Delete task Parent work" }));
     expect(screen.getByRole("dialog", { name: "Delete Parent Task" })).toHaveTextContent("All subtasks will be kept as independent tasks");
     await user.click(within(screen.getByRole("dialog", { name: "Delete Parent Task" })).getByRole("button", { name: "Cancel" }));
     expect(card("Child work").getByRole("button", { name: "Open task Child work" })).toBeInTheDocument();
     if (!screen.queryByRole("dialog", { name: "Edit Task" })) { await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" })); }
-    await user.click(screen.getByRole("button", { name: "Delete Parent work" }));
+    await user.click(screen.getByRole("button", { name: "Delete task Parent work" }));
     await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Subtasks" }));
     expect(screen.queryByRole("heading", { name: "Parent work", level: 3 })).not.toBeInTheDocument();
     expect(card("Child work").queryByText(/Child of:/)).not.toBeInTheDocument();
@@ -151,7 +151,7 @@ describe("linked task board interactions", () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
     await user.click(card("Child work").getByRole("button", { name: "Open task Child work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
-    await user.click(screen.getByRole("button", { name: "Delete Child work" }));
+    await user.click(screen.getByRole("button", { name: "Delete task Child work" }));
     await user.click(within(screen.getByRole("dialog", { name: "Delete Task" })).getByRole("button", { name: "Delete" }));
     expect(screen.queryByRole("heading", { name: "Child work", level: 3 })).not.toBeInTheDocument();
     expect(card("Parent work").queryByRole("progressbar")).not.toBeInTheDocument();

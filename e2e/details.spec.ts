@@ -34,9 +34,9 @@ test("read-first details, child management and guarded editing preserve saved wo
   await editor.getByLabel("Title",{exact:true}).fill("Reviewed release");await editor.getByRole("button",{name:"Save Changes"}).click();
   await page.reload();await expect(page.getByRole("button",{name:"Open task Reviewed release",exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Open task Reviewed release",exact:true}).click();
-  await page.getByRole("button",{name:"Delete Reviewed release",exact:true}).click();
+  await page.getByRole("button",{name:"Delete task Reviewed release",exact:true}).click();
   await page.getByRole("dialog",{name:"Delete Task",exact:true}).getByRole("button",{name:"Cancel",exact:true}).click();
-  await expect(page.getByRole("button",{name:"Delete Reviewed release",exact:true})).toBeFocused();
+  await expect(page.getByRole("button",{name:"Delete task Reviewed release",exact:true})).toBeFocused();
 });
 
 test("long details and all child rows stay reachable in drawers and short mobile sheets",async({page})=>{
@@ -132,9 +132,9 @@ test("parent context is consistent and editor stage changes move saved work with
   await expect(editor.getByLabel("Stage",{exact:true})).toHaveValue("in-progress");
   await expect(editor.getByLabel("Title",{exact:true})).toHaveValue("Edited consistent child");
   await editor.getByRole("button",{name:"Save Changes",exact:true}).click();
-  await expect(page.getByRole("group",{name:"Move task Edited consistent child, in-progress",exact:true})).toBeVisible();
+  await expect(page.getByRole("button",{name:"Move task Edited consistent child, in-progress",exact:true})).toBeVisible();
   await page.reload();const stage=page.getByLabel("Workflow stage",{exact:true});if(await stage.count())await stage.selectOption("in-progress");
-  await expect(page.getByRole("group",{name:"Move task Edited consistent child, in-progress",exact:true})).toBeVisible();
+  await expect(page.getByRole("button",{name:"Move task Edited consistent child, in-progress",exact:true})).toBeVisible();
 });
 
 test("read-only details and compact editor rows remain aligned on desktop and narrow mobile",async({page})=>{
@@ -153,9 +153,9 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     const taskActions=detail.locator(".task-details-footer button");
     await expect(taskActions).toHaveText(["Add Subtask","Edit task","Delete task"]);
     const actionRects=await taskActions.evaluateAll(nodes=>nodes.map(node=>{const rect=node.getBoundingClientRect();return {top:rect.top,right:rect.right,height:rect.height};}));
-    expect(Math.max(...actionRects.map(rect=>rect.top))-Math.min(...actionRects.map(rect=>rect.top))).toBeLessThan(1);
+    if (width >= 768) expect(Math.max(...actionRects.map(rect=>rect.top))-Math.min(...actionRects.map(rect=>rect.top))).toBeLessThan(1);
     expect(actionRects.every(rect=>rect.height>=44&&rect.right<=width)).toBe(true);
-    const gaps=await taskActions.evaluateAll(nodes=>nodes.slice(1).map((node,i)=>node.getBoundingClientRect().left-nodes[i].getBoundingClientRect().right));
+    const gaps=await taskActions.evaluateAll(nodes=>nodes.slice(1).flatMap((node,i)=>{const current=node.getBoundingClientRect(),previous=nodes[i].getBoundingClientRect();return Math.abs(current.top-previous.top)<1?[current.left-previous.right]:[];}));
     expect(gaps.every(gap=>gap<=8.1&&gap>=5.9)).toBe(true);
     const deleteStyle=await taskActions.last().evaluate(el=>{const s=getComputedStyle(el);return [s.color,s.backgroundColor,s.borderColor];});
     await detail.locator("summary").click();
@@ -165,14 +165,16 @@ test("read-only details and compact editor rows remain aligned on desktop and na
     const fields=editor.locator(".task-form-select-row select");
     await expect(fields).toHaveCount(3);
     const fieldRects=await fields.evaluateAll(nodes=>nodes.map(node=>({top:node.getBoundingClientRect().top,right:node.getBoundingClientRect().right})));
-    expect(Math.max(...fieldRects.map(r=>r.top))-Math.min(...fieldRects.map(r=>r.top))).toBeLessThan(1);
-    expect(fieldRects.every(rect=>rect.right<=width)).toBe(true);
+    // Fields keep their order and reflow when their readable minimum no longer fits.
+    if (width >= 768) expect(Math.max(...fieldRects.map(r=>r.top))-Math.min(...fieldRects.map(r=>r.top))).toBeLessThan(1);
+    expect(fieldRects.every((rect,index)=>rect.right<=width && (index===0 || rect.top>=fieldRects[index-1].top))).toBe(true);
     const buttons=editor.locator(".create-task-actions button");await expect(buttons).toHaveText(["Add Subtask","Save Changes","Delete task"]);
     expect(await buttons.last().evaluate(el=>{const s=getComputedStyle(el);return [s.color,s.backgroundColor,s.borderColor];})).toEqual(deleteStyle);
-    const editorGaps=await buttons.evaluateAll(nodes=>nodes.slice(1).map((node,i)=>node.getBoundingClientRect().left-nodes[i].getBoundingClientRect().right));
+    const editorGaps=await buttons.evaluateAll(nodes=>nodes.slice(1).flatMap((node,i)=>{const current=node.getBoundingClientRect(),previous=nodes[i].getBoundingClientRect();return Math.abs(current.top-previous.top)<1?[current.left-previous.right]:[];}));
     expect(editorGaps.every(gap=>gap<=8.1&&gap>=5.9)).toBe(true);
     const tops=await buttons.evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().top));
-    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThan(1);
+    if (width >= 768) expect(Math.max(...tops)-Math.min(...tops)).toBeLessThan(1);
+    expect(await buttons.evaluateAll(nodes=>nodes.every(node=>{const r=node.getBoundingClientRect();return r.height>=44&&r.left>=0&&r.right<=innerWidth;}))).toBe(true);
     await expect(editor.getByText("Stage changes save immediately and move this task on the board.",{exact:true})).toHaveCount(0);
     await editor.getByRole("button",{name:"Close task editor",exact:true}).click();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

@@ -32,7 +32,7 @@ async function stage(page: Page, value: string) {
   if (await selector.count()) await selector.selectOption(value);
 }
 async function move(page: Page, title: string, direction = "ArrowRight") {
-  const handle = page.getByRole("group", { name: new RegExp(`^Move task ${title},`) });
+  const handle = page.getByRole("button", { name: new RegExp(`^Move task ${title},`) });
   await handle.focus();
   await page.keyboard.press("Space");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`Picked up "${title}"`);
@@ -58,13 +58,13 @@ test("task lifecycle persists, rejects reverse movement, and allows keyboard war
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Smoke task edited" to In Progress');
   await page.reload();
   await stage(page, "in-progress");
-  await expect(page.getByRole("group", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeVisible();
   await move(page, "Smoke task edited", "ArrowLeft");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Cannot move task from in-progress to todo");
   const dismiss = page.getByRole("button", { name: /Dismiss notification/ });
   await dismiss.focus(); await page.keyboard.press("Enter");
   await expect(dismiss).toHaveCount(0);
-  await expect(page.getByRole("group", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeFocused();
 });
 
 test("parent and subtask creation survives reload with progress and navigable parent context", async ({ page }) => {
@@ -151,7 +151,7 @@ test("full destination stays blocked when search hides occupants and becomes usa
   await move(page, "Incoming task");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`In Progress is full (${COLUMN_CAPACITY["in-progress"]}-task limit).`);
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Tasks hidden by search or filters still count");
-  await expect(page.getByRole("group", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);
   await page.getByRole("button", { name: /Dismiss notification/ }).click();
   await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
@@ -163,5 +163,5 @@ test("full destination stays blocked when search hides occupants and becomes usa
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Incoming task" to In Progress');
   await page.reload();
   await stage(page, "in-progress");
-  await expect(page.getByRole("group", { name: "Move task Incoming task, In Progress", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Move task Incoming task, In Progress", exact: true })).toBeVisible();
 });
