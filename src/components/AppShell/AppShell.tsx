@@ -20,7 +20,7 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
     <div className="app-shell">
       <header className="app-shell-header">
         <div className="app-shell-identity">
-          <h1>TaskFlow</h1>
+          <h1>Task<span className="app-shell-wordmark-flow">Flow</span></h1>
           <p>Clear priorities. Steady progress.</p>
           <p className="last-updated">Last updated: <time dateTime={lastUpdated.toISOString()}>{updated}</time></p>
         </div>

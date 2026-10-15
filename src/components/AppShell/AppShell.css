@@ -16,8 +16,15 @@
 .app-shell-header h1 {
   margin: 0;
   font-size: var(--font-size-identity);
-  font-weight: var(--font-weight-heading);
-  letter-spacing: -0.025em;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  color: var(--color-action-primary);
+}
+.app-shell-wordmark-flow {
+  color: var(--color-text-on-action);
+  -webkit-text-stroke: 0.65px var(--color-action-primary);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 1px rgb(138 75 56 / 10%);
 }
 .app-shell-header p { margin: var(--space-1) 0 0; }
 .last-updated { font-size: var(--font-size-metadata); color: var(--color-text-secondary); }
