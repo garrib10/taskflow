@@ -4,65 +4,76 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 
-TaskFlow is a browser-based workflow board built with React, strict TypeScript,
-Vite, and @dnd-kit. It demonstrates domain modeling, deterministic reducer
-operations, accessible interaction, and a validated persistence boundary in a
-frontend application.
+**Clear priorities. Steady progress.** TaskFlow is a browser-based workflow board
+built with React, strict TypeScript, Vite and dnd-kit. It brings together a
+responsive Kanban interface, explicit workflow rules and validated local
+persistence in a frontend engineering project.
 
-**v1.5.0 release candidate:** package metadata identifies the candidate; production
-promotion, the tag, and the GitHub release are still pending. The
-[production demo](https://taskflow-garrib10.vercel.app/) follows `main` and may show
-the earlier release until promotion. See the [release notes draft](docs/releases/v1.5.0.md)
-and [release QA report](docs/v1.5-release-qa.md) for readiness and known findings.
+**v2.0.0 release preparation:** the implementation and technical QA are merged
+into `develop`. Staging validation, production promotion, tagging and publication
+remain under [#50](https://github.com/garrib10/taskflow/issues/50). The
+[production demo](https://taskflow-garrib10.vercel.app/) follows `main` and will
+continue showing the previous release until promotion. See the
+[release notes](docs/releases/v2.0.0.md) and [release checklist](docs/v2-release-checklist.md).
 
-## Features
+## The v2 modernization
 
-- Four typed stages: **To Do → In Progress → In Review → Done**. Only the next
-  forward stage is allowed; skipping, reversing, and reopening Done are rejected.
-- Pointer drag-and-drop, touch hold-and-drag, and keyboard task movement.
-- Create, edit, and confirm deletion of tasks; confirmation before discarding
-  unsaved form changes.
-- Search titles/descriptions; combine priority, category, and status filters and
-  reset them together. Cards sort High → Medium → Low with stable equal-priority
-  ordering by default. Select Manual to retain explicit positions, using named
-  Move earlier/later actions when unfiltered. The selected mode survives refresh.
-- Linked subtasks with independent workflow stages, parent navigation, creation
-  from the parent editor, and completed/total progress on parent cards.
-- One-level relationships, completion guards, reassignment/detachment, and parent
-  deletion that keeps subtasks as independent tasks.
-- Typed success, error, warning, and information feedback. Success expires after
-  four seconds and information after six; warnings/errors require dismissal or
-  resolution. Persistent storage notices remain while the underlying condition exists.
-- Last-updated timestamp, runtime LocalStorage validation, schema version 3,
-  repeat-safe legacy migrations, saving-paused recovery, retry for write failures,
-  and multiple-tab conflict detection with explicit reload confirmation.
-- Dialog labels, associated validation errors, focus containment/restoration,
-  task-specific control names, movement announcements, and reduced-motion styles.
-- Responsive stacked mobile board and horizontally scrollable tablet board;
-  scrolling dialogs keep controls reachable on short screens.
-- Unit, component, full-application integration, and Chromium browser smoke tests;
-  GitHub Actions quality gates.
+v2 develops the original task board into a more complete frontend application:
+a warm clay visual system and shared controls, a responsive application shell,
+compact cards, read-first task details, clearer forms and focused board controls.
+The engineering work separates durable domain data, view preferences and
+interactions, adds independent manual ordering and capacity policy, and upgrades
+the persistence boundary while preserving supported v1.x data.
 
-Accessibility is tested within the documented scope; **full WCAG compliance is
-not claimed**. The identified small-text contrast findings were corrected and
-validated in [the remediation report](docs/v1.5-release-remediation.md); fresh
-deployed VoiceOver verification remains part of release review.
+![TaskFlow v2 desktop board with eight realistic tasks, linked subtasks and capacity indicators](screenshots/v2/desktop-board.png)
 
-## Current interface
+| Task details and related work | Mobile board |
+| --- | --- |
+| [![Parent task details with subtask progress and compact footer actions](screenshots/v2/desktop-details.png)](screenshots/v2/desktop-details.png) | [![Mobile board with search, filter disclosure and a workflow stage selector](screenshots/v2/mobile-board.png)](screenshots/v2/mobile-board.png) |
 
-These portfolio-safe screenshots show the v1.5 candidate at a consistent
-1440 × 900 viewport. They replace current-feature illustrations that showed the
-obsolete checklist editor; historical screenshots below remain historical.
+[All current screenshots](screenshots/v2/README.md) ·
+[Short workflow videos](docs/v2-performance-regression.md#workflow-videos) ·
+[Before/after and portfolio materials](docs/portfolio.md)
 
-![Four-stage TaskFlow board with a parent task and independent linked subtasks](screenshots/v1.5-board.png)
+## Capabilities and rules
 
-![Parent task editor with linked subtasks and completion progress](screenshots/v1.5-parent.png)
+- **Four stages:** To Do → In Progress → In Review → Done. Cross-stage moves
+  advance one stage; skipping, reversing and reopening Done are rejected.
+- **Capacity:** In Progress allows five tasks and In Review three. To Do and Done
+  are unlimited. Counts include filtered-out tasks and linked subtasks. Existing
+  over-limit saved boards remain readable; further arrivals are blocked until
+  space is available.
+- **Movement:** pointer drag, touch hold-and-drag, keyboard movement and a validated
+  Stage selector in the editor share the same domain rules. Cards show valid and
+  rejected drop feedback; movement retains meaningful keyboard focus.
+- **Ordering:** Priority sorts High → Medium → Low with stable per-stage arrival
+  ties. Manual retains a separate ID order without changing priorities or ties.
+  Unfiltered Manual supports drop placement and named Move earlier/later actions;
+  clear search and filters before reordering within a stage.
+- **Tasks and related work:** create, edit and confirm deletion; one level of linked
+  parent/child tasks with independent stages, parent navigation, progress and
+  collapsible subtasks. A parent cannot finish until every child is Done.
+  Confirmed parent deletion detaches and preserves its children.
+- **Details and drafts:** task titles open a desktop drawer or mobile sheet.
+  Category, Priority and Stage appear consistently. Content saves explicitly;
+  Stage and relationship changes save separately. Closing a dirty draft asks
+  whether to keep editing or discard it.
+- **Search and filters:** case-insensitive title/description search combines with
+  Category, Priority and Status. Active chips, result counts, zero-result recovery
+  and clear-all keep scope visible. Filtering never changes the saved board.
+- **Feedback:** typed success, information, warning and error notices distinguish
+  transient outcomes from persistent saving/recovery restrictions.
+- **Responsive access:** mobile shows one selected stage; tablet retains an
+  intentional horizontal board scroller. Dialogs scroll and footer actions wrap
+  on narrow/short screens. Named controls, associated errors, visible focus,
+  modal isolation/focus return, live announcements and reduced motion are tested.
 
-![Subtask editor showing its parent navigation control](screenshots/v1.5-subtask.png)
+Full WCAG certification, physical-device behavior and spoken screen-reader output
+are not established by automated checks. See the [accessibility audit](docs/v2-accessibility.md).
 
 ## Run locally
 
-Use **Node.js 24.15 or newer in the Node 24 line** (CI uses Node 24).
+Use **Node.js 24.15 or newer in the Node 24 line**. CI uses Node 24.
 
 ```bash
 git clone https://github.com/garrib10/taskflow.git
@@ -71,172 +82,158 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL. For a production build and local preview:
+Vite prints the development URL. To build and serve production assets locally:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Browser data belongs to the exact origin (scheme, host, and port). Changing the
-local port, using another browser/profile, or moving to a Vercel preview does not
-transfer a saved board. There is no cloud account or synchronization.
+Saved data belongs to the exact origin: scheme, host and port, plus browser/profile.
+Changing ports or moving between preview, staging and production does not transfer
+boards. There is no cloud synchronization.
 
-## Testing
+## Architecture
+
+| Layer | Responsibility |
+| --- | --- |
+| `components/`, `styles/`, `accessibility/` | Shell, board, cards, details/forms, shared controls, semantic tokens, focus and input behavior |
+| `domain/task/`, `domain/board/` | Typed models, content/workflow/capacity/relationship rules, atomic reducer actions, ordering and pure selectors |
+| `hooks/` | Reducer/session integration, transient board criteria and independent ordering preference |
+| `persistence/`, `utils/storage.ts` | Unknown-data validation, trusted projections, versioned DTOs, migration, recovery and storage access |
+| `notifications/` | Typed feedback and notice lifecycle |
+| `test/`, `e2e/` | Deterministic fixtures, domain/component/application tests and real-browser journeys |
+
+UI preflight reports failures; the reducer validates again against the complete
+current board before returning an immutable next state. Rejected operations retain
+board identity and timestamps. Derived progress, counts and filtered/sorted views
+are computed from source data. IDs and timestamps enter through actions; storage
+is coordinated outside the reducer.
+
+The [architecture and state guide](docs/v2-state-ownership.md) explains ownership,
+TypeScript choices, selectors, atomicity and the save boundary. Detailed guides:
+[ordering](docs/v2-manual-ordering.md), [capacity](docs/v2-column-capacity.md),
+[board controls](docs/v2-board-controls.md), [details/forms](docs/v2-task-details.md),
+[design tokens](docs/v2-design-tokens.md) and [shared primitives](docs/v2-interface-primitives.md).
+
+## Persistence and upgrading v1.x data
+
+Application version **2.0.0** is independent of board schema **3**. The
+`taskflow-board` key holds `{ schemaVersion, revision, board }`; dates serialize as
+canonical ISO strings. Column arrival arrays and nullable manual ID lists remain
+separate. The independent `taskflow-view-preferences` key stores schema **1** and
+only the selected Priority/Manual mode. Search, filters, drafts, dialogs,
+notifications and drag/focus state are not persisted.
+
+Supported upgrades are unversioned v0 → v1 → v2 → v3, schema 1 → v2 → v3, and
+v1.5/schema 2 → v3. Validation precedes full-result writeback. Legacy checklist
+conversion preserves IDs, titles and completion in linked tasks; schema-2-to-3
+preserves valid tasks, links, dates, arrival ties and existing manual lists.
+Repeated loads do not duplicate children or reinitialize positions. Valid current
+schema-3 data hydrates without a mount-time rewrite.
+
+Only a genuinely missing board initializes starter data. Invalid JSON/core data,
+failed migrations and future versions retain the original saved bytes and pause
+saving. Damaged order restores safe core data in Priority until confirmed repair.
+Read restrictions, failed writes and external-tab changes expose explicit retry
+or reload actions. Confirmed replacement is destructive and clearly labeled.
+Closing a notice does not resume saving.
+
+No separate migration backup is created. A failure before writeback preserves the
+original; a postflight failure can follow a complete write, so persistence remains
+unconfirmed rather than promising rollback. LocalStorage has no transactional
+compare-and-swap, and tabs do not merge automatically. Keep a tab open after a save
+failure until retry or deliberate recovery. Older releases may not read schema 3;
+there is no automatic downgrade migration.
+
+[Schema contract](docs/v2-persistence-schema.md) ·
+[Migration paths](docs/v2-data-migration.md) ·
+[Recovery behavior](docs/v2-persistence-recovery.md) ·
+[Independent preferences](docs/v2-view-preferences.md)
+
+## Testing and quality
 
 ```bash
-npm test
-npm run test:watch
-npm run typecheck
 npm run lint
+npm run typecheck
+npm test
 npm run build
 npx playwright install chromium
-npm run test:e2e
+CI=1 npm run test:e2e:ci
 ```
 
-`npm test` runs Vitest once; `test:watch` stays running during development.
-Typecheck validates application, tests, and tooling without building the bundle.
-The measured v2 suite has **487 tests in 45 files** and **70 Chromium browser cases**.
-See the [current testing strategy and risk map](docs/v2-testing.md) for the
-baseline comparison, suite boundaries,
-fixtures, accessibility scope, repeated checks, and commands for individual files.
-No numerical coverage target is configured or implied by these counts.
-See the [v2 performance and regression QA](docs/v2-performance-regression.md) for
-measured board workloads, profiling, bundle review and Lighthouse evidence.
+Vitest covers domain, persistence, components and full-App integration. Playwright
+runs desktop/mobile Chromium against the production build under `CI=1`; it starts
+a preview at `127.0.0.1:4173`. Keep `dist` unchanged during a browser run.
+`npm run test:watch` watches unit tests; `npm run test:e2e:report` opens the browser
+report. CI installs Chromium with system dependencies and retains failed-test
+traces/screenshots plus Vitest JUnit output.
 
-Playwright uses isolated desktop/mobile contexts. It starts Vite dev locally and
-production preview in CI at `http://127.0.0.1:4173`; build first for production
-preview. Do not rebuild `dist` during a browser run. Failure reports, traces and
-screenshots stay out of Git; `npm run test:e2e:report` opens the HTML report.
+For a specific preview, run
+`PLAYWRIGHT_BASE_URL=https://your-preview.vercel.app npm run test:e2e`.
+Protected previews require normal owner access. Tests neither store credentials
+nor bypass deployment protection.
 
-```bash
-PLAYWRIGHT_BASE_URL=https://your-preview.vercel.app npm run test:e2e
-```
+The merged [#49 QA record](docs/v2-performance-regression.md) reports:
 
-Protected Vercel previews require owner access; the suite neither stores account
-credentials nor bypasses protection. Physical-device and spoken screen-reader
-checks remain separate. The [v1.5 integration record](docs/v1.5-integration-ci.md)
-is historical evidence; the [v2 testing guide](docs/v2-testing.md) is current.
+- **487 Vitest tests / 45 files**, **70 Chromium cases**, **60 selected Firefox/WebKit
+  cases**, and nine focused recovery repetitions, without browser retries.
+- Seventeen practical regression checks, eleven viewport configurations, keyboard/
+  focus/announcement checks, axe scans, reduced motion and actual 100/200/400% zoom.
+- Production JS **327.18KB / 99.73KB gzip**, CSS **48.93KB / 8.36KB gzip**, with no
+  build warnings. Lighthouse mobile medians **99/100/96/82** and desktop
+  **100/100/96/82** for Performance/Accessibility/Best Practices/SEO.
+- 20/100/300-task workload measurements on an **off-reference Intel Mac**, including
+  a 151.9ms median large-desktop reset. These are observations against #97 targets,
+  not M1 reference-host certification or field performance guarantees.
 
-## Keyboard controls
+The [testing strategy](docs/v2-testing.md) maps requirements to existing tests;
+the [release checklist](docs/v2-release-checklist.md) distinguishes branch checks
+from still-pending staging and production verification. No numerical test-coverage
+percentage or full accessibility certification is claimed.
 
-Tab to a task's movement button. Press **Space or Enter** to pick it up,
-**Left/Right** to choose a stage, **Space or Enter** to drop, or **Escape or Tab**
-to cancel. Ordinary tasks and subtasks use the same workflow guards. Keyboard
-movement retains the grip after an accepted move; filter-hidden tasks use a
-meaningful destination fallback. Task titles open read-first details; choose
-**Edit task** to edit content or use the validated **Stage** selector. Dialogs
-contain Tab/Shift+Tab focus and restore a meaningful control on closing. See the
-[v2 accessibility audit](docs/v2-accessibility.md) for focus, zoom and input scope.
+## Keyboard operation
 
-## Architecture and data
+Tab to a task's movement button. **Space/Enter** picks up, **Left/Right** chooses a
+stage, **Space/Enter** drops, and **Escape/Tab** cancels. The visible instructions
+and live region explain destinations and rejected moves. Open the title to review
+details, then choose Edit task. Dialogs contain focus and restore a meaningful
+control when closed. macOS WebKit may require **Option-Tab** to include buttons,
+depending on native keyboard-navigation behavior.
+
+## Deployment and release
 
 ```text
-src/
-  App.tsx                 Application composition and editor navigation
-  components/             Board, cards, forms, dialogs, controls and owned CSS
-  domain/board/           Reducer, operation validation, filters, relationships
-  domain/task/            Typed task model, workflow, priority and categories
-  hooks/                  Board state integration
-  persistence/            Runtime validation, migrations and persistence session
-  notifications/          Typed notification creation and lifecycle
-  accessibility/          Dialog focus and keyboard coordinates
-  styles/                 Design tokens, shared control and dialog styles
-  utils/                  Storage boundary and sample board
-  test/                   Fixtures and test setup
+release branch → develop → staging → main
 ```
 
-UI validates intended actions and the reducer validates them again against the
-current complete board. Action IDs/timestamps are supplied before dispatch.
-Filters affect presentation, not relationship integrity. Component CSS is owned
-by its component; shared styles remain explicit.
+Vercel Git integration builds with `npm run build`. Working branches, `develop`
+and `staging` use normal Preview deployments; `main` is production. No paid custom
+pre-production environment is required. Frontend CI, Dependency Review and CodeQL
+provide repository checks; successful deployment status alone does not prove the
+app works in the browser.
 
-The incremental [v2 design-token foundation](docs/v2-design-tokens.md) documents
-shared semantic colors, typography, spacing, focus and motion. It prepares later
-visual work while preserving the current board and form interactions.
+The preparation PR references #50 and requires owner review. Promote through
+staging, test supported legacy fixtures on that exact origin, then promote to
+main. Verify the production commit, deployed app and preserved workflows before
+creating the annotated `v2.0.0` tag and GitHub release. The preparation branch does
+not perform these steps. See the [branch workflow](docs/branching-workflow.md) and
+[precise remaining checklist](docs/v2-release-checklist.md).
 
-The [interface primitive guide](docs/v2-interface-primitives.md) explains the
-small shared Button, Field and Badge APIs and their accessibility ownership.
-The [application shell guide](docs/v2-app-shell.md) records responsive toolbar
-behavior, modal focus ownership and the boundaries for later board/detail work.
-The [state ownership guide](docs/v2-state-ownership.md) maps durable board data,
-mount-local view preferences and temporary interactions to their owners.
-The [manual ordering domain guide](docs/v2-manual-ordering.md) explains ID-list
-positions, independent priority ties, atomic placement and persistence deferrals.
-The [column capacity guide](docs/v2-column-capacity.md) documents fixed limits,
-complete-board counting, mutation enforcement and over-limit recovery.
-The [v2 persistence specification](docs/v2-persistence-schema.md) defines the
-schema-3 board contract and separate future mode preference. The
-[migration guide](docs/v2-data-migration.md) documents supported legacy upgrades,
-safe writeback. The [recovery guide](docs/v2-persistence-recovery.md) explains
-paused writes, explicit retries and confirmed repair/replacement. Independent
-preferences are documented in the [view-preference guide](docs/v2-view-preferences.md).
+## Scope and history
 
-- [Parent/subtask rules](docs/v1.5-parent-child-tasks.md): hierarchy, completion,
-  deletion, reassignment, and independently saved subtask edits.
-- [Persistence compatibility](docs/v1.5-persistence-reliability.md): storage key,
-  schema, v0/v1 conversion, rejected originals, retry, and conflicts.
-- [Release-scope inventory](docs/v1.5-release-scope.md): issue/PR/source mappings
-  and explicit exclusions.
-- [Browser, responsive, and Lighthouse baseline](docs/v1.5-quality-baseline.md):
-  October 7–8 measurements and owner VoiceOver review in Google Chrome.
-- [Original source audit](docs/v1.5-audit-and-baseline.md): historical findings,
-  retained as the pre-engineering record rather than current status.
+TaskFlow is a single-user, frontend-only application backed by browser LocalStorage.
+It includes no backend/database server, authentication, teams, collaboration,
+SaaS accounts, AI task generation/prioritization, due dates, import/export or
+cross-device synchronization. Capacity is fixed policy; there is no capacity
+settings screen. Physical-device, actual Safari and spoken VoiceOver checks,
+deployed analytics/routing and search metadata remain documented release-review
+limits. Browser storage can be cleared, restricted or exhausted.
 
-### Storage limitations
-
-TaskFlow uses the `taskflow-board` LocalStorage key, not a backend. Clearing site
-data, private-browsing restrictions, quotas, or a different origin/profile can
-make saved work unavailable. Invalid/future-version data is preserved and saving
-pauses; it is not silently replaced with sample content. Migration creates no
-separate backup. The original remains untouched if decoding/migration fails;
-only a fully validated conversion or explicitly confirmed recovery can replace it.
-
-Multiple tabs do not merge automatically. External changes pause local saving
-and require a confirmed reload to discard local work. LocalStorage is not a
-transactional database; simultaneous writers can still race. Import/export,
-authentication, teams, collaboration, and backend persistence are not implemented.
-
-## Deployment and release workflow
-
-```text
-feature branch → develop → staging → main
-```
-
-Feature/fix/test/refactor/docs/release branches and `develop` use **Vercel Preview**
-deployments. `staging` is the release-candidate branch, also using a normal Preview;
-`main` is production. No paid custom pre-production environment is required.
-The release-preparation PR targets `develop`; it does not publish v1.5.0.
-
-Frontend CI's **Lint and build** job runs `npm ci`, lint, strict typecheck,
-the complete Vitest suite (console + JUnit), build, and `npm run test:e2e:ci` after installing Chromium.
-**Dependency review** checks PR dependency changes, and CodeQL reviews source.
-CI runs for PRs into and pushes to `develop`, `staging`, and `main` as configured.
-See [branching and release workflow](docs/branching-workflow.md) for promotion.
-
-Preview, staging, and production origins do not share LocalStorage. Verify the
-exact commit preview, review gates, promote through staging, then main, verify
-production, and only then publish the tag/release under #91. The unused legacy
-`deploy`/`predeploy` scripts and `gh-pages` dependency were removed in PR #138.
-Deployment uses the Vercel Git integration and `npm run build`.
-
-## Version history and scope
-
-- **v1.0:** initial columns, cards, reducer, and drag-and-drop.
-- **v1.1:** CRUD, priority/categories, LocalStorage, and embedded checklist subtasks.
-- **v1.2:** In Review, search/filters, unsaved-change confirmation, last-updated
-  timestamp, and interaction refinements. The `v1.2` tag and its release are
-  historical, not the current candidate.
-- **v1.5.0 candidate:** linked tasks; deterministic strict state handling;
-  persistence reliability; accessibility, notifications, responsive improvements;
-  component CSS; automated tests and CI. [Draft release notes](docs/releases/v1.5.0.md).
-
-The v1.5 scope preserves the existing design. Capacity/WIP policy, due dates,
-import/export, authentication, backend/cloud persistence, collaboration, AI,
-analytics/history/assignees/notes, and major visual redesign are outside this
-release. v2.0 planning focuses on the approved frontend/domain/persistence and
-board experience; it does not automatically commit every excluded feature.
-
-The [v2 Kanban board guide](docs/v2-kanban-board.md) documents compact cards, complete-board capacity headers, manual drop feedback and single-stage mobile navigation. Open a task by its title to review its details, then choose Edit task to change its content. The [task details guide](docs/v2-task-details.md) covers desktop drawers/mobile sheets, related work, safe cancellation and deletion. The [board controls guide](docs/v2-board-controls.md) covers combined search/filter scope, clear actions, result counts, ordering explanations and mobile filters.
-
-The [responsive and accessibility audit](docs/v2-accessibility.md) records the #47 findings, fixes, browser and zoom evidence, and remaining device-testing limits.
+- **v1.0–v1.2:** original board, CRUD, priorities/categories, checklists, search and
+  filters. These releases and their imagery are historical.
+- **v1.5.0:** linked work, strict domain handling, persistence reliability,
+  notifications, component styling, accessibility and CI foundations.
+- **v2.0.0 preparation:** visual/shell/board/details modernization, explicit state
+  boundaries, Manual ordering, capacity rules, schema-3 migration/recovery,
+  independent preferences and expanded validation. [Release notes](docs/releases/v2.0.0.md).
