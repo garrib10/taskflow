@@ -1,0 +1,153 @@
+[
+  {
+    "width": 320,
+    "height": 568,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "height": 667,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 430,
+    "height": 932,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 667,
+    "height": 375,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 844,
+    "height": 390,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 932,
+    "height": 430,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 768,
+    "height": 1024,
+    "input": "touch emulation + keyboard",
+    "singleStage": false,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "input": "touch emulation + keyboard",
+    "singleStage": false,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "height": 720,
+    "input": "mouse + keyboard",
+    "singleStage": false,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "input": "mouse + keyboard",
+    "singleStage": false,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "height": 300,
+    "input": "touch emulation + keyboard",
+    "singleStage": true,
+    "creationFocusTrapAndRestoration": true,
+    "detailsPointerOrTouchAndReturn": true,
+    "fullCapacityVisible": true,
+    "noPageOverflow": true,
+    "targets44": true,
+    "errors": []
+  },
+  {
+    "case": "valid over-capacity restored board",
+    "width": 390,
+    "height": 844,
+    "overCapacity": "25 / 5; Over limit",
+    "preservedTasks": 100
+  }
+]

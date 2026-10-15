@@ -46,7 +46,7 @@
 .subtask-delete-button {
   background: transparent;
   border: none;
-  color: var(--color-action-danger);
+  color: var(--color-action-danger-text);
   cursor: pointer;
   font-size: var(--font-size-compact);
   padding: 4px 8px;
@@ -93,3 +93,8 @@
 }
 
 .subtask-container summary { cursor: pointer; }
+
+/* The label is the checkbox hit area; retain the compact native checkbox glyph. */
+.subtask-item-left { min-height: var(--size-touch-target); }
+.subtask-delete-button, .add-subtask-button { min-width: var(--size-touch-target); min-height: var(--size-touch-target); }
+.subtask-input-container input { min-width: 0; min-height: var(--size-touch-target); }

@@ -27,6 +27,6 @@ export async function createTask(user: UserEvent, title: string, child = false) 
   await user.click(dialog.getByRole("button", { name: child ? "Create SubTask" : "Create Task" }));
 }
 export async function moveTask(user: UserEvent, title: string, direction: "Right" | "Left" = "Right") {
-  screen.getByRole("group", { name: new RegExp(`^Move task ${title},`) }).focus();
+  screen.getByRole("button", { name: new RegExp(`^Move task ${title},`) }).focus();
   await user.keyboard(` {Arrow${direction}} `);
 }

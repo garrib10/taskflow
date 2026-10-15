@@ -1,3 +1,4 @@
+import { narrowBoardQuery } from "../../accessibility/boardViewport";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useModalFocus } from "../../accessibility/useModalFocus";
 import Button from "../ui/Button/Button";
@@ -17,10 +18,10 @@ interface BoardToolbarProps {
 }
 
 export default function BoardToolbar({ search, filters, filterCount, activeCriteria, activeConditions = [], onReset, resultSummary, ordering, orderingHelp }: BoardToolbarProps) {
-  const [narrow, setNarrow] = useState(() => window.matchMedia?.("(max-width: 600px)").matches ?? false);
+  const [narrow, setNarrow] = useState(() => window.matchMedia?.(narrowBoardQuery).matches ?? false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    const media = window.matchMedia?.("(max-width: 600px)");
+    const media = window.matchMedia?.(narrowBoardQuery);
     if (!media) return;
     const update = () => { setNarrow(media.matches); if (!media.matches) setOpen(false); };
     media.addEventListener("change", update);

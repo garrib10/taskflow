@@ -49,7 +49,7 @@ it("rejects reverse movement repeatedly and confirms editor deletion after resto
     expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
   }
   await user.click(screen.getByRole("button", { name: "Open task Edited journey" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
-  await user.click(screen.getByRole("button", { name: "Delete Edited journey" }));
+  await user.click(screen.getByRole("button", { name: "Delete task Edited journey" }));
   const confirmation = within(screen.getByRole("dialog", { name: "Delete Task" }));
   expect(confirmation.getByRole("button", { name: "Cancel" })).toHaveFocus();
   await user.click(confirmation.getByRole("button", { name: "Delete" }));

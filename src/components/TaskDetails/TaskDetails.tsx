@@ -62,7 +62,7 @@ export default function TaskDetails(props: TaskFormProps & { task: Task; onChang
           <footer className="task-details-footer task-action-footer">
             {!task.parentId && task.status !== "done" && <button type="button" id={`${id}-child`} className="edit-task-button add-editor-subtask" aria-label={`Add SubTask to ${task.title}`} onClick={() => setView("child")}><ActionIcon name="plus"/>Add Subtask</button>}
             <Button icon="edit" id={`${id}-edit`} onClick={() => setView("edit")}>Edit task</Button>
-            {onDelete && <Button icon="trash" variant="danger" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
+            {onDelete && <Button icon="trash" variant="danger" aria-label={`Delete task ${task.title}`} onClick={() => onDelete(task.id)}>Delete task</Button>}
           </footer></>}
         </div>
       </div>

@@ -21,10 +21,10 @@ it('makes the scrolling workflow region keyboard reachable without removing cont
  workflow.focus();
  expect(workflow).toHaveFocus();
  await user.tab();
- expect(within(workflow).getByRole('group', { name: `Move task ${title}, todo` })).toHaveFocus();
+ expect(within(workflow).getByRole('button', { name: `Move task ${title}, todo` })).toHaveFocus();
  expect(within(workflow).getByRole('button', { name: `Open task ${title}` })).toHaveTextContent(title);
  expect(within(workflow).getByRole('button', { name: `Open task ${title}` })).toBeInTheDocument();
- expect(within(workflow).queryByRole('button', { name: `Delete ${title}` })).not.toBeInTheDocument();
+ expect(within(workflow).queryByRole('button', { name: `Delete task ${title}` })).not.toBeInTheDocument();
 });
 it('exposes required fields, counts and field errors; repeat failures still focus the first invalid field', async () => {
  const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'+ Create Task'}));
@@ -39,7 +39,7 @@ it('exposes required fields, counts and field errors; repeat failures still focu
 it('restores edited-task focus and keeps names contextual', async () => {
  const user=userEvent.setup();render(<Harness />);const edit=screen.getByRole('button',{name:'Open task Child work'});await user.click(edit);await user.click(screen.getByRole("button",{name:"Edit task"}));
  await user.type(screen.getByLabelText('Description'),' edited');await user.click(screen.getByRole('button',{name:'Save Changes'}));expect(screen.getByRole('button',{name:'Open task Child work'})).toHaveFocus();expect(updates()).toHaveTextContent('Updated "Child work".');
- await user.click(edit);await user.click(screen.getByRole("button",{name:"Edit task"}));await user.keyboard('{Escape}');expect(edit).toHaveFocus();expect(screen.queryByRole('button',{name:'Delete Parent work'})).not.toBeInTheDocument();
+ await user.click(edit);await user.click(screen.getByRole("button",{name:"Edit task"}));await user.keyboard('{Escape}');expect(edit).toHaveFocus();expect(screen.queryByRole('button',{name:'Delete task Parent work'})).not.toBeInTheDocument();
 });
 it('contains unsaved confirmation focus and restores the form before restoring its original opener', async () => {
  const user=userEvent.setup();render(<Harness />);const opener=screen.getByRole('button',{name:'Open task Parent work'});await user.click(opener);await user.click(screen.getByRole("button",{name:"Edit task"}));await user.type(screen.getByLabelText('Title'),' draft');await user.keyboard('{Escape}');
@@ -58,28 +58,28 @@ it('contains relationship focus and restores its manage-parent trigger', async (
  const dialog=screen.getByRole('dialog',{name:'Manage Parent'});expect(within(dialog).getByLabelText('Parent')).toHaveFocus();expect(dialog).toHaveAccessibleDescription(/Detaching keeps/);await user.keyboard('{Escape}');expect(manage).toHaveFocus();
 });
 it('returns deletion cancellation to its opener and deletion to a surviving task', async () => {
- const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'Open task Parent work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));const remove=screen.getByRole('button',{name:'Delete Parent work'});await user.click(remove);await user.keyboard('{Escape}');expect(remove).toHaveFocus();
+ const user=userEvent.setup();render(<Harness />);await user.click(screen.getByRole('button',{name:'Open task Parent work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));const remove=screen.getByRole('button',{name:'Delete task Parent work'});await user.click(remove);await user.keyboard('{Escape}');expect(remove).toHaveFocus();
  await user.click(remove);await user.click(screen.getByRole('button',{name:'Delete Parent and Detach Subtasks'}));expect(screen.getByRole('button',{name:'Open task Child work'})).toHaveFocus();expect(updates()).toHaveTextContent('Deleted parent "Parent work"; subtasks kept');
 });
 it('focuses the column heading after deleting its last task', async () => {
- const user=userEvent.setup();render(<Harness tasks={[parent]} />);await user.click(screen.getByRole('button',{name:'Open task Parent work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));await user.click(screen.getByRole('button',{name:'Delete Parent work'}));await user.click(within(screen.getByRole('dialog',{name:'Delete Task'})).getByRole('button',{name:'Delete'}));expect(screen.getByRole('heading',{name:'todo (0)'})).toHaveFocus();
+ const user=userEvent.setup();render(<Harness tasks={[parent]} />);await user.click(screen.getByRole('button',{name:'Open task Parent work'})); await user.click(screen.getByRole("button", { name: "Edit task" }));await user.click(screen.getByRole('button',{name:'Delete task Parent work'}));await user.click(within(screen.getByRole('dialog',{name:'Delete Task'})).getByRole('button',{name:'Delete'}));expect(screen.getByRole('heading',{name:'todo (0)'})).toHaveFocus();
 });
 it('keeps filter focus and resets to search rather than the page top', async () => {
  const user=userEvent.setup();render(<Harness />);const search=screen.getByLabelText('Search tasks');await user.type(search,'Parent work');expect(search).toHaveFocus();await user.selectOptions(screen.getByLabelText('Priority'),'high');expect(screen.getByLabelText('Priority')).toHaveFocus();await user.click(screen.getByRole('button',{name:'Clear all search and filters'}));expect(search).toHaveFocus();expect(screen.getByRole('button',{name:'Open task Child work'})).toBeInTheDocument();
 });
 function drop(id: string, status: string) { act(()=>drag.end?.({ active:{id,data:{current:{}},rect:{current:{initial:null,translated:null}}},over:{id:status,disabled:false,data:{current:{}},rect:{top:0,left:0,bottom:100,right:100,width:100,height:100}},delta:{x:0,y:0},activatorEvent:new KeyboardEvent('keydown',{code:'Space'}),collisions:null })); }
 it('routes a keyboard drop through workflow validation, announces it and restores task focus', () => {
- render(<Harness />);drop(child.id,'in-progress');expect(within(screen.getByRole('region',{name:'in-progress (1)'})).getByRole('group',{name:'Move task Child work, in-progress'})).toHaveFocus();expect(updates()).toHaveTextContent('Moved "Child work" to in-progress, position 1 of 1.');expect(screen.getAllByRole('button',{name:'Open task Child work'})).toHaveLength(1);
- drop(child.id,'done');expect(updates()).toHaveTextContent('Cannot move task from in-progress to done.');expect(within(screen.getByRole('region',{name:'in-progress (1)'})).getByRole('group',{name:'Move task Child work, in-progress'})).toHaveFocus();
+ render(<Harness />);drop(child.id,'in-progress');expect(within(screen.getByRole('region',{name:'in-progress (1)'})).getByRole('button',{name:'Move task Child work, in-progress'})).toHaveFocus();expect(updates()).toHaveTextContent('Moved "Child work" to in-progress, position 1 of 1.');expect(screen.getAllByRole('button',{name:'Open task Child work'})).toHaveLength(1);
+ drop(child.id,'done');expect(updates()).toHaveTextContent('Cannot move task from in-progress to done.');expect(within(screen.getByRole('region',{name:'in-progress (1)'})).getByRole('button',{name:'Move task Child work, in-progress'})).toHaveFocus();
 });
 it('blocks parent completion from a keyboard drop and announces repeated identical failures', () => {
- render(<Harness tasks={[{...parent,status:'in-review'},child]} />);drop(parent.id,'done');expect(updates()).toHaveTextContent('Finish these subtasks');expect(screen.getByText(/^Warning: Finish these subtasks/)).toBeInTheDocument();expect(screen.queryByRole('alert')).not.toBeInTheDocument();const first=updates().firstChild;drop(parent.id,'done');expect(updates().firstChild).not.toBe(first);expect(screen.getByRole('group',{name:'Move task Parent work, in-review'})).toHaveFocus();expect(screen.getAllByRole('button',{name:'Open task Parent work'})).toHaveLength(1);
+ render(<Harness tasks={[{...parent,status:'in-review'},child]} />);drop(parent.id,'done');expect(updates()).toHaveTextContent('Finish these subtasks');expect(screen.getByText(/^Warning: Finish these subtasks/)).toBeInTheDocument();expect(screen.queryByRole('alert')).not.toBeInTheDocument();const first=updates().firstChild;drop(parent.id,'done');expect(updates().firstChild).not.toBe(first);expect(screen.getByRole('button',{name:'Move task Parent work, in-review'})).toHaveFocus();expect(screen.getAllByRole('button',{name:'Open task Parent work'})).toHaveLength(1);
 });
 it('does not strand focus when a move hides the task under a status filter', async () => {
  const user=userEvent.setup();render(<Harness />);await user.selectOptions(screen.getByLabelText('Status'),'todo');screen.getByRole('button',{name:'Open task Child work'}).focus();drop(child.id,'in-progress');expect(screen.getByRole('heading',{name:'in-progress (1)'})).toHaveFocus();
 });
 it('dismisses a notification back to the last task without duplicate announcement regions', async () => {
- const user=userEvent.setup();render(<Harness />);drop(child.id,'in-progress');await user.click(screen.getByRole('button',{name:'Dismiss notification: Moved "Child work" to in-progress, position 1 of 1.'}));expect(screen.getByRole('group',{name:'Move task Child work, in-progress'})).toHaveFocus();expect(screen.getAllByRole('status', {name:'Board updates'})).toHaveLength(1);expect(screen.getAllByRole('status', {name:'Search results'})).toHaveLength(1);
+ const user=userEvent.setup();render(<Harness />);drop(child.id,'in-progress');await user.click(screen.getByRole('button',{name:'Dismiss notification: Moved "Child work" to in-progress, position 1 of 1.'}));expect(screen.getByRole('button',{name:'Move task Child work, in-progress'})).toHaveFocus();expect(screen.getAllByRole('status', {name:'Board updates'})).toHaveLength(1);expect(screen.getAllByRole('status', {name:'Search results'})).toHaveLength(1);
 });
 
 it('returns first-child creation to the replacement Add SubTask control', async () => {

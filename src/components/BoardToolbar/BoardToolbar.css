@@ -28,7 +28,7 @@
   .board-toolbar .filter-controls { flex-basis: 100%; }
   .toolbar-clear-all { margin-left: auto; }
 }
-@media (max-width: 600px) {
+@media (max-width: 600px), (max-height: 450px) and (pointer: coarse) {
   .board-toolbar { padding: var(--space-3); }
   .toolbar-controls-with-order { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-3); }
   .board-toolbar .search-bar { grid-column: 1 / -1; }

@@ -153,17 +153,17 @@
 .task-status-pill.stage-done { background: var(--color-stage-done-surface); border-color: var(--color-stage-done-border); color: var(--color-stage-done-text); }
 
 /* Compact composer with a fixed action frame and a separately scrolling draft. */
-.task-editor-dialog form { width: 520px; padding: 0; gap: 0; overflow: hidden; border-radius: 14px; }
+.task-editor-dialog form { width: 520px; padding: 0; gap: 0; overflow-y: auto; border-radius: 14px; }
 .task-editor-dialog .task-form-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: 20px 24px; margin: 0; background: var(--color-surface-subtle); }
 .task-editor-dialog .task-form-heading > div { min-width: 0; }
 .task-editor-dialog .task-form-heading h2 { font-size: 1.25rem; margin: 0 0 6px; line-height: 1.3; }
 .task-editor-dialog .task-form-heading p { margin: 0; }
-.task-editor-dialog .task-form-content { overflow-y: auto; min-height: 0; flex: 1 1 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.task-editor-dialog .task-form-content { overflow-y: auto; min-height: 6rem; flex: 1 1 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
 .task-editor-dialog .ui-field { position: relative; gap: 7px; }
 .task-editor-dialog .ui-field > label, .task-editor-dialog .task-form-field > label { font-size: var(--font-size-label); }
 .task-editor-dialog .ui-field > label { padding-right: 64px; }
 .task-editor-dialog .character-count { position: absolute; top: 2px; right: 0; width: auto; margin: 0; font-size: var(--font-size-compact); }
-.task-editor-dialog input, .task-editor-dialog textarea, .task-editor-dialog select { font-size: var(--font-size-label); padding: 10px 12px; border-color: var(--color-border); background: var(--color-surface); }
+.task-editor-dialog input, .task-editor-dialog textarea, .task-editor-dialog select { font-size: var(--font-size-label); padding: 10px 12px; border-color: var(--color-control-border); background: var(--color-surface); }
 .task-editor-dialog textarea { min-height: 96px; }
 .task-editor-dialog .task-form-select-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .task-editor-dialog .create-task-actions { position: static; flex-shrink: 0; margin: 0; padding: 14px 24px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
@@ -178,10 +178,10 @@
   .task-editor-dialog .create-task-actions { padding: 8px 16px; }
 }
 
-.task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: 1fr .85fr 1.2fr; gap: 10px; }
+.task-editor-dialog .task-form-select-row.has-stage { grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 10px; }
 .task-editor-dialog .has-stage select { padding: 8px 6px; }
 @media (max-width: 600px) {
   .task-editor-dialog .task-form-select-row.has-stage { gap: 6px; }
-  .task-editor-dialog .has-stage select { font-size: .8rem; padding: 8px 2px; }
+  .task-editor-dialog .has-stage select { font-size: var(--font-size-label); padding: 8px 2px; }
   .task-editor-dialog .create-task-actions { gap: 6px; flex-wrap: nowrap; }
 }

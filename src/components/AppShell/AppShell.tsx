@@ -17,7 +17,12 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
     month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
   });
   return (
-    <div className="app-shell">
+    <div className="app-shell" onClickCapture={event => {
+      // WebKit pointer clicks need not focus a button. Establish the real opener
+      // before a modal mounts; useModalFocus still owns trapping and restoration.
+      const button = event.target instanceof Element ? event.target.closest("button") : null;
+      if (button && !button.disabled && document.activeElement !== button) button.focus({ preventScroll: true });
+    }}>
       <header className="app-shell-header">
         <div className="app-shell-identity">
           <h1>Task<span className="app-shell-wordmark-flow">Flow</span></h1>

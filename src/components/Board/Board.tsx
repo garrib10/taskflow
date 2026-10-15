@@ -1,3 +1,4 @@
+import { narrowBoardQuery } from "../../accessibility/boardViewport";
 import "./Board.css";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { DndContext, DragOverlay, closestCenter, pointerWithin, rectIntersection, type CollisionDetection, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type DragOverEvent, type Announcements, type Modifier } from "@dnd-kit/core";
@@ -46,14 +47,14 @@ interface BoardProps {
 
 export default function Board({ board, dispatch, feedback, overlays, ordering }: BoardProps) {
   const orderingMode = ordering?.mode ?? "priority";
-  const [narrow, setNarrow] = useState(() => window.matchMedia?.("(max-width: 600px)").matches ?? false);
+  const [narrow, setNarrow] = useState(() => window.matchMedia?.(narrowBoardQuery).matches ?? false);
   const [activeStage, setActiveStage] = useState<TaskStatus>("todo");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dropHint, setDropHint] = useState<DropHint | null>(null);
   const contexts = taskContexts(board);
   const draggedTask = draggedId ? findTask(board, draggedId) : null;
   useEffect(() => {
-    const media = window.matchMedia?.("(max-width: 600px)");
+    const media = window.matchMedia?.(narrowBoardQuery);
     if (!media) return;
     const update = () => setNarrow(media.matches);
     media.addEventListener("change", update);
@@ -272,7 +273,6 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
       onDragStart={({ active }) => { lastDestination.current = ""; setDraggedId(String(active.id)); announce(`Picked up "${titleFor(active.id)}" from ${board.columns.find(column => column.tasks.some(task => task.id === active.id))?.title}. Use Left and Right to select a column; Space or Enter to drop; Escape or Tab to cancel.`); }}
       onDragOver={handleDragOver}
       onDragCancel={({ active }) => { setDraggedId(null); setDropHint(null); announce(`Movement of "${titleFor(active.id)}" cancelled.`); focusTargets([`move-task-${active.id}`, "task-search"]); }} accessibility={{ restoreFocus: false, announcements, screenReaderInstructions: { draggable: "Press Space or Enter to pick up a task. Use Left and Right to select a workflow column. Press Space or Enter to drop, or Escape or Tab to cancel." } }}>
-      <p id="board-movement-help" className="visually-hidden">Drag with the grip, or press Space or Enter, use Left and Right to choose a stage and drop with Space. Escape cancels. Open task details to change the stage without dragging.</p>
       <div className="visually-hidden" data-live-region role="status" aria-label="Board updates" aria-atomic="true"><span key={announcement.id}>{announcement.message}</span></div>
       <div onFocusCapture={event => { const target = event.target as HTMLElement; const task = target.closest(".task-card"); if (task) lastTaskFocus.current = target.matches("[data-task-drag]") ? target.id : task.id; }}>
         <AppShell lastUpdated={board.lastUpdated} onCreateTask={handleCreateTask}
@@ -335,6 +335,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
 
           </>}
         >
+          <p id="board-movement-help" className="board-movement-help">Drag with the grip, or press Space or Enter to pick up a task. Use Left and Right to choose a stage; Space or Enter drops it. Escape or Tab cancels. You can also change Stage in Edit task.</p>
           <div className="board-workflow-header"><span className="board-eyebrow">Workflow</span></div>
           {totalTaskCount > 0 && matchingTaskCount === 0 && <section className="board-filtered-empty" aria-labelledby="filtered-empty-title">
             <h2 id="filtered-empty-title">No tasks match your search and filters</h2>
@@ -359,7 +360,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
           </div>
         </AppShell>
       </div>
-      <DragOverlay dropAnimation={null}>{draggedTask && <div className="task-drag-overlay"><small>Moving from {board.columns.find(column => column.id === draggedTask.status)?.title}</small><strong>{draggedTask.title}</strong><span>{dropHint?.label ?? "Choose a workflow destination"}</span></div>}</DragOverlay>
+      <DragOverlay dropAnimation={null}>{draggedTask && <div className="task-drag-overlay" aria-hidden="true"><small>Moving from {board.columns.find(column => column.id === draggedTask.status)?.title}</small><strong>{draggedTask.title}</strong><span>{dropHint?.label ?? "Choose a workflow destination"}</span></div>}</DragOverlay>
     </DndContext>
   );
 }
