@@ -185,13 +185,13 @@ describe("linked task board interactions", () => {
   it("opens the hidden parent from the subtask editor while preserving filters", async () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
-    await user.type(screen.getByLabelText("Search:"), "Child work");
+    await user.type(screen.getByLabelText("Search tasks"), "Child work");
     expect(screen.queryByRole("heading", { name: "Parent work", level: 3 })).not.toBeInTheDocument();
     await user.click(card("Child work").getByRole("button", { name: "Open task Child work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     const locate = screen.getByRole("button", { name: "Open parent Parent work" });
     locate.focus();
     await user.keyboard("{Enter}");
-    expect(screen.getByLabelText("Search:")).toHaveValue("Child work");
+    expect(screen.getByLabelText("Search tasks")).toHaveValue("Child work");
     expect(screen.getByRole("dialog", { name: "Parent work" })).toHaveTextContent("Child work");
     expect(card("Child work").getByRole("button", { name: "Open task Child work" })).toBeInTheDocument();
   });
@@ -207,12 +207,12 @@ describe("linked task board interactions", () => {
   it("keeps progress when children are hidden and opens them from the parent editor", async () => {
     const user = userEvent.setup();
     render(<Harness initialBoard={makeBoard([parent, child])} />);
-    await user.type(screen.getByLabelText("Search:"), "Parent work");
+    await user.type(screen.getByLabelText("Search tasks"), "Parent work");
     expect(screen.queryByRole("heading", { name: "Child work", level: 3 })).not.toBeInTheDocument();
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "1");
     await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     await user.click(screen.getByRole("button", { name: "Open subtask Child work" }));
-    expect(screen.getByLabelText("Search:")).toHaveValue("Parent work");
+    expect(screen.getByLabelText("Search tasks")).toHaveValue("Parent work");
     expect(within(screen.getByRole("dialog", { name: "Edit SubTask" })).getByRole("button", {name:"Open parent Parent work"})).toBeInTheDocument();
   });
 
@@ -272,7 +272,7 @@ describe("linked task board interactions", () => {
     const user = userEvent.setup();
     const completed = makeTask({ id: "done-child", title: "Completed subtask", parentId: parent.id, status: "done" });
     render(<Harness initialBoard={makeBoard([parent, child, completed])} />);
-    await user.type(screen.getByLabelText("Search:"), "Parent work");
+    await user.type(screen.getByLabelText("Search tasks"), "Parent work");
     await user.click(card("Parent work").getByRole("button", { name: "Open task Parent work" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
     const editor = within(screen.getByRole("dialog", { name: "Edit Task" }));
     expect(card("Parent work").getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");

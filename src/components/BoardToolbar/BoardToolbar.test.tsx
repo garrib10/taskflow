@@ -29,10 +29,10 @@ it("keeps desktop labels, search and reset native without a static ordering plac
   const user = userEvent.setup(); render(<Harness />);
   const toolbar = screen.getByRole("search", { name: "Search and filter tasks" });
   expect(within(toolbar).getAllByRole("combobox")).toHaveLength(3);
-  expect(screen.getByRole("button", { name: "Reset" })).toBeDisabled();
-  await user.type(screen.getByLabelText("Search:"), "work");
-  await user.click(screen.getByRole("button", { name: "Reset" }));
-  expect(screen.getByLabelText("Search:")).toHaveValue("");
+  expect(screen.getByRole("button", { name: "Clear all search and filters" })).toBeDisabled();
+  await user.type(screen.getByLabelText("Search tasks"), "work");
+  await user.click(screen.getByRole("button", { name: "Clear all search and filters" }));
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("");
   expect(screen.queryByText("Order: Priority")).not.toBeInTheDocument();
 });
 
@@ -60,18 +60,18 @@ it("applies mobile filters immediately, keeps them on Done/Escape, and restores 
 
 it("clears criteria in the sheet without focusing inert Search and contains keyboard navigation", async () => {
   mobileMedia(); const user = userEvent.setup(); render(<Harness />);
-  await user.type(screen.getByLabelText("Search:"), "work");
+  await user.type(screen.getByLabelText("Search tasks"), "work");
   await user.click(screen.getByRole("button", { name: "Filters (0)" }));
   const sheet = screen.getByRole("dialog");
   await user.selectOptions(within(sheet).getByLabelText("Priority"), "high");
-  await user.click(within(sheet).getByRole("button", { name: "Clear all criteria" }));
+  await user.click(within(sheet).getByRole("button", { name: "Clear all search and filters" }));
   expect(within(sheet).getByLabelText("Priority")).toHaveFocus();
   expect(within(sheet).getByLabelText("Priority")).toHaveValue("all");
-  expect(within(sheet).getByRole("button", { name: "Clear all criteria" })).toBeDisabled();
+  expect(within(sheet).getByRole("button", { name: "Clear all search and filters" })).toBeDisabled();
   within(sheet).getByRole("button", { name: "Done" }).focus();
-  await user.tab(); expect(within(sheet).getByLabelText("Priority")).toHaveFocus();
+  await user.tab(); expect(within(sheet).getByLabelText("Category")).toHaveFocus();
   await user.keyboard("{Escape}");
-  expect(screen.getByLabelText("Search:")).toHaveValue("");
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("");
 });
 
 it("preserves filters and closes the sheet when resizing to the desktop layout", async () => {

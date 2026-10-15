@@ -120,7 +120,7 @@ it("reorders only in Manual, persists positions, keeps filters/drafts outside bo
   await user.click(screen.getByRole("button", { name: "Move Alpha later" }));
   await user.click(screen.getByRole("button", {name:"Close task details"}));
   expect(titles()).toEqual(["Beta", "Alpha"]);
-  await user.type(screen.getByLabelText("Search:"), "Alpha");
+  await user.type(screen.getByLabelText("Search tasks"), "Alpha");
   await user.click(screen.getByRole("button", {name:"Open task Alpha"}));
   expect(screen.getByRole("button", { name: "Move Alpha earlier" })).toBeDisabled();
   await user.click(screen.getByRole("button", {name:"Close task details"}));
@@ -130,7 +130,7 @@ it("reorders only in Manual, persists positions, keeps filters/drafts outside bo
   expect(localStorage.getItem(STORAGE_KEY)).not.toContain("Unsaved draft");
   view.unmount(); render(<App />);
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  expect(screen.getByLabelText("Search:")).toHaveValue("");
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("");
   expect(screen.getByLabelText("Ordering")).toHaveValue("manual");
   expect(titles()).toEqual(["Beta", "Alpha"]);
 });

@@ -112,7 +112,7 @@ it("editor stage changes cannot bypass capacity when search hides the occupants"
   const user=userEvent.setup();
   const full=Array.from({length:5},(_,i)=>makeTask({id:`full-${i}`,title:`Occupant ${i}`,status:"in-progress"}));
   render(<Harness tasks={[parent,child,...full]}/>);
-  await user.type(screen.getByLabelText("Search:"),"Review release");
+  await user.type(screen.getByLabelText("Search tasks"),"Review release");
   await user.click(screen.getByRole("button",{name:"Open task Review release"}));
   await user.click(screen.getByRole("button",{name:"Edit task"}));
   await user.selectOptions(screen.getByLabelText("Stage"),"in-progress");
