@@ -2,22 +2,22 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { STORAGE_KEY } from "./utils/storage";
 
-const current = (revision = "original", title = "Saved task") => JSON.stringify({ schemaVersion: 2, revision, board: makeBoard([makeTask({ title })]) });
+const current = (revision = "original", title = "Saved task") => currentBoardRaw(makeBoard([makeTask({ title })]), revision);
 beforeEach(() => localStorage.clear());
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
-const storageNotice = (text: RegExp) => screen.getAllByRole("status").find(node => text.test(node.textContent ?? ""));
+const storageNotice = (text: RegExp) => [...screen.getAllByRole("status"), ...screen.queryAllByRole("alert")].find(node => text.test(node.textContent ?? ""));
 
 it("communicates an empty fallback accurately and keeps recovery available after dismissing a corrupt-data warning", async () => {
   localStorage.setItem(STORAGE_KEY, "{broken");
   const user = userEvent.setup();
   render(<App />);
   const warning = storageNotice(/saved board is invalid/)!;
-  expect(warning).toHaveTextContent("Warning: Your saved board is invalid");
+  expect(warning).toHaveTextContent("Error: Your saved board is invalid");
   expect(warning).toHaveTextContent("An empty workspace is open; the original is untouched");
-  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.getByRole("alert")).toBe(warning);
   expect(screen.queryByRole("heading", { level: 3 })).not.toBeInTheDocument();
   await user.click(within(warning).getByRole("button", { name: /Dismiss notification/ }));
   expect(storageNotice(/saved board is invalid/)).toBeUndefined();
@@ -32,7 +32,7 @@ it("announces a committed migration once, converts the checklist, and stays sile
   const view = render(<App />);
   expect(storageNotice(/saved board was upgraded/)).toHaveTextContent("Information:");
   expect(screen.getByRole("button", { name: "Open task Legacy child" })).toBeInTheDocument();
-  expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).schemaVersion).toBe(2);
+  expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).schemaVersion).toBe(3);
   view.unmount();
   render(<App />);
   expect(storageNotice(/saved board was upgraded/)).toBeUndefined();
@@ -72,7 +72,7 @@ it("reports a failed write, preserves the saved board, and only confirms saving 
   const user = userEvent.setup();
   render(<App />);
   const write = vi.spyOn(Storage.prototype, "setItem").mockImplementationOnce(() => { throw new DOMException("Full", "QuotaExceededError"); });
-  await user.click(screen.getByRole("button", { name: "Edit Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Title"), " updated");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(screen.getByRole("alert")).toHaveTextContent("could not confirm that your changes were saved");
@@ -92,7 +92,7 @@ it("does not announce normal loads or automatic saves", async () => {
   const user = userEvent.setup();
   render(<App />);
   expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Edit Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Description"), " updated");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Updated "Saved task".');
@@ -110,7 +110,7 @@ it("keeps a valid external-tab warning available during routine local edits with
   const warning = storageNotice(/Another tab changed/)!;
   expect(warning).toHaveTextContent("Warning:");
   expect(screen.getByRole("button", { name: "Reload saved board" })).toBeEnabled();
-  await user.click(screen.getByRole("button", { name: "Edit Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Title"), " local");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(warning).toBeInTheDocument();

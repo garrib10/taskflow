@@ -1,0 +1,41 @@
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, expect, it } from "vitest";
+import App from "./App";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
+import { STORAGE_KEY } from "./utils/storage";
+
+afterEach(() => localStorage.clear());
+
+it("keeps criteria and an open draft during an external-storage notice, then hydrates domain only on reload", async () => {
+  const initial = currentBoardRaw();
+  localStorage.setItem(STORAGE_KEY, initial);
+  const user = userEvent.setup();
+  const view = render(<App />);
+  const criteria = within(screen.getByRole("search", { name: "Search and filter tasks" }));
+  await user.type(screen.getByLabelText("Search tasks"), "Build");
+  await user.selectOptions(screen.getByLabelText("Priority"), "medium");
+  await user.click(screen.getByRole("button", { name: "Open task Build search" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
+  const dialog = within(screen.getByRole("dialog", { name: "Edit Task" }));
+  await user.clear(dialog.getByLabelText("Title"));
+  await user.type(dialog.getByLabelText("Title"), "Draft title");
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(initial);
+
+  const external = currentBoardRaw(makeBoard([makeTask({ title: "External work" })]), "external");
+  localStorage.setItem(STORAGE_KEY, external);
+  act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY, newValue: external })));
+  expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
+  expect(dialog.getByLabelText("Title")).toHaveValue("Draft title");
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("Build");
+  expect(criteria.getByLabelText("Priority")).toHaveValue("medium");
+  expect(screen.getByRole("region", { name: "Board storage", hidden: true })).toHaveTextContent("Saving is paused");
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(external);
+
+  view.unmount();
+  render(<App />);
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Search tasks")).toHaveValue("");
+  expect(screen.getByLabelText("Priority")).toHaveValue("all");
+  expect(screen.getByRole("button", { name: "Open task External work" })).toBeInTheDocument();
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(external);
+});

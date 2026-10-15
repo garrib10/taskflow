@@ -2,21 +2,21 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
-import { makeBoard, makeTask } from "./test/fixtures";
+import { currentBoardRaw, makeBoard, makeTask } from "./test/fixtures";
 import { createTask, measureColumns, moveTask, savedTasks } from "./test/appJourney";
 import { STORAGE_KEY } from "./utils/storage";
 
 beforeEach(() => { localStorage.clear(); measureColumns(); });
 afterEach(() => { vi.restoreAllMocks(); localStorage.clear(); });
 
-it("creates, edits, moves, restores and deletes through the full application", async () => {
+it("creates, edits, moves and restores through the full application", async () => {
   const user = userEvent.setup();
   const view = render(<App />);
   await user.click(screen.getByRole("button", { name: "+ Create Task" }));
   expect(screen.getByLabelText("Title")).toHaveFocus();
   await createTask(user, "Journey task");
   const id = savedTasks().find(task => task.title === "Journey task")!.id;
-  await user.click(screen.getByRole("button", { name: "Open task Journey task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Journey task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   const dialog = within(screen.getByRole("dialog", { name: "Edit Task" }));
   await user.clear(dialog.getByLabelText("Title"));
   await user.type(dialog.getByLabelText("Title"), "Edited journey");
@@ -30,6 +30,15 @@ it("creates, edits, moves, restores and deletes through the full application", a
   view.unmount();
   render(<App />);
   expect(screen.getByRole("button", { name: "Open task Edited journey" })).toBeInTheDocument();
+  expect(savedTasks().find(task => task.id === id)).toMatchObject({ title: "Edited journey", description: "Updated description", priority: "high", category: "devops", status: "in-progress" });
+});
+
+it("rejects reverse movement repeatedly and confirms editor deletion after restoration", async () => {
+  const id = "edited-journey";
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([makeTask({ id, title: "Edited journey", description: "Updated description", priority: "high", category: "devops", status: "in-progress" })]), "journey-restoration"));
+  const user = userEvent.setup();
+  render(<App />);
+  expect(savedTasks().find(task => task.id === id)).toMatchObject({ status: "in-progress", title: "Edited journey" });
   const raw = localStorage.getItem(STORAGE_KEY);
   for (let attempt = 0; attempt < 2; attempt++) {
     await moveTask(user, "Edited journey", "Left");
@@ -39,7 +48,8 @@ it("creates, edits, moves, restores and deletes through the full application", a
     dismiss.focus(); await user.keyboard("{Enter}");
     expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
   }
-  await user.click(screen.getByRole("button", { name: "Delete Edited journey" }));
+  await user.click(screen.getByRole("button", { name: "Open task Edited journey" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
+  await user.click(screen.getByRole("button", { name: "Delete task Edited journey" }));
   const confirmation = within(screen.getByRole("dialog", { name: "Delete Task" }));
   expect(confirmation.getByRole("button", { name: "Cancel" })).toHaveFocus();
   await user.click(confirmation.getByRole("button", { name: "Delete" }));
@@ -48,26 +58,26 @@ it("creates, edits, moves, restores and deletes through the full application", a
 });
 
 it("searches titles and descriptions, combines and resets filters without changing persisted state", async () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 2, revision: "filters", board: makeBoard([
+  localStorage.setItem(STORAGE_KEY, currentBoardRaw(makeBoard([
     makeTask({ id: "a", title: "Alpha deployment", description: "Release checklist", priority: "high", category: "devops" }),
     makeTask({ id: "b", title: "Beta", description: "Alpha research", priority: "low", category: "testing", status: "in-review" }),
     makeTask({ id: "c", title: "Gamma", description: "Other work", category: "feature", status: "in-progress" }),
-  ]) }));
+  ]), "filters"));
   const user = userEvent.setup(); render(<App />);
   const raw = localStorage.getItem(STORAGE_KEY);
-  await user.type(screen.getByLabelText("Search:"), "alpha");
-  expect(screen.getByText("2 tasks found")).toBeInTheDocument();
+  await user.type(screen.getByLabelText("Search tasks"), "alpha");
+  expect(screen.getByText("Showing 2 of 3 tasks", { selector: "p" })).toBeInTheDocument();
   await user.selectOptions(screen.getByLabelText("Priority"), "high");
   await user.selectOptions(screen.getByLabelText("Category"), "devops");
   await user.selectOptions(screen.getByLabelText("Status"), "todo");
-  expect(screen.getByText("1 task found")).toBeInTheDocument();
+  expect(screen.getByText("Showing 1 of 3 tasks", { selector: "p" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Open task Alpha deployment" })).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Reset" }));
+  await user.click(screen.getByRole("button", { name: "Clear all search and filters" }));
   for (const [label, value, title] of [["Priority", "low", "Beta"], ["Category", "feature", "Gamma"], ["Status", "in-review", "Beta"]]) {
     await user.selectOptions(screen.getByLabelText(label), value);
-    expect(screen.getByText("1 task found")).toBeInTheDocument();
+    expect(screen.getByText("Showing 1 of 3 tasks", { selector: "p" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: `Open task ${title}` })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await user.click(screen.getByRole("button", { name: "Clear all search and filters" }));
   }
   expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(3);
   expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);

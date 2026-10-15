@@ -1,73 +1,24 @@
-/* Column layout, headings and empty states. */
-.column {
-  flex: 1 1 320px;
-  min-width: 320px;
-  min-height: 500px;
-
-  background: var(--column-background);
-  border: 1px solid var(--column-border);
-  border-radius: var(--radius-large);
-  padding: 1rem;
-
-  transition: box-shadow var(--transition-speed);
-}
-
-.column h2 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
-}
-
-.column-header {
-  background: white;
-  padding: 1rem;
-  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
-  border-bottom: 1px solid var(--column-border);
-  margin: -1rem -1rem 1rem;
-}
-
-.column-header h2 {
-  margin: 0;
-  text-align: center;
-  font-size: 1rem;
-  overflow-wrap: anywhere;
-}
-
-.empty-column {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 150px;
-
-  color: var(--text-secondary);
-  font-style: italic;
-
-  border: 2px dashed var(--column-border);
-  border-radius: var(--radius-medium);
-}
-
-@media (max-width: 1024px) {
-  .column {
-    flex: 0 0 320px;
-    min-height: 450px;
-  }
-}
-
-@media (max-width: 600px) {
-  .column {
-    width: 100%;
-    min-width: 0;
-    flex: 1;
-    min-height: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .column { transition: none; }
-}
-
-.column-header h2:focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 3px;
-  border-radius: var(--radius-small);
-}
+/* One connected workflow; columns use structure rather than floating panels. */
+.column { min-width: 0; min-height: 220px; padding: var(--space-3); background: var(--color-surface-subtle); border-right: var(--border-width) solid var(--color-border); border-top: 3px solid var(--stage-accent); }
+.column:last-child { border-right: 0; }
+.stage-todo { --stage-accent: var(--color-stage-todo-border); }
+.stage-in-progress { --stage-accent: var(--color-stage-in-progress-text); }
+.stage-in-review { --stage-accent: var(--color-stage-in-review-text); }
+.stage-done { --stage-accent: var(--color-stage-done-border); }
+.column-header { padding: var(--space-2) var(--space-1) var(--space-4); }
+.column-heading { display: flex; align-items: center; gap: var(--space-2); }
+.column-header h2 { margin: 0; min-width: 0; font-size: var(--font-size-section); font-weight: var(--font-weight-label); overflow-wrap: anywhere; }
+.stage-marker { flex: 0 0 6px; height: 6px; border-radius: 50%; background: var(--stage-accent); }
+.column-limit { margin-left: auto; white-space: nowrap; font-size: var(--font-size-metadata); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.column-capacity, .column-visible-count { margin: var(--space-2) 0 0; color: var(--color-text-secondary); font-size: var(--font-size-metadata); }
+.column[data-capacity="near"] .column-capacity, .column[data-capacity="full"] .column-capacity { color: var(--color-capacity-full-text); }
+.column[data-capacity="over"] .column-capacity { color: var(--color-capacity-over-text); }
+.column-tasks { min-height: 110px; }
+.column[data-drop-state="valid"] { background: var(--color-feedback-info-surface); outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.column[data-drop-state="invalid"] { outline: 2px dashed var(--color-feedback-error-text); outline-offset: -2px; }
+.column-drop-feedback { font-size: var(--font-size-metadata); line-height: var(--line-height-body); color: var(--color-text-primary); margin: 0 0 var(--space-3); padding: var(--space-2); background: var(--color-surface); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-compact); }
+.empty-column { padding: var(--space-5) var(--space-3); text-align: center; border: var(--border-width) dashed var(--color-border); color: var(--color-text-secondary); border-radius: var(--radius-compact); }
+.empty-column p { margin: var(--space-2) 0; font-size: var(--font-size-support); }
+.empty-column small { display: block; font-size: var(--font-size-metadata); }
+.column-header h2:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+@media (max-width: 600px) { .column { border-right: 0; min-height: auto; } }

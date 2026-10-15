@@ -1,0 +1,234 @@
+[
+  {
+    "name": "Body",
+    "foreground": "#463a33",
+    "background": "#f5f1eb",
+    "ratio": 9.754,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Metadata",
+    "foreground": "#78665b",
+    "background": "#f5f1eb",
+    "ratio": 4.848,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Links",
+    "foreground": "#8a4b38",
+    "background": "#fff",
+    "ratio": 6.679,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Primary action",
+    "foreground": "#fff",
+    "background": "#8a4b38",
+    "ratio": 6.679,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Secondary action",
+    "foreground": "#463a33",
+    "background": "#fff",
+    "ratio": 10.975,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Quiet Delete",
+    "foreground": "#98505a",
+    "background": "#fff",
+    "ratio": 5.785,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Legacy Delete",
+    "foreground": "#991b1b",
+    "background": "#eee8df",
+    "ratio": 6.824,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "High priority",
+    "foreground": "#b91c1c",
+    "background": "#fff",
+    "ratio": 6.47,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Medium priority",
+    "foreground": "#92400e",
+    "background": "#fff",
+    "ratio": 7.09,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Low priority",
+    "foreground": "#166534",
+    "background": "#fff",
+    "ratio": 7.13,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Category label",
+    "foreground": "#6e625a",
+    "background": "#fff",
+    "ratio": 5.903,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Available capacity",
+    "foreground": "#6e625a",
+    "background": "#fbf9f6",
+    "ratio": 5.617,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Near/full capacity",
+    "foreground": "#92400e",
+    "background": "#fbf9f6",
+    "ratio": 6.747,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Over capacity",
+    "foreground": "#991b1b",
+    "background": "#fbf9f6",
+    "ratio": 7.908,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Success",
+    "foreground": "#166534",
+    "background": "#dcfce7",
+    "ratio": 6.492,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Info",
+    "foreground": "#1e40af",
+    "background": "#eff6ff",
+    "ratio": 8.015,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Warning",
+    "foreground": "#92400e",
+    "background": "#fef3c7",
+    "ratio": 6.367,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Error",
+    "foreground": "#991b1b",
+    "background": "#fee2e2",
+    "ratio": 6.803,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Validation",
+    "foreground": "#b91c1c",
+    "background": "#fee2e2",
+    "ratio": 5.296,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Empty state",
+    "foreground": "#6e625a",
+    "background": "#fbf9f6",
+    "ratio": 5.617,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Drag source and destination text",
+    "foreground": "#463a33",
+    "background": "#fbf9f6",
+    "ratio": 10.443,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Parent link",
+    "foreground": "#4b5563",
+    "background": "#eff6ff",
+    "ratio": 6.944,
+    "minimum": 4.5,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Focus on canvas",
+    "foreground": "#8a4b38",
+    "background": "#f5f1eb",
+    "ratio": 5.936,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Focus on surface",
+    "foreground": "#8a4b38",
+    "background": "#fff",
+    "ratio": 6.679,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Control border on surface",
+    "foreground": "#917d6d",
+    "background": "#fff",
+    "ratio": 3.919,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Control border on inset",
+    "foreground": "#917d6d",
+    "background": "#eee8df",
+    "ratio": 3.218,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Progress",
+    "foreground": "#a16b55",
+    "background": "#efe1d7",
+    "ratio": 3.457,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Completed check",
+    "foreground": "#fff",
+    "background": "#8a4b38",
+    "ratio": 6.679,
+    "minimum": 3,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  },
+  {
+    "name": "Disabled (exempt)",
+    "foreground": "#786d64",
+    "background": "#eee8e1",
+    "ratio": 4.14,
+    "minimum": null,
+    "scope": "Resolved rendered role colors; axe separately inspects painted critical states"
+  }
+]

@@ -1,0 +1,46 @@
+.editor-parent-pill {
+  min-height: var(--size-touch-target);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--color-parent-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-parent-surface);
+  color: var(--color-parent-text);
+  font: inherit;
+  font-size: var(--font-size-support);
+  cursor: pointer;
+}
+.editor-parent-pill:hover { border-color: var(--color-parent-border-hover); background: var(--color-parent-hover); }
+.editor-parent-pill:focus-visible {
+  outline: var(--focus-ring);
+  box-shadow: var(--focus-shadow);
+  outline-offset: var(--focus-offset-inset);
+}
+.parent-pill-icon { flex-shrink: 0; color: var(--color-parent-icon); }
+.parent-pill-icon.is-complete { color: var(--color-parent-border-hover); }
+.editor-parent-pill > span:not(.parent-pill-title) { flex-shrink: 0; white-space: nowrap; }
+.parent-pill-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+}
+.task-parent-field { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.task-parent-field > span { color: var(--color-text-muted); font-size: var(--font-size-support); }
+.task-parent-field .editor-parent-pill { margin-top: 0; border-radius: var(--radius-control); }
+
+.task-parent-row { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
+.task-parent-row .editor-parent-pill { flex: 0 1 auto; }
+/* Relationship editing stays beside the parent value, outside the action footer. */
+.task-parent-row.has-parent-action, .unlinked-parent-row { width: 100%; justify-content: space-between; }
+.unlinked-parent-row { min-height: var(--size-touch-target); border-bottom: 1px solid var(--color-border); }
+.parent-field-empty { color: var(--color-text-muted); font-size: var(--font-size-support); }
+.parent-field-action { flex-shrink: 0; min-height: var(--size-touch-target); min-width: var(--size-touch-target); padding: 0 4px; border: 0; border-radius: var(--radius-compact); background: transparent; color: var(--color-action-subtle-text); font: inherit; font-size: var(--font-size-support); font-weight: var(--font-weight-medium); white-space: nowrap; cursor: pointer; }
+.parent-field-action:hover { text-decoration: underline; }
+.parent-field-action:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); box-shadow: var(--focus-shadow); }

@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-15",
+  "browser": "153.0.8010.12",
+  "sourceBase": "9df4880",
+  "url": "http://127.0.0.1:4189",
+  "fixture": "Eight synthetic tasks; one parent with two children, one completed. Fixed fixture dates, en-US/America/New_York, DPR1, reduced motion. No personal browser profile, CSS injection or image editing.",
+  "captures": [
+    {
+      "file": "desktop-board.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 103953,
+      "sha256": "bab02e0e55409e67a146c7bfc9f5f7dc7c9d50ed0bf39b3988ddf22d87c20039"
+    },
+    {
+      "file": "desktop-details.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 127810,
+      "sha256": "daceb0a9354dbdfc574d8eaf4971054f334d893ddd48ca52677dd37b8ccbdd33"
+    },
+    {
+      "file": "desktop-editor.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 131165,
+      "sha256": "0960925d6c4dfc2b1cca30896d09b9b01228f60313a3b61ce4c7b246a3f97abe"
+    },
+    {
+      "file": "desktop-filters.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 81529,
+      "sha256": "264cd5b2981ac68a133683534cb4dede613faa974cc040856a289c99e12f7875"
+    },
+    {
+      "file": "mobile-board.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 48006,
+      "sha256": "39f3bdbbdfe9a516d2179171ff2e82b9a1f24f2729cad01e4c3dfad9676794f8"
+    },
+    {
+      "file": "mobile-details.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 48944,
+      "sha256": "0ff3eb8983273db9f09b1fc2bbd623036122c2d54ae2465015813e35a0bd5d4e"
+    }
+  ]
+}

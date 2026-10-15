@@ -1,4 +1,4 @@
-import type { TaskCategory } from "./taskCategory";
+import type { TaskCategory } from "./taskCategory.ts";
 
 /** union type for task priority and status */
 

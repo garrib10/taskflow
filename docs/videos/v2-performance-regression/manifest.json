@@ -1,0 +1,30 @@
+{
+  "recordedDate": "2026-10-15",
+  "sourceCommit": "c52f53e09c825eceaa703235f09caf2046eb2131",
+  "productionJavaScriptSHA256": "852645751b4140fcb3bd1d4f65aa9c08b68b61aa31c0f2da47da4be41a040a73",
+  "browser": "Playwright Chromium 153.0.8010.12",
+  "fixture": "8 synthetic tasks, including one parent and two linked children; one child complete",
+  "notes": "Silent, real-time Playwright recordings with intentional reading pauses and slower automated actions. Demonstrations, not performance measurements. Includes refresh without reseeding in the desktop workflow. Media metadata/seek checked in Chromium and sample frames independently decoded with the bundled FFmpeg.",
+  "clips": [
+    {
+      "name": "desktop-task-workflow",
+      "duration": 15.52,
+      "width": 1280,
+      "height": 800,
+      "bytes": 1268717,
+      "decodeAndSeekVerified": true,
+      "sha256": "c88a50f2733b93b4ebfc02812f601ec1f4ef337fad1cb864a076138258ab7dd7",
+      "sampledFramesVisuallyVerified": true
+    },
+    {
+      "name": "mobile-filtering",
+      "duration": 12.44,
+      "width": 390,
+      "height": 844,
+      "bytes": 430383,
+      "decodeAndSeekVerified": true,
+      "sha256": "8052f46b82ddf55a04beeec74cab801cc92e187b92fc4418eef8324e210b9874",
+      "sampledFramesVisuallyVerified": true
+    }
+  ]
+}

@@ -1,54 +1,12 @@
+@import "./styles/tokens.css";
+
 :root {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  line-height: 1.5;
-  font-weight: 400;
-
-  /* ===== App Colors ===== */
-  --background: #f4f6f9;
-  --board-background: #ffffff;
-
-  /* ===== Columns ===== */
-  --column-background: #e9eef5;
-  --column-border: #d8e0ea;
-
-  /* ===== Cards ===== */
-  --card-background: #ffffff;
-
-  /* ===== Text ===== */
-  --text-primary: #1f2937;
-  --text-secondary: #4b5563;
-
-  /* ===== Priority ===== */
-  --priority-high: #dc2626;
-  --priority-medium: #d97706;
-  --priority-low: #16a34a;
-
-  /* Badge text uses darker shades without changing priority borders. */
-  --priority-high-text: #b91c1c;
-  --priority-medium-text: #92400e;
-  --priority-low-text: #166534;
-
-  /* ===== Shadows ===== */
-  --shadow-small: 0 2px 6px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
-  --shadow-large: 0 8px 20px rgba(0, 0, 0, 0.16);
-
-  /* ===== Radius ===== */
-  --radius-large: 16px;
-  --radius-medium: 12px;
-  --radius-small: 8px;
-
-  /* ===== Animation ===== */
-  --transition-speed: 0.18s ease;
-
-  color: var(--text-primary);
-  background-color: var(--background);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-canvas);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -62,8 +20,8 @@
 
 body {
   margin: 0;
-  min-width: 320px;
-  background: var(--background);
+  min-width: var(--size-viewport-min);
+  background: var(--color-canvas);
 }
 
 #root {
@@ -75,8 +33,9 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  box-shadow: var(--focus-shadow);
+  outline-offset: var(--focus-offset);
 }
 
 /* Assistive technology text stays in the accessibility tree without affecting layout. */
