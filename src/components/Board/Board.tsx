@@ -289,7 +289,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
             )}
           </>}
           toolbar={<BoardToolbar
-            ordering={ordering && <Field controlId="task-ordering-mode" label="Ordering"><select id="task-ordering-mode" aria-describedby="task-ordering-help" aria-controls="taskflow-board" value={orderingMode} onChange={event => { if (isOrderingMode(event.target.value)) ordering.selectMode(event.target.value); }}><option value="priority">Priority</option><option value="manual">Manual</option></select></Field>}
+            ordering={ordering && <Field controlId="task-ordering-mode" label="Ordering"><select id="task-ordering-mode" aria-describedby={orderingMode === "manual" ? "task-ordering-help" : undefined} aria-controls="taskflow-board" value={orderingMode} onChange={event => { if (isOrderingMode(event.target.value)) ordering.selectMode(event.target.value); }}><option value="priority">Priority</option><option value="manual">Manual</option></select></Field>}
             search={<SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />}
             filters={<FilterControls priorityFilter={priorityFilter} categoryFilter={categoryFilter} statusFilter={statusFilter}
               onPriorityChange={setPriorityFilter} onCategoryChange={setCategoryFilter} onStatusChange={setStatusFilter} />}
@@ -297,9 +297,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
             filterCount={filterCount}
             activeCriteria={isFiltering} onReset={handleResetControls}
             resultSummary={<BoardResults total={totalTaskCount} matching={matchingTaskCount} filtered={isFiltering} />}
-            orderingHelp={ordering && <p id="task-ordering-help" className="toolbar-ordering-help">{orderingMode === "priority"
-              ? "High → Medium → Low. Equal priorities keep their arrival order in each stage."
-              : isFiltering ? "Manual order · Clear search and filters to reorder tasks within a stage."
+            orderingHelp={ordering && orderingMode === "manual" && <p id="task-ordering-help" className="toolbar-ordering-help">{isFiltering ? "Manual order · Clear search and filters to reorder tasks within a stage."
               : "Manual order · Arrange tasks within each stage. Switching modes keeps your positions."}</p>}
           />}
           overlays={<>

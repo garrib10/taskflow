@@ -113,10 +113,11 @@ it("reports matching and complete-board counts separately without reducing hidde
   expect(stage).toHaveTextContent("5 / 5Full"); expect(stage).toHaveTextContent("1 shown · 5 total");
 });
 
-it("exposes native groups, accurate priority help and a restrained count status", async () => {
+it("exposes native groups, selected ordering and a restrained count status", async () => {
   seed(); render(<App />);
   expect(screen.getByRole("group", { name: "Task filters" })).toBeVisible();
-  expect(screen.getByLabelText("Ordering")).toHaveAccessibleDescription("High → Medium → Low. Equal priorities keep their arrival order in each stage.");
+  expect(screen.getByLabelText("Ordering")).toHaveValue("priority");
+  expect(screen.getByLabelText("Ordering")).not.toHaveAttribute("aria-describedby");
   fireEvent.change(search(), { target: { value: "missing" } });
   fireEvent.change(search(), { target: { value: "Alpha" } });
   const status = screen.getByRole("status", { name: "Search results" });
