@@ -30,6 +30,7 @@ dist-ssr/
 *.sln
 *.sw?
 
-# Browser test reports and failure artifacts
+# Test reports and failure artifacts
 playwright-report/
 test-results/
+test-results-unit/

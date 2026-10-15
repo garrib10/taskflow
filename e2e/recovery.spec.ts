@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { currentBoardRaw, makeBoard, makeTask } from "../src/test/fixtures.ts";
 import { v15BoardFixture } from "../src/test/migrationFixtures.ts";
 
 const saved = (page: Page) => page.evaluate(() => localStorage.getItem("taskflow-board"));
@@ -129,4 +130,58 @@ test("transient read restriction stays paused until a confirmed successful retry
   expect(await saved(page)).toBe(original);
   await page.reload();
   expect(await saved(page)).toBe(original);
+});
+
+test("native cross-tab changes preserve a local draft and remote bytes until an explicit confirmed reload", async ({ page, context }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  const initial = currentBoardRaw(makeBoard([makeTask({ title: "Shared task" })]));
+  await page.evaluate(value => localStorage.setItem("taskflow-board", value), initial);
+  await page.reload();
+  await page.getByRole("button", { name: "Open task Shared task", exact: true }).click();
+  await page.getByRole("button", { name: "Edit task", exact: true }).click();
+  await page.getByLabel("Title", { exact: true }).fill("Local unsaved draft");
+  const writer = await context.newPage();
+  writer.on("pageerror", error => errors.push(error.message));
+  try {
+    await writer.goto("/");
+    await writer.getByRole("button", { name: "Open task Shared task", exact: true }).click();
+    await writer.getByRole("button", { name: "Edit task", exact: true }).click();
+    await writer.getByLabel("Title", { exact: true }).fill("Remote saved task");
+    await writer.getByLabel("Description", { exact: true }).fill("Remote saved notes");
+    await writer.getByRole("button", { name: "Save Changes", exact: true }).click();
+    await expect(writer.getByRole("button", { name: "Open task Remote saved task", exact: true })).toBeVisible();
+    const remote = await saved(writer);
+    expect(remote).not.toBe(initial);
+    // Both pages share only this isolated context's storage. No synthetic StorageEvent.
+    const recovery = page.getByRole("region", { name: "Board storage", includeHidden: true });
+    await expect(recovery).toContainText("Another tab changed");
+    await expect(page.getByLabel("Title", { exact: true })).toHaveValue("Local unsaved draft");
+    expect(await saved(page)).toBe(remote);
+    await page.bringToFront();
+    await page.getByRole("button", { name: "Save Changes", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Open task Local unsaved draft", exact: true })).toBeVisible();
+    await expect(recovery).toContainText("Saving is paused");
+    await expect(page.getByRole("status").filter({ hasText: "Another tab changed" })).toContainText("Warning:");
+    expect(await saved(page)).toBe(remote);
+    expect(await saved(writer)).toBe(remote);
+    const reload = page.getByRole("button", { name: "Reload saved board", exact: true });
+    await reload.click();
+    const confirmation = page.getByRole("dialog", { name: "Reload Saved Board?", exact: true });
+    await expect(confirmation.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(reload).toBeFocused();
+    await expect(page.getByRole("button", { name: "Open task Local unsaved draft", exact: true })).toBeVisible();
+    expect(await saved(page)).toBe(remote);
+    await reload.click();
+    await confirmation.getByRole("button", { name: "Reload Saved Board", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Open task Remote saved task", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Open task Local unsaved draft", exact: true })).toHaveCount(0);
+    await expect(recovery).toHaveCount(0);
+    expect(await saved(page)).toBe(remote);
+    expect(await saved(writer)).toBe(remote);
+    expect(errors).toEqual([]);
+  } finally {
+    await writer.close();
+  }
 });
