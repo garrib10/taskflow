@@ -50,10 +50,24 @@ describe("atomic movement", () => {
 });
 
 describe("deterministic actions and immutable updates", () => {
+  it("accepts inclusive content bounds on creation and complete content editing", () => {
+    const board = makeBoard([]);
+    freezeDeep(board);
+    const minimum = makeTask({ title: "ABC", description: "D" });
+    const created = boardReducer(board, { type: "CREATE_TASK", task: minimum, updatedAt });
+    expect(tasks(created)).toEqual([minimum]);
+    freezeDeep(created);
+    const maximum = { ...edits, title: "T".repeat(150), description: "D".repeat(300) };
+    const edited = boardReducer(created, { type: "UPDATE_TASK", taskId: minimum.id, edits: maximum, updatedAt });
+    expect(tasks(edited)).toEqual([{ ...minimum, ...maximum }]);
+    expect(tasks(created)).toEqual([minimum]);
+  });
   it.each([
     ["title", "   "], ["title", "ab"], ["title", "x".repeat(151)],
     ["description", ""], ["description", "x".repeat(301)],
     ["priority", "urgent"], ["category", "unknown"],
+    ["title", null], ["description", 42],
+    ["priority", "toString"], ["category", "__proto__"],
   ])("rejects invalid %s in a multi-field edit before changing any content, relationships or positions", (field, value) => {
     const initial = makeBoard([makeTask({ id: "parent" }), makeTask({ id: "child", parentId: "parent", status: "in-progress", subtasks: [checklistItem] })]);
     const board = boardReducer(initial, { type: "INITIALIZE_MANUAL_ORDER", updatedAt: fixtureDate });

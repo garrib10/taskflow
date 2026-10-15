@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { scan } from "./accessibilityAudit.ts";
 import { currentBoardRaw, makeBoard, makeTask } from "../src/test/fixtures.ts";
 
 async function seed(page: Page) {
@@ -34,6 +35,7 @@ test("combined scope, individual removal and clear-all preserve saved Manual dat
   if (await trigger.count()) { await page.getByRole("button", { name: "Done", exact: true }).click(); await expect(trigger).toHaveText("Filters (3)"); }
   await expect(page.locator(".toolbar-result-count")).toHaveText("Showing 1 of 7 tasks");
   await expect(page.getByLabel("Ordering", { exact: true })).toHaveAccessibleDescription(/Clear search and filters to reorder/);
+  await scan(page, "active-search-filter-controls");
   const remove = page.getByRole("button", { name: "Remove Category: DevOps", exact: true });
   await remove.focus(); await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Remove Priority: High", exact: true })).toBeFocused();

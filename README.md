@@ -96,33 +96,36 @@ npm run test:e2e
 
 `npm test` runs Vitest once; `test:watch` stays running during development.
 Typecheck validates application, tests, and tooling without building the bundle.
-The current suite has **294 tests in 25 files**: 217 unit tests, 63 component/hook
-checks, and 14 full-application integration tests. Test counts are candidate
-measurements, not a promise of complete coverage.
+The measured v2 suite has **487 tests in 45 files** and **70 Chromium browser cases**.
+See the [current testing strategy and risk map](docs/v2-testing.md) for the
+baseline comparison, suite boundaries,
+fixtures, accessibility scope, repeated checks, and commands for individual files.
+No numerical coverage target is configured or implied by these counts.
 
-Playwright runs three journeys at each of 1280 × 720 and 390 × 844: **six smoke
-cases** in isolated Chromium storage. It starts Vite dev locally and production
-preview in CI at `http://127.0.0.1:4173`, reusing an existing local server outside
-CI. Movement uses the supported keyboard interaction. Real touch and spoken
-screen-reader checks remain separate. Failure screenshots/traces are ignored;
-`npm run test:e2e:report` opens the HTML report.
+Playwright uses isolated desktop/mobile contexts. It starts Vite dev locally and
+production preview in CI at `http://127.0.0.1:4173`; build first for production
+preview. Do not rebuild `dist` during a browser run. Failure reports, traces and
+screenshots stay out of Git; `npm run test:e2e:report` opens the HTML report.
 
 ```bash
 PLAYWRIGHT_BASE_URL=https://your-preview.vercel.app npm run test:e2e
 ```
 
 Protected Vercel previews require owner access; the suite neither stores account
-credentials nor bypasses protection. [Integration and CI documentation](docs/v1.5-integration-ci.md)
-explains the coverage boundaries.
+credentials nor bypasses protection. Physical-device and spoken screen-reader
+checks remain separate. The [v1.5 integration record](docs/v1.5-integration-ci.md)
+is historical evidence; the [v2 testing guide](docs/v2-testing.md) is current.
 
 ## Keyboard controls
 
-Tab to a task's movement group. Press **Space** to pick it up, **Left/Right** to
-choose a stage, **Space** to drop, or **Escape** to cancel. Ordinary tasks and
-subtasks use the same workflow guards. Tab to the task title and activate it to
-open the editor; titles turn blue and underline on hover/focus. Dialogs contain
-Tab/Shift+Tab focus and restore a meaningful control on closing. See the
-[accessibility guide](docs/v1.5-accessibility-keyboard.md) for details.
+Tab to a task's movement button. Press **Space or Enter** to pick it up,
+**Left/Right** to choose a stage, **Space or Enter** to drop, or **Escape or Tab**
+to cancel. Ordinary tasks and subtasks use the same workflow guards. Keyboard
+movement retains the grip after an accepted move; filter-hidden tasks use a
+meaningful destination fallback. Task titles open read-first details; choose
+**Edit task** to edit content or use the validated **Stage** selector. Dialogs
+contain Tab/Shift+Tab focus and restore a meaningful control on closing. See the
+[v2 accessibility audit](docs/v2-accessibility.md) for focus, zoom and input scope.
 
 ## Architecture and data
 
@@ -204,7 +207,7 @@ deployments. `staging` is the release-candidate branch, also using a normal Prev
 The release-preparation PR targets `develop`; it does not publish v1.5.0.
 
 Frontend CI's **Lint and build** job runs `npm ci`, lint, strict typecheck,
-`npm test -- --run`, build, and `npm run test:e2e:ci` after installing Chromium.
+the complete Vitest suite (console + JUnit), build, and `npm run test:e2e:ci` after installing Chromium.
 **Dependency review** checks PR dependency changes, and CodeQL reviews source.
 CI runs for PRs into and pushes to `develop`, `staging`, and `main` as configured.
 See [branching and release workflow](docs/branching-workflow.md) for promotion.

@@ -1,5 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { AxeBuilder } from "@axe-core/playwright";
+import { scan } from "./accessibilityAudit.ts";
 import { currentBoardRaw, makeBoard, makeTask } from "../src/test/fixtures.ts";
 import { representativeBoard } from "./boardFixtures.ts";
 
@@ -10,13 +10,7 @@ async function seed(page: Page, raw = currentBoardRaw(representativeBoard())) {
   await expect(page.getByRole("heading", { name: "TaskFlow", exact: true })).toBeVisible();
 }
 async function activate(page: Page, button: Locator) { await button.focus(); await page.keyboard.press("Enter"); }
-async function scan(page: Page, name: string) {
-  // Inspect settled colors, rather than an intermediate entrance/hover animation frame.
-  await page.evaluate(async () => { await Promise.all(document.getAnimations().filter(animation => animation.playState === "running").map(animation => animation.finished.catch(() => {}))); });
-  const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]).analyze();
-  await test.info().attach(`${name}-axe`, { body: JSON.stringify({ violations: result.violations, incomplete: result.incomplete }), contentType: "application/json" });
-  expect(result.violations, `${name}: no automatically detectable violations`).toEqual([]);
-}
+
 
 test("board, focused keyboard movement and search scope have accessible semantics", async ({ page }) => {
   await seed(page, currentBoardRaw(makeBoard([makeTask({ title: "Keyboard audit" })])));
