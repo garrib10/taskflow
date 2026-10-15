@@ -1,5 +1,5 @@
-import type { Board } from "../domain/board/Board";
-import { taskStatuses, type Task } from "../domain/task/Task";
+import type { Board } from "../domain/board/Board.ts";
+import { taskStatuses, type Task } from "../domain/task/Task.ts";
 export const fixtureDate = new Date("2026-01-01T00:00:00.000Z");
 export function makeTask(overrides: Partial<Task> = {}): Task {
   return {
@@ -20,4 +20,11 @@ export function freezeDeep(value: unknown): void {
   if (value === null || typeof value !== "object") return;
   Object.values(value).forEach(freezeDeep);
   Object.freeze(value);
+}
+
+/** Literal schema-3 setup for ordinary loads, independent of the production encoder. */
+export function currentBoardRaw(board: Board = makeBoard(), revision = "initial"): string {
+  return JSON.stringify({ schemaVersion: 3, revision, board: { ...board,
+    columns: board.columns.map(column => ({ ...column, manualOrder: column.manualOrder ?? null })),
+  } });
 }

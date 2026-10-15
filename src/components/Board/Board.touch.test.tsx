@@ -10,6 +10,8 @@ import Board from "./Board";
 beforeEach(() => {
   vi.useFakeTimers();
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+    if (this.matches(".task-drag-overlay") || this.querySelector(".task-drag-overlay")) return document.querySelector<HTMLElement>(".task-card.is-dragging")?.getBoundingClientRect() ?? new DOMRect(16,150,280,180);
+    if (this.style.position === "fixed" && this.style.width) return new DOMRect(parseFloat(this.style.left) || 0, parseFloat(this.style.top) || 0, parseFloat(this.style.width), parseFloat(this.style.height) || 180);
     const column = this.matches(".column") ? this : this.closest<HTMLElement>(".column");
     const index = taskStatuses.findIndex(status => column?.getAttribute("aria-labelledby") === `column-${status}-title`);
     if (this.matches(".column")) return new DOMRect(index * 344, 100, 320, 500);
@@ -35,21 +37,21 @@ const end = async (handle: HTMLElement) => act(async () => {
   await vi.advanceTimersByTimeAsync(100);
 });
 
-it("moves a task after a brief touch hold and restores its title focus", async () => {
+it("moves a task after a brief touch hold and restores its movement grip focus", async () => {
   render(<Harness tasks={[task]} />);
-  const handle = screen.getByRole("group", { name: "Move task Touch work, todo" });
+  const handle = screen.getByRole("button", { name: "Move task Touch work, todo" });
   fireEvent.touchStart(handle, { touches: [point(100)] });
   await hold();
   fireEvent.touchMove(handle, { touches: [point(444)] });
   await end(handle);
-  expect(within(screen.getByRole("region", { name: "in-progress (1)" })).getByRole("button", { name: "Open task Touch work" })).toHaveFocus();
+  expect(within(screen.getByRole("region", { name: "in-progress (1)" })).getByRole("button", { name: "Move task Touch work, in-progress" })).toHaveFocus();
   expect(screen.getAllByRole("button", { name: "Open task Touch work" })).toHaveLength(1);
-  expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Moved "Touch work" to in-progress.');
+  expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Moved "Touch work" to in-progress, position 1 of 1.');
 });
 
 it("abandons touch activation when a scrolling gesture starts before the hold", async () => {
   render(<Harness tasks={[task]} />);
-  const handle = screen.getByRole("group", { name: "Move task Touch work, todo" });
+  const handle = screen.getByRole("button", { name: "Move task Touch work, todo" });
   fireEvent.touchStart(handle, { touches: [point(100)] });
   fireEvent.touchMove(handle, { touches: [point(125)] });
   await hold();
@@ -60,18 +62,18 @@ it("abandons touch activation when a scrolling gesture starts before the hold", 
 
 it("cancels an active touch drag without moving the task", async () => {
   render(<Harness tasks={[task]} />);
-  const handle = screen.getByRole("group", { name: "Move task Touch work, todo" });
+  const handle = screen.getByRole("button", { name: "Move task Touch work, todo" });
   fireEvent.touchStart(handle, { touches: [point(100)] });
   await hold();
   fireEvent.touchMove(handle, { touches: [point(444)] });
   fireEvent.touchCancel(handle, { touches: [] });
   expect(screen.getByRole("region", { name: "todo (1)" })).toHaveTextContent("Touch work");
-  expect(screen.getByRole("button", { name: "Open task Touch work" })).toHaveFocus();
+  expect(screen.getByRole("button", { name: "Move task Touch work, todo" })).toHaveFocus();
 });
 
 it("leaves multi-touch gestures available rather than starting a drag", async () => {
   render(<Harness tasks={[task]} />);
-  const handle = screen.getByRole("group", { name: "Move task Touch work, todo" });
+  const handle = screen.getByRole("button", { name: "Move task Touch work, todo" });
   fireEvent.touchStart(handle, { touches: [point(100), { ...point(150), identifier: 2 }] });
   await hold();
   expect(screen.getByRole("status", { name: "Board updates" })).not.toHaveTextContent("Picked up");
@@ -80,7 +82,7 @@ it("leaves multi-touch gestures available rather than starting a drag", async ()
 it("keeps parent completion rules authoritative for touch drops", async () => {
   const parent = { ...task, status: "in-review" as const };
   render(<Harness tasks={[parent, makeTask({ id: "child", title: "Unfinished subtask", parentId: parent.id })]} />);
-  const handle = screen.getByRole("group", { name: "Move task Touch work, in-review" });
+  const handle = screen.getByRole("button", { name: "Move task Touch work, in-review" });
   fireEvent.touchStart(handle, { touches: [point(788)] });
   await hold();
   fireEvent.touchMove(handle, { touches: [point(1132)] });

@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-12T06:10:45.143Z",
+  "browser": "153.0.8010.12",
+  "origin": "local production preview",
+  "tiers": [
+    {
+      "total": 20,
+      "children": 5,
+      "distribution": [
+        8,
+        5,
+        3,
+        4
+      ],
+      "payloadBytes": 6022,
+      "overCapacity": 0
+    },
+    {
+      "total": 100,
+      "children": 30,
+      "distribution": [
+        45,
+        25,
+        15,
+        15
+      ],
+      "payloadBytes": 43362,
+      "overCapacity": 2
+    },
+    {
+      "total": 300,
+      "children": 90,
+      "distribution": [
+        135,
+        75,
+        45,
+        45
+      ],
+      "payloadBytes": 137828,
+      "overCapacity": 2
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "scrollWidth": 1280
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "scrollWidth": 768
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "scrollWidth": 375
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "scrollWidth": 360
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320
+    },
+    {
+      "width": 375,
+      "height": 300,
+      "scrollWidth": 375
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 844
+    },
+    {
+      "width": 1280,
+      "height": 375,
+      "scrollWidth": 1280
+    }
+  ],
+  "exceptions": [],
+  "rejections": [
+    {
+      "name": "reverse",
+      "storedBoardUnchanged": true,
+      "sourceFocus": true
+    },
+    {
+      "name": "skipped",
+      "storedBoardUnchanged": true,
+      "sourceFocus": true
+    },
+    {
+      "name": "full",
+      "storedBoardUnchanged": true,
+      "sourceFocus": true
+    },
+    {
+      "name": "over-limit",
+      "storedBoardUnchanged": true,
+      "sourceFocus": true
+    },
+    {
+      "name": "unfinished hidden child",
+      "storedBoardUnchanged": true,
+      "sourceFocus": true
+    }
+  ]
+}

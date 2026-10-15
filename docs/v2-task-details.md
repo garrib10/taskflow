@@ -1,0 +1,143 @@
+# Task details and focused drafting
+
+Issue #45 completes the detail boundary left by #44. Board titles open a read-first desktop drawer or a mobile sheet (600px and below). Full titles and descriptions, stage, priority, category, creation time, parent navigation and complete child lists live here. The board retains its compact scanning surface.
+
+## Interaction decisions
+
+- Details initially focus the full task heading. Edit task deliberately opens the existing draft owner; Create Task opens the drafting form directly. Saving or cancelling a root edit returns to the board. Related-task navigation opens that task's details. Closing restores its board title or Search if filters hide it.
+- Form headings explain the action and distinguish draft content from related operations. Description uses the application font, stage labels use existing stage tokens, and primary actions remain reachable in the scrolling form. Required labels, character counts, domain validation, field-error association and invalid-field focus remain intact.
+- Child navigation/creation remains in details and editing; Manage Parent is available only in editing. The parent badge uses the same component directly below the header title in both views. Children sort oldest first and retain full titles and textual stages. Child creation inherits parent priority/category, saves independently and returns to refreshed parent details with focus on Add SubTask. Editor child operations preserve an unfinished parent draft. A note explicitly explains that related work saves separately.
+- Escape and Cancel protect dirty content and parent-selection drafts with a discard confirmation. Keep Editing retains the draft/selection and restores focus. Dirty task and relationship forms register a native beforeunload guard and remove it on cleanup; browsers control whether a page-leaving prompt is shown. No automatic draft persistence or history routing is introduced.
+- Deletion remains explicit in details and the editor, with the existing safe default confirmation. Parent deletion explains that children survive independently. Draft-discard consequences remain in deletion copy. Cancellation restores the destructive action trigger; successful deletion focuses surviving work.
+- Completed parents cannot create new children. Existing legacy checklists remain distinguishable and manageable with their existing domain policies. Stage changes use the labeled selector in task/subtask editing; details show a stage badge, while retaining the shared validated movement operation. Dragging remains available on the board.
+
+`TaskDetails` owns presentation mode only. `TaskForm` retains content drafts; `TaskRelationshipForm` retains its parent selection. Board dispatch/validation, relationship selectors, capacity, ordering, notifications, storage and schema are unchanged. The shared modal focus/isolation hook is reused. The hidden details container has no dialog role or content while another view is active, preventing duplicate dialog/label queries.
+
+## Verification and review
+
+- Full unit/component baseline: **467 tests in 43 files** passed.
+- Full production-browser baseline: **46 Chromium checks** passed across desktop and mobile projects.
+- The reviewed implementation passed the full unit/component suite (467/467) and full production-browser suite (46/46). Final metadata alignment was also checked with the long-content desktop/mobile browser journeys. The initial #45 implementation had one existing 5000ms family-completion timeout in an overlapping component/browser run; sequential full verification passed without timeout/configuration changes.
+- Lint, strict TypeScript checking and production build passed.
+- New coverage verifies read-first entry, related navigation, explicit editing, validation focus, unsaved-content/relationship cancellation, refresh guards, child creation, updated progress, deletion cancellation and focus return.
+- Browser containment/reachability checks use 150-character titles, 300-character descriptions and 30-child lists at 1440×900, 768×1024, 390×844, 375×667, 320×568, 375×300 and 844×390. All child rows and Save Changes remain reachable without page-level horizontal overflow. Existing lifecycle, movement, migration/recovery and preferences browser coverage also passes.
+- Screenshots use isolated synthetic storage and a local production preview: [desktop details](images/v2-task-details/desktop-details.png), [mobile details](images/v2-task-details/mobile-details.png), [desktop editor](images/v2-task-details/desktop-editor.png), [mobile editor](images/v2-task-details/mobile-editor.png).
+
+These checks use Chromium and mobile emulation. Physical device keyboards, actual browser zoom, spoken VoiceOver and Safari/Firefox remain targeted #47/release verification. The board branding/palette and alternate themes discussed during #44 review remain a separate visual pass; #46 owns toolbar redesign.
+
+## Visual review revisions (October 13, 2026)
+
+The first creation-form pass retained too much of the old layout. Owner review requested a substantive compact composer, removal of board movement clutter, restored blue completion marks and a top-right ×.
+
+- Creation/editing now use a compact 520px composer: a single heading, quiet header surface, ×, counters beside labels, tighter content spacing, side-by-side metadata, a separately scrolling body and a fixed action footer. Description stays in the application font. The extra “New work” eyebrow is removed. The × follows the same dirty-draft guard as Cancel/Escape.
+- Board cards no longer render the “…” movement disclosure. Their dedicated drag grip is retained. A labeled Stage selector in details saves immediately through the same validated operation; sequential stages, full-board capacity, unfinished-parent completion and manual arrival policies are preserved. Errors appear beside the selector without closing details or changing the saved stage. Manual Earlier/Later controls live only in details and remain unavailable under filters.
+- Completed linked subtasks have a blue completion mark in the parent’s child list and on their board card. The mark supplements textual stage/context. Decorative card icons do not alter the full title’s accessible name.
+- Details use an accessible 44px × control instead of a text Close button, with unchanged Escape and focus-return behavior. Editor and creation headers use the same control.
+
+Updated screenshots include the [desktop composer](images/v2-task-details/desktop-create.png) and [mobile composer](images/v2-task-details/mobile-create.png), plus the refreshed details/editor images above. Validation results below cover the reviewed implementation.
+
+Review-revision verification: 465 unit/component tests in 43 files, 42 production Chromium browser checks, lint, strict TypeScript, production build and diff checks passed. The two long-content browser checks were repeated after the final metadata alignment adjustment. Screenshots use synthetic data; no owner storage was inspected.
+
+## Parent context and editor consistency
+
+Follow-up review aligned the parent badge beneath the title area in both details and the editor using one `TaskParentLink` component and its owned CSS. Plain child titles gain link styling only on hover or visible keyboard focus. Details no longer expose Manage Parent or an empty related-work section for a linked child; parent assignment/detachment stays in the editor.
+
+The editor now provides Stage for every existing task/subtask, including nested subtask editors. Stage changes save immediately through the same Board movement callback as details and update the board/mobile destination stage. Text and metadata drafts remain untouched until Save Changes. A failed move preserves both the current stage and any content draft, associates the error with Stage and focuses that control. The helper text makes this separate-save behavior explicit. Existing workflow/capacity/parent-completion rules are retained.
+
+Consistency verification: 466 unit/component tests in 43 files and 44 Chromium browser checks passed, including identical badge styling, editor-only parent management, hover/focus child links, immediate editor stage movement with draft preservation, rejection and refresh. Lint, strict TypeScript and production build passed. [Mobile subtask details](images/v2-task-details/mobile-subtask-details.png) · [Mobile subtask editor](images/v2-task-details/mobile-subtask-editor.png) · [Desktop subtask details](images/v2-task-details/desktop-subtask-details.png) · [Desktop subtask editor](images/v2-task-details/desktop-subtask-editor.png).
+
+## Final control-layout review
+
+Details are read-only for Stage; only the editor provides the selector. The editor groups Stage, Priority and Category in that order on one compact row. Creation retains its two metadata fields. The stage helper sentence is removed. Delete task shares the fixed footer row with Cancel and Save Changes, including narrow mobile widths. Existing confirmation and draft protection are retained.
+
+Only completed child tasks render a blue checkmark in parent lists. Incomplete children retain blank alignment space, without an empty circle, in both details and editing. Stage changes in editing still use the shared validated movement operation and persist immediately; the domain rules, data model and content-draft behavior are unchanged.
+
+Final layout verification: 467 unit/component tests in 43 files passed; the final affected component checks passed 30/30. The focused details browser checks passed 12/12 and the full production Chromium suite passed 46/46. New layout assertions verify read-only details, only completed child marks, one dropdown row and one three-button footer row at 1440, 390, 375 and 320px, with no page-level overflow. Lint, strict TypeScript, production build and diff checks passed. Screenshots above were refreshed from the final production build.
+
+## Compact related-work actions
+
+When an edited task can both create a child and manage its parent, Add SubTask and Manage Parent share a compact row with natural button widths. Eligibility remains unchanged: existing parents retain child creation within their list, and linked subtasks retain parent management only. Verified alignment, 44px targets and both dialog actions at 1440, 390 and 320px against the production build; the 21 existing Board relationship tests, lint, strict TypeScript, build and diff checks passed. [Desktop row](images/v2-task-details/desktop-related-actions.png) · [Mobile row](images/v2-task-details/mobile-related-actions.png).
+
+## Metadata order and parent field
+
+Owner review settled on Category → Priority → Stage for task details and editing (creation uses Category → Priority). Linked tasks show Parent immediately above that row as a matching labeled field, using the same navigation control in details and editing. The parent title no longer crowds the heading. A separate parent row preserves room for long titles and keeps mobile metadata readable instead of squeezing four fields together. Stage remains read-only in details and editable only in the editor; all previous action eligibility and draft/movement rules are retained.
+
+Metadata-order verification: 30 affected component tests and 12 desktop/mobile detail browser journeys passed. Four long-content/row-layout checks were repeated after the final mobile three-column adjustment. Lint, strict TypeScript, build and diff checks passed. Synthetic preview checks also retained aligned related-work buttons and working actions at 1440, 390 and 320px. Screenshots were refreshed from the final build.
+
+## Matching subtask sections
+
+Task details now use the editor’s bordered, collapsible Subtasks section and the same subtle blue Add SubTask button. Both lists start expanded and retain completed-only checkmarks and plain child titles with hover/focus links. The “Independent task” label and content-draft explanation are removed; draft and relationship behavior is unchanged.
+
+Verification: 30 affected component tests passed, along with lint, strict TypeScript and the production build. All 12 existing desktop/mobile details browser journeys passed. Production Chromium checks at 1440, 390 and 320px verified mouse collapse, keyboard expansion, identical Add SubTask colors/padding/touch targets in both views and no horizontal overflow. Desktop/mobile screenshots were refreshed.
+
+## Editor exit control
+
+Edit Task and Edit SubTask now have Delete task and Save Changes in the footer. The header × is the exit control and retains Keep Editing / Discard for unsaved changes, as does Escape. Creation forms retain Cancel. Existing cancellation journeys now exercise × instead of the removed editor Cancel button.
+
+Verification: 30 affected component tests and 22 desktop/mobile details and task-lifecycle browser checks passed, along with lint, strict TypeScript and production build. Editor screenshots were refreshed.
+
+## Board card metadata order
+
+Board cards now show Category → Priority, matching the details and editor metadata order. The divider remains between the two values and the priority dot/color is retained. Seven existing board-presentation checks passed, along with lint, strict TypeScript and the production build.
+
+## Completion marks inside parent tasks
+
+Completed-subtask checkmarks appear in the opened parent’s subtask list in details/editing. Board cards no longer render a checkmark beside the title. The Done column and relationship text still provide board context.
+
+Verification: nine existing details component tests and two focused desktop/mobile Chromium journeys passed, including retained parent-list marks and absent board-card marks. Lint, strict TypeScript, production build and diff checks passed.
+
+## Compact parent management
+
+In Edit SubTask, Manage Parent sits beside the linked parent name above metadata. Long names truncate visually while retaining their full accessible name and tooltip. Manage Parent uses the same subtle blue background, text, border and hover colors as Add SubTask. Details keep the parent navigation control without a management action; independent-task editors retain the compact Add SubTask/Manage Parent row.
+
+Verification: 30 affected component tests passed. Production Chromium checks at 1440, 390 and 320px confirmed aligned parent/action buttons, 44px targets, full parent labels, working parent management and no horizontal overflow. Lint, strict TypeScript and production build passed. Subtask editor screenshots were refreshed.
+
+Manage Parent’s text is black following owner review; its subtle blue background, border and hover remain. Task action layout alternatives are awaiting owner selection.
+
+## Task detail action footer
+
+Task details consolidate Add Subtask → Edit task → Delete task into one compact fixed footer. Add Subtask uses subtle blue, Edit task remains the primary blue action, and Delete task uses red text with a light border/background. Add Subtask is removed from the scrollable child panel and remains available when that panel is collapsed. Completed tasks still cannot add children. Subtask details and editor footer actions retain their existing layout.
+
+The reported Frontend CI failure was an application relationship journey still querying the removed editor Cancel button (`src/App.relationships.test.tsx:34`). That journey now exits through × and retains its saved parent/child assertions. The full unit/component/integration suite passed 467/467 across 43 files before pushing. Lint, strict TypeScript and production build passed. Production footer checks at 1440, 390 and 320px verified action order, 44px targets, no overflow, child creation and focus return, deliberate editing, deletion cancellation and unchanged subtask details actions.
+
+The full production Chromium suite also passed 46/46 on desktop/mobile before pushing. Updated layout assertions cover the compact task detail footer at 1440, 390, 375 and 320px. Screenshots were refreshed from the tested production build.
+
+## Consistent grouped action footers
+
+Details and composers share one footer style: adjacent, right-aligned buttons with an 8px gap (6px on the narrowest screens), matching sizing, blue primary actions and subtle red Delete actions. Task details show Add Subtask → Edit task → Delete task; task editors show Add Subtask → Save Changes → Delete task. The same task footer applies with or without linked children. Subtask views omit Add Subtask and use the same primary/Delete order and colors. Add Subtask is no longer duplicated inside editor relationship sections. Creation keeps Cancel and Create together. Manage Parent remains in its relationship field with black text.
+
+Save Changes stays blue and Add Subtask stays subtle blue. Green is reserved for status/success cues. Movement, draft/discard guards, deletion confirmation and child eligibility remain unchanged.
+
+Verification: the final full unit/component/integration rerun passed 467/467 across 43 files using one worker and unchanged timeouts/assertions. The initial parallel run hit the existing 5-second application-journey timeout; the unchanged journey passed in isolation before the full rerun. Production checks at 1440, 390 and 320px cover parent tasks, tasks without subtasks, linked subtasks and completed tasks in both details and editors: adjacent footer spacing, matching Delete colors, readable labels, 44px targets, child creation and focus return all passed. Lint, strict TypeScript and the production build passed.
+
+All 46 production desktop/mobile browser checks passed on the final build. Existing footer assertions now verify the same Delete palette and adjacent gaps in details/editing at 1440, 390, 375 and 320px. Updated screenshots include all detail/editor variants and the task-without-subtasks editor.
+
+## Creation exit control
+
+Create New Task and Add SubTask now use the header × to exit, matching the editors. Their footer contains only the Create action. Keep Editing / Discard still protects unsaved input, and Escape follows the same guard. Confirmation and relationship dialogs retain their existing actions.
+
+Verification before pushing: all 467 tests in 43 files passed with unchanged timeouts/assertions; lint, strict TypeScript and production build passed. Four focused desktop/mobile Chromium journeys passed. Additional production checks at 1440/390/320px verified both creation footers contain only Create, Keep Editing preserves the draft, Discard closes it and focus returns to the opener. [Desktop Add SubTask](images/v2-task-details/desktop-subtask-create.png) · [Mobile Add SubTask](images/v2-task-details/mobile-subtask-create.png). Creation screenshots were refreshed. Manage Parent placement is unchanged pending the next design decision.
+
+## Approved compact Parent field
+
+Owner approved the Parent-field mockup with one exception: linked subtasks retain the existing blue parent-name chip and circle icon. Edit SubTask pairs that unchanged navigation chip with a small Change text action. Eligible tasks without a parent show Parent / None with Choose parent in the same position above metadata. The large standalone Manage Parent button is removed. Existing parent eligibility, relationship save/discard behavior and footer actions remain unchanged; details and creation retain the original parent chip without a management action.
+
+Verification: 467/467 unit/component/integration tests in 43 files passed before pushing, with unchanged timeouts/assertions. Lint, strict TypeScript and production build passed. Production checks at 1440/390/320px verified choosing a parent, changing/detaching it, original blue chip/icon, editor-only relationship actions, aligned 44px targets and no overflow.
+
+Final verification: all 46 desktop/mobile production browser checks passed after the Choose/Change accessible-label update. The 50 affected application/relationship/accessibility tests also passed with the new labels. Both labels include their visible text for speech/assistive navigation. Screenshots show the approved original parent chip with the compact action, plus None / Choose parent for unlinked tasks.
+
+## Warm clay identity (option C)
+
+Owner selected the Warm clay mockup after comparing teal, ink/cobalt, clay and favicon blue. The base palette now uses clay primary actions (#8a4b38), ivory canvas, white surfaces, warm borders and neutral secondary actions. Footer Delete is a quieter red text action with a subtle hover treatment. Buttons use restrained depth, consistent typography and decorative plus/edit/trash icons; narrow footers retain text labels and hide decorative icons to preserve fit and 44px targets.
+
+Brand accents, links, focus and progress use the warm palette. Status, priority, validation and feedback meanings are retained. The specifically approved blue parent-name chip/circle and completed-subtask checks stay blue through dedicated tokens. The existing TF favicon, PNG sizes and Apple touch icon are recolored to clay without changing glyphs, dimensions, transparency or ICO masks. A favicon version query refreshes the cached browser icon.
+
+This is the chosen base visual identity, not a theme selector. Task relationships, content, workflow, ordering, persistence and recovery behavior are unchanged.
+
+Verification: the full 467-test suite passed with unchanged timeouts/assertions after an initial draft-guard timeout passed on its isolated rerun. Lint, strict TypeScript and the production build passed. Production checks at 1440/390/320px verified the clay CTA, aligned readable 44px footer targets, decorative icons, retained blue parent/completion cues and no errors/overflow. All favicon assets decode in Chromium; original alpha, dimensions, antialiased glyph pixels and ICO headers/masks are preserved. Representative text contrast checks passed: primary white/clay 6.68:1, muted text/ivory 4.85:1, quiet Delete/white 5.78:1, main text/white 10.97:1.
+
+All 46 final production desktop/mobile browser checks passed. Creation/discard/focus-return and independent-task action checks also passed at 1440/390/320px. Actual screenshots: [desktop clay board](images/v2-task-details/desktop-board-clay.png), [mobile clay board](images/v2-task-details/mobile-board-clay.png), and the refreshed detail/editor/creation images above. Footer icons are hidden only at narrow phone widths; text labels and target sizes remain intact.
+
+Completed-subtask circles and legacy checklist checks now use the clay primary color with white check glyphs, following owner review. The blue parent-name chip/icon and semantic stage/priority colors are retained.
+
+Completion-color verification: 30 affected component tests and four focused desktop/mobile completion/layout browser journeys passed. Production color checks at 1440/390/320px confirmed clay circles with white glyphs in both details and editing, while the parent chip remains blue. Lint, strict TypeScript, production build and diff checks passed. Parent detail/editor screenshots were refreshed.

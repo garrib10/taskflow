@@ -24,25 +24,7 @@ export default function FilterControls({
   onStatusChange,
 }: FilterControlsProps) {
   return (
-    <div className="filter-controls">
-      <div className="filter-group">
-        <label htmlFor="priority-filter">Priority</label>
-
-        <select
-          aria-controls="taskflow-board"
-          id="priority-filter"
-          value={priorityFilter}
-          onChange={(event) =>
-            onPriorityChange(event.target.value as PriorityFilter)
-          }
-        >
-          <option value="all">All priorities</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-      </div>
-
+    <div className="filter-controls" role="group" aria-label="Task filters">
       <div className="filter-group">
         <label htmlFor="category-filter">Category</label>
 
@@ -61,6 +43,24 @@ export default function FilterControls({
           <option value="testing">Testing</option>
           <option value="refactor">Refactor</option>
           <option value="devops">DevOps</option>
+        </select>
+      </div>
+
+      <div className="filter-group">
+        <label htmlFor="priority-filter">Priority</label>
+
+        <select
+          aria-controls="taskflow-board"
+          id="priority-filter"
+          value={priorityFilter}
+          onChange={(event) =>
+            onPriorityChange(event.target.value as PriorityFilter)
+          }
+        >
+          <option value="all">All priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
       </div>
 

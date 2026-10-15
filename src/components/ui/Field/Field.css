@@ -1,0 +1,10 @@
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.ui-field > label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-label);
+}

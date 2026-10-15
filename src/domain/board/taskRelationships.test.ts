@@ -12,6 +12,21 @@ const secondParent = makeTask({ id: "second-parent", title: "Other parent" });
 const allTasks = (board: ReturnType<typeof makeBoard>) => board.columns.flatMap((column) => column.tasks);
 
 describe("one-level relationships", () => {
+  it("resolves tasks from the full board without changing state and rejects missing or ambiguous IDs", () => {
+    const board = makeBoard([parent, child, secondParent, makeTask({ id: "finished", status: "done" })]);
+    freezeDeep(board);
+    const before = structuredClone(board);
+    const visible = filterBoardColumns(board, { ...createDefaultBoardFilters(), searchTerm: "Child" });
+    expect(visible.flatMap(column => column.tasks)).toEqual([child]);
+    for (let repeat = 0; repeat < 2; repeat++) {
+      for (const task of allTasks(board)) expect(findTask(board, task.id)).toBe(task);
+      expect(findTask(board, "missing")).toBeNull();
+      expect(getParent(board, child)).toBe(parent);
+    }
+    expect(findTask(makeBoard([]), "missing")).toBeNull();
+    expect(findTask(makeBoard([child, { ...child, status: "in-progress" }]), child.id)).toBeNull();
+    expect(board).toEqual(before);
+  });
   it("resolves parent and children across columns and derives progress", () => {
     const completed = makeTask({ id: "completed", status: "done", parentId: parent.id });
     const board = makeBoard([parent, child, completed, secondParent]);

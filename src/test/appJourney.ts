@@ -7,6 +7,7 @@ import { STORAGE_KEY } from "../utils/storage";
 // jsdom has no layout. Keep real sensors and mock only browser measurements.
 export function measureColumns() {
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+    if (this.matches(".task-drag-overlay") || this.querySelector(".task-drag-overlay")) return document.querySelector<HTMLElement>(".task-card.is-dragging")?.getBoundingClientRect() ?? new DOMRect(16,150,280,180);
     const column = this.matches(".column") ? this : this.closest(".column");
     const index = taskStatuses.findIndex(status => column?.getAttribute("aria-labelledby") === `column-${status}-title`);
     if (this.matches(".column")) return new DOMRect(index * 344, 100, 320, 500);
@@ -20,10 +21,12 @@ export function savedTasks(): Task[] {
 export async function createTask(user: UserEvent, title: string, child = false) {
   const dialog = within(screen.getByRole("dialog", { name: child ? "Add SubTask" : "Create New Task" }));
   await user.type(dialog.getByLabelText("Title"), title);
-  await user.type(dialog.getByLabelText("Description"), `${title} description`);
+  // Paste the longer prose as one realistic input; title typing still exercises keyboard entry.
+  await user.click(dialog.getByLabelText("Description"));
+  await user.paste(`${title} description`);
   await user.click(dialog.getByRole("button", { name: child ? "Create SubTask" : "Create Task" }));
 }
 export async function moveTask(user: UserEvent, title: string, direction: "Right" | "Left" = "Right") {
-  screen.getByRole("group", { name: new RegExp(`^Move task ${title},`) }).focus();
+  screen.getByRole("button", { name: new RegExp(`^Move task ${title},`) }).focus();
   await user.keyboard(` {Arrow${direction}} `);
 }

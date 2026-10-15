@@ -1,59 +1,41 @@
 import "./Column.css";
 import { useDroppable } from "@dnd-kit/core";
 import type { Column as ColumnType } from "../../domain/board/Board";
-import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
-import type { BoardAction } from "../../domain/board/boardReducer";
-import { sortTasksByPriority } from "../../domain/task/taskPriority";
+import type { ColumnCapacity } from "../../domain/board/boardCapacity";
+import type { TaskContext } from "../Board/boardPresentation";
+import { descriptionMatch } from "../Board/boardPresentation";
 import TaskCard from "../TaskCard/TaskCard";
 
+export interface DropHint { status: string; kind: "valid" | "invalid" | "neutral"; label: string; taskId?: string; position?: "before" | "after" }
 interface ColumnProps {
   column: ColumnType;
-  board: Board;
-  dispatch: React.Dispatch<BoardAction>;
-  onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
+  tasks: Task[];
+  capacity: ColumnCapacity;
+  contexts: Map<string, TaskContext>;
+  search: string;
   isFiltering: boolean;
+  manual: boolean;
+  selectedTaskId?: string;
+  dropHint?: DropHint | null;
+  onEdit: (task: Task) => void;
 }
-
-export default function Column({
-  column,
-  board,
-  dispatch,
-  onEdit,
-  onDelete,
-  isFiltering,
-}: ColumnProps) {
-  const { setNodeRef } = useDroppable({
-    id: column.id,
-  });
-
-  const sortedTasks = sortTasksByPriority(column.tasks);
-
-  return (
-    <section ref={setNodeRef} className="column" aria-labelledby={`column-${column.id}-title`}>
-      <div className="column-header">
-        <h2 id={`column-${column.id}-title`} tabIndex={-1}>
-          {column.title} ({column.tasks.length})
-        </h2>
-      </div>
-
-      {sortedTasks.length === 0 ? (
-        <div className="empty-column">
-          {isFiltering ? "No matching tasks" : "No tasks"}
-        </div>
-      ) : (
-        sortedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            board={board}
-            dispatch={dispatch}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        ))
-      )}
-    </section>
-  );
+export default function Column({ column, tasks, capacity, contexts, search, isFiltering, manual, selectedTaskId, dropHint, onEdit }: ColumnProps) {
+  const { setNodeRef } = useDroppable({ id: column.id, data: { status: column.id } });
+  const capacityText = capacity.kind === "unlimited" ? "No work-in-progress limit"
+    : capacity.state === "over" ? "Over limit · move or finish work to recover"
+    : capacity.state === "full" ? "Full · finish work before adding more"
+    : capacity.state === "near" ? "1 place remaining" : `${capacity.remaining} places remaining`;
+  return <section ref={setNodeRef} className={`column stage-${column.id}`} aria-labelledby={`column-${column.id}-title`} data-capacity={capacity.state} data-drop-state={dropHint?.kind}>
+    <header className="column-header">
+      <div className="column-heading"><span className="stage-marker" aria-hidden="true"/><h2 id={`column-${column.id}-title`} tabIndex={-1}>{column.title} ({capacity.count})</h2>{capacity.kind === "limited" && <span className="column-limit" aria-label={`${capacity.count} of ${capacity.limit} tasks; ${capacity.state === "near" ? "near capacity" : capacity.state}`}>{capacity.count} / {capacity.limit}</span>}</div>
+      <p className="column-capacity">{capacityText}</p>
+      {isFiltering && <p className="column-visible-count">{tasks.length} shown · {capacity.count} total</p>}
+    </header>
+    {dropHint && <p className="column-drop-feedback">{dropHint.kind === "valid" ? "✓ " : dropHint.kind === "invalid" ? "× " : ""}{dropHint.label}</p>}
+    <div className="column-tasks">
+      {tasks.length === 0 ? <div className="empty-column"><span aria-hidden="true">—</span><p>{capacity.count === 0 ? "No tasks in this stage" : "No tasks match these filters"}</p>{capacity.count === 0 && <small>{column.id === "todo" ? "Create a task to start your workflow." : "Move eligible work here when it is ready."}</small>}</div>
+      : tasks.map((task) => <TaskCard key={task.id} task={task} stage={column.title} context={contexts.get(task.id)} excerpt={descriptionMatch(task, search)} manual={manual && !isFiltering} selected={selectedTaskId === task.id} onEdit={onEdit} dropPosition={dropHint?.kind === "valid" && dropHint.taskId === task.id ? dropHint.position : undefined} />)}
+    </div>
+  </section>;
 }

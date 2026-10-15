@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { COLUMN_CAPACITY } from "../src/domain/board/boardCapacity.ts";
 
 const browserFailures = new WeakMap<Page, string[]>();
 test.afterEach(async ({ page }) => {
@@ -26,8 +27,12 @@ async function fillTask(page: Page, title: string, child = false) {
   await dialog.getByLabel("Description", { exact: true }).fill("Smoke journey description");
   await dialog.getByRole("button", { name: child ? "Create SubTask" : "Create Task", exact: true }).click();
 }
+async function stage(page: Page, value: string) {
+  const selector = page.getByLabel("Workflow stage", { exact: true });
+  if (await selector.count()) await selector.selectOption(value);
+}
 async function move(page: Page, title: string, direction = "ArrowRight") {
-  const handle = page.getByRole("group", { name: new RegExp(`^Move task ${title},`) });
+  const handle = page.getByRole("button", { name: new RegExp(`^Move task ${title},`) });
   await handle.focus();
   await page.keyboard.press("Space");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`Picked up "${title}"`);
@@ -45,34 +50,36 @@ async function move(page: Page, title: string, direction = "ArrowRight") {
 test("task lifecycle persists, rejects reverse movement, and allows keyboard warning dismissal", async ({ page }) => {
   await page.getByRole("button", { name: "+ Create Task" }).click();
   await fillTask(page, "Smoke task");
-  await page.getByRole("button", { name: "Open task Smoke task", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke task", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit Task" });
   await editor.getByLabel("Title", { exact: true }).fill("Smoke task edited");
   await editor.getByRole("button", { name: "Save Changes" }).click();
   await move(page, "Smoke task edited");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Smoke task edited" to In Progress');
   await page.reload();
-  await expect(page.getByRole("group", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeVisible();
+  await stage(page, "in-progress");
+  await expect(page.getByRole("button", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeVisible();
   await move(page, "Smoke task edited", "ArrowLeft");
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Cannot move task from in-progress to todo");
   const dismiss = page.getByRole("button", { name: /Dismiss notification/ });
   await dismiss.focus(); await page.keyboard.press("Enter");
   await expect(dismiss).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Open task Smoke task edited", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Move task Smoke task edited, In Progress", exact: true })).toBeFocused();
 });
 
 test("parent and subtask creation survives reload with progress and navigable parent context", async ({ page }) => {
   await page.getByRole("button", { name: "+ Create Task" }).click();
   await fillTask(page, "Smoke parent");
-  await page.getByRole("button", { name: "Open task Smoke parent", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke parent", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await page.getByRole("button", { name: "Add SubTask to Smoke parent" }).click();
   await fillTask(page, "Smoke child", true);
-  await page.getByRole("dialog", { name: "Edit Task" }).getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("dialog", { name: "Edit Task" }).getByRole("button", { name: "Close task editor", exact: true }).click();
   await page.reload();
   await expect(page.getByRole("progressbar", { name: "Subtask completion for Smoke parent" })).toHaveAttribute("aria-valuemax", "1");
-  await page.getByRole("button", { name: "Open task Smoke child", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Smoke child", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit SubTask" })).toBeVisible();
   await page.getByRole("button", { name: "Open parent Smoke parent", exact: true }).click();
+  await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit Task" }).getByLabel("Title", { exact: true })).toHaveValue("Smoke parent");
 });
 
@@ -84,12 +91,77 @@ test("keyboard dialogs and primary controls fit the viewport without accidental 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(create).toBeFocused();
-  await page.getByLabel("Search:", { exact: true }).fill("keyboard");
+  await page.getByLabel("Search tasks", { exact: true }).fill("keyboard");
+  const filters = page.getByRole("button", { name: /^Filters \(/ });
+  if (await filters.count()) await filters.click();
   await page.getByLabel("Priority", { exact: true }).selectOption("medium");
   await page.getByLabel("Category", { exact: true }).selectOption("feature");
   await page.getByLabel("Status", { exact: true }).selectOption("todo");
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
-  await expect(page.getByLabel("Search:", { exact: true })).toHaveValue("");
-  await expect(page.getByLabel("Search:", { exact: true })).toBeFocused();
+  if (await filters.count()) await page.getByRole("button", { name: "Done", exact: true }).click();
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
+  await expect(page.getByLabel("Search tasks", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Search tasks", { exact: true })).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("shell landmarks and responsive filter presentation preserve criteria and reset", async ({ page }) => {
+  await expect(page.getByRole("banner")).toHaveCount(1);
+  await expect(page.getByRole("main", { name: "Task board" })).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Workflow columns", exact: true })).toBeVisible();
+  const trigger = page.getByRole("button", { name: /^Filters \(/ });
+  const narrow = await trigger.count() > 0;
+  await page.getByLabel("Search tasks", { exact: true }).fill("authentication");
+  if (narrow) {
+    await trigger.focus(); await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("dialog", { name: "Filter tasks" }).getByRole("heading")).toBeFocused();
+  }
+  await page.getByLabel("Priority", { exact: true }).selectOption("high");
+  await page.getByLabel("Category", { exact: true }).selectOption("feature");
+  if (narrow) {
+    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await expect(trigger).toHaveText("Filters (2)"); await expect(trigger).toBeFocused();
+    await trigger.click(); await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("high");
+    await page.keyboard.press("Escape"); await expect(trigger).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 720 });
+  }
+  await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("high");
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
+  await expect(page.getByLabel("Search tasks", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Search tasks", { exact: true })).toBeFocused();
+  await expect(page.getByLabel("Priority", { exact: true })).toHaveValue("all");
+});
+
+test("full destination stays blocked when search hides occupants and becomes usable after an exit", async ({ page }) => {
+  const raw = await page.evaluate(limit => {
+    const saved = JSON.parse(localStorage.getItem("taskflow-board") ?? "null");
+    const template = saved.board.columns[0].tasks[0];
+    for (const column of saved.board.columns) {
+      column.tasks = column.id === "in-progress"
+        ? Array.from({ length: limit }, (_, index) => ({ ...template, id: `capacity-${index}`, title: `Occupant ${index}`, status: column.id }))
+        : column.id === "todo" ? [{ ...template, id: "capacity-incoming", title: "Incoming task" }] : [];
+    }
+    saved.revision = "capacity-start";
+    const value = JSON.stringify(saved);
+    localStorage.setItem("taskflow-board", value);
+    return value;
+  }, COLUMN_CAPACITY["in-progress"]);
+  await page.reload();
+  await page.getByLabel("Search tasks", { exact: true }).fill("Incoming");
+  await move(page, "Incoming task");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText(`In Progress is full (${COLUMN_CAPACITY["in-progress"]}-task limit).`);
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText("Tasks hidden by search or filters still count");
+  await expect(page.getByRole("button", { name: "Move task Incoming task, To Do", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("taskflow-board"))).toBe(raw);
+  await page.getByRole("button", { name: /Dismiss notification/ }).click();
+  await page.getByRole("button", { name: "Clear all search and filters", exact: true }).click();
+  await stage(page, "in-progress");
+  await move(page, "Occupant 0");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Occupant 0" to In Review');
+  await stage(page, "todo");
+  await move(page, "Incoming task");
+  await expect(page.getByRole("status", { name: "Board updates" })).toContainText('Moved "Incoming task" to In Progress');
+  await page.reload();
+  await stage(page, "in-progress");
+  await expect(page.getByRole("button", { name: "Move task Incoming task, In Progress", exact: true })).toBeVisible();
 });
