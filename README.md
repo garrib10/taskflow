@@ -101,6 +101,8 @@ See the [current testing strategy and risk map](docs/v2-testing.md) for the
 baseline comparison, suite boundaries,
 fixtures, accessibility scope, repeated checks, and commands for individual files.
 No numerical coverage target is configured or implied by these counts.
+See the [v2 performance and regression QA](docs/v2-performance-regression.md) for
+measured board workloads, profiling, bundle review and Lighthouse evidence.
 
 Playwright uses isolated desktop/mobile contexts. It starts Vite dev locally and
 production preview in CI at `http://127.0.0.1:4173`; build first for production

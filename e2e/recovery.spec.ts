@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole("heading", { name: "TaskFlow", exact: true })).toBeVisible();
 });
 
-test("unresolved data survives refresh, keyboard cancellation and failed replacement before confirmed recovery", async ({ page }) => {
+test("unresolved data survives refresh, keyboard cancellation and failed replacement before confirmed recovery", async ({ page, browserName }) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.evaluate(() => {
@@ -38,7 +38,10 @@ test("unresolved data survives refresh, keyboard cancellation and failed replace
     document.addEventListener("unblock-test-storage", () => { Storage.prototype.setItem = set; }, { once: true });
   });
   await page.keyboard.press("Enter");
-  await page.keyboard.press("Tab");
+  await expect(dialog.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
+  // macOS WebKit's native Tab can skip buttons; Option-Tab includes all controls.
+  await page.keyboard.press(browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab");
+  await expect(dialog.getByRole("button", { name: "Replace Saved Board", exact: true })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(panel).toContainText("could not confirm");
   expect(await saved(page)).toBe("{broken");
