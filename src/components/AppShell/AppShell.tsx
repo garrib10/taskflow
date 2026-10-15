@@ -20,11 +20,11 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
     <div className="app-shell">
       <header className="app-shell-header">
         <div className="app-shell-identity">
-          <h1>TaskFlow</h1>
-          <p>Rule-Based Workflow Board</p>
+          <h1>Task<span className="app-shell-wordmark-flow">Flow</span></h1>
+          <p>Clear priorities. Steady progress.</p>
           <p className="last-updated">Last updated: <time dateTime={lastUpdated.toISOString()}>{updated}</time></p>
         </div>
-        <Button className="shell-create-task" data-focus-fallback onClick={onCreateTask}>+ Create Task</Button>
+        <Button icon="plus" aria-label="+ Create Task" className="shell-create-task" data-focus-fallback onClick={onCreateTask}>Create Task</Button>
       </header>
       <main className="app-shell-main" aria-label="Task board">
         <div className="app-shell-feedback">{feedback}</div>

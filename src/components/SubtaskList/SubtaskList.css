@@ -32,6 +32,7 @@
 }
 
 .subtask-item input[type="checkbox"] {
+  accent-color: var(--color-action-primary);
   cursor: pointer;
 }
 

@@ -13,7 +13,7 @@ import AppShell from "../AppShell/AppShell";
 import BoardToolbar from "../BoardToolbar/BoardToolbar";
 import { filterBoardColumns } from "../../domain/board/boardFilters";
 import { useBoardViewPreferences } from "../../hooks/useBoardViewPreferences";
-import { taskStatuses, type TaskStatus } from "../../domain/task/Task";
+import type { TaskStatus } from "../../domain/task/Task";
 import { getColumnCapacity } from "../../domain/board/boardCapacity";
 import { taskContexts } from "./boardPresentation";
 import StageDropTarget from "./StageDropTarget";
@@ -25,6 +25,7 @@ import { useNotification } from "../../notifications/useNotification";
 import { operationVariant, type NotificationVariant } from "../../notifications/notification";
 import SearchBar from "../SearchBar/SearchBar";
 import TaskForm from "../TaskForm/TaskForm";
+import TaskDetails from "../TaskDetails/TaskDetails";
 import Field from "../ui/Field/Field";
 import { isOrderingMode } from "../../persistence/viewPreferences";
 import { selectOrderedTasks, type OrderingMode } from "../../domain/board/boardOrdering";
@@ -125,16 +126,17 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
   }
   function executeMovement(action: BoardAction, task: Task) {
     const failure = tryDispatch(action);
-    if (failure) { movementFocus(task.id, task.status); showFailure(failure); return; }
+    if (failure) { movementFocus(task.id, task.status); showFailure(failure); return failure; }
     const next = boardReducer(board, action);
     const moved = findTask(next, task.id);
-    if (!moved) return;
+    if (!moved) return null;
     if (narrow) setActiveStage(moved.status);
     movementFocus(task.id, moved.status);
     const column = next.columns.find(current => current.id === moved.status);
     const order = column ? selectOrderedTasks(column, orderingMode).tasks : [];
     const hidden = !filterBoardColumns(next, filters).some(current => current.tasks.some(item => item.id === task.id));
     showFeedback("success", `${action.type === "REORDER_TASK" ? "Reordered" : "Moved"} "${task.title}" ${action.type === "REORDER_TASK" ? "in" : "to"} ${column?.title}, position ${order.findIndex(item => item.id === task.id) + 1} of ${order.length}.${hidden ? " Hidden by the current search or filters." : ""}`);
+    return null;
   }
   function dropAction(event: DragEndEvent | DragOverEvent): { task: Task; action: BoardAction | null; hint: DropHint } | null {
     const task = findTask(board, String(event.active.id));
@@ -180,13 +182,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
     }
   }
   function movementActions(task: Task, index: number, tasks: Task[]) {
-    const nextStatus = taskStatuses[taskStatuses.indexOf(task.status) + 1];
-    const move: BoardAction | null = nextStatus ? { type: "MOVE_TASK", taskId: task.id, newStatus: nextStatus, updatedAt: new Date(), ordering: { mode: orderingMode, filtered: isFiltering, input: "explicit" } } : null;
-    const reason = move ? validateBoardAction(board, move)?.message : "Done is the final stage.";
     return <>
-      <p>Move task</p>
-      {move && <Button variant="secondary" onClick={() => executeMovement(move, task)}>Move to {board.columns.find(column => column.id === nextStatus)?.title}</Button>}
-      {reason && <p className="movement-reason">{reason}</p>}
       {orderingMode === "manual" && <>
         <Button variant="secondary" aria-label={`Move ${task.title} earlier`} disabled={isFiltering || index === 0} onClick={() => { const previous = tasks[index - 1]; if (previous) executeMovement({ type: "REORDER_TASK", taskId: task.id, placement: { type: "before", taskId: previous.id }, mode: orderingMode, filtered: isFiltering, updatedAt: new Date() }, task); }}>Move earlier</Button>
         <Button variant="secondary" aria-label={`Move ${task.title} later`} disabled={isFiltering || index === tasks.length - 1} onClick={() => { const next = tasks[index + 1]; if (next) executeMovement({ type: "REORDER_TASK", taskId: task.id, placement: { type: "after", taskId: next.id }, mode: orderingMode, filtered: isFiltering, updatedAt: new Date() }, task); }}>Move later</Button>
@@ -206,6 +202,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
   }
 
   function handleCloseTaskForm() {
+    if (taskToEdit) pendingFocus.current = [`task-${taskToEdit.id}`, "task-search"];
     setTaskToEdit(null);
     setShowTaskForm(false);
   }
@@ -265,7 +262,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
       onDragStart={({ active }) => { lastDestination.current = ""; setDraggedId(String(active.id)); announce(`Picked up "${titleFor(active.id)}" from ${board.columns.find(column => column.tasks.some(task => task.id === active.id))?.title}. Use Left and Right to select a column; Space or Enter to drop; Escape or Tab to cancel.`); }}
       onDragOver={handleDragOver}
       onDragCancel={({ active }) => { setDraggedId(null); setDropHint(null); announce(`Movement of "${titleFor(active.id)}" cancelled.`); focusTargets([`move-task-${active.id}`, "task-search"]); }} accessibility={{ restoreFocus: false, announcements, screenReaderInstructions: { draggable: "Press Space or Enter to pick up a task. Use Left and Right to select a workflow column. Press Space or Enter to drop, or Escape or Tab to cancel." } }}>
-      <p id="board-movement-help" className="visually-hidden">Drag with the grip, or press Space or Enter, use Left and Right to choose a stage and drop with Space. Escape cancels. Movement actions also offer buttons.</p>
+      <p id="board-movement-help" className="visually-hidden">Drag with the grip, or press Space or Enter, use Left and Right to choose a stage and drop with Space. Escape cancels. Open task details to change the stage without dragging.</p>
       <div className="visually-hidden" data-live-region role="status" aria-label="Board updates" aria-atomic="true"><span key={announcement.id}>{announcement.message}</span></div>
       <div onFocusCapture={event => { const target = event.target as HTMLElement; const task = target.closest(".task-card"); if (task) lastTaskFocus.current = target.matches("[data-task-drag]") ? target.id : task.id; }}>
         <AppShell lastUpdated={board.lastUpdated} onCreateTask={handleCreateTask}
@@ -292,9 +289,13 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
           />}
           overlays={<>
             {overlays}
-            {showTaskForm && (
+            {showTaskForm && taskToEdit && <TaskDetails key={taskToEdit.id} board={board} task={taskToEdit} onClose={handleCloseTaskForm} dispatch={tryDispatch} onSuccess={handleTaskSaved} onOpenTask={handleEditTask} onDelete={handleDeleteTask}
+              onChangeStage={(task, newStatus) => executeMovement({ type: "MOVE_TASK", taskId: task.id, newStatus, updatedAt: new Date(), ordering: { mode: orderingMode, filtered: isFiltering, input: "explicit" } }, task)}
+              orderingActions={orderingMode === "manual" ? task => { const column = filteredColumns.find(column => column.id === task.status); const tasks = column ? selectOrderedTasks(column, orderingMode).tasks : []; return movementActions(task, tasks.findIndex(item => item.id === task.id), tasks); } : undefined}
+            />}
+            {showTaskForm && !taskToEdit && (
               <TaskForm
-                key={taskToEdit?.id ?? "new"}
+                key="new"
                 board={board}
                 task={taskToEdit}
                 onClose={handleCloseTaskForm}
@@ -331,7 +332,7 @@ export default function Board({ board, dispatch, feedback, overlays, ordering }:
               const tasks = selectOrderedTasks(full, orderingMode, column.tasks.map(task => task.id)).tasks;
               const activeReason = draggedTask && column.id !== draggedTask.status ? validateBoardAction(board, { type: "MOVE_TASK", taskId: draggedTask.id, newStatus: column.id, updatedAt: new Date(), ordering: { mode: orderingMode, filtered: isFiltering, input: "explicit" } }) : null;
               const hint = dropHint?.status === column.id ? dropHint : draggedTask ? { status: column.id, kind: activeReason ? "invalid" as const : "neutral" as const, label: activeReason?.message ?? "Choose a destination" } : null;
-              return <Column key={column.id} column={column} tasks={tasks} capacity={getColumnCapacity(board, column.id)} contexts={contexts} search={searchTerm} isFiltering={isFiltering} manual={orderingMode === "manual"} selectedTaskId={taskToEdit?.id} onEdit={handleEditTask} movementActions={movementActions} dropHint={hint} />;
+              return <Column key={column.id} column={column} tasks={tasks} capacity={getColumnCapacity(board, column.id)} contexts={contexts} search={searchTerm} isFiltering={isFiltering} manual={orderingMode === "manual"} selectedTaskId={taskToEdit?.id} onEdit={handleEditTask} dropHint={hint} />;
             })}
           </div>
         </AppShell>

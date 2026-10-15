@@ -1,32 +1,32 @@
 /* TaskFlow's light, single-board foundation. Roles may share values, not meaning. */
 :root {
-  --color-canvas: #f4f6f9;
+  --color-canvas: #f5f1eb;
   --color-surface: #ffffff;
-  --color-surface-inset: #e9eef5;
-  --color-surface-subtle: #f9fafb;
-  --color-surface-hover: #f3f4f6;
-  --color-text-primary: #1f2937;
-  --color-text-secondary: #4b5563;
-  --color-text-muted: #6b7280;
-  --color-text-title: #000000;
+  --color-surface-inset: #eee8df;
+  --color-surface-subtle: #fbf9f6;
+  --color-surface-hover: #f7eee8;
+  --color-text-primary: #463a33;
+  --color-text-secondary: #6e625a;
+  --color-text-muted: #78665b;
+  --color-text-title: #352c27;
   --color-text-on-action: #ffffff;
-  --color-border: #d8e0ea;
-  --color-control-border: #7c8798;
-  --color-control-border-hover: #64748b;
-  --color-scrollbar: #cbd5e1;
-  --color-scrollbar-hover: #94a3b8;
+  --color-border: #e6ddd3;
+  --color-control-border: #a4978c;
+  --color-control-border-hover: #80665a;
+  --color-scrollbar: #d6c8bd;
+  --color-scrollbar-hover: #b39b8c;
 
-  --color-action-primary: #2563eb;
-  --color-action-primary-hover: #1d4ed8;
-  --color-action-primary-active: #1e40af;
-  --color-action-secondary: #e5e7eb;
-  --color-action-secondary-hover: #d1d5db;
-  --color-action-secondary-text: #374151;
-  --color-action-subtle: #dbeafe;
-  --color-action-subtle-hover: #bfdbfe;
-  --color-action-subtle-text: #1d4ed8;
-  --color-action-subtle-border: #bfdbfe;
-  --color-action-quiet: #eff6ff;
+  --color-action-primary: #8a4b38;
+  --color-action-primary-hover: #703c2d;
+  --color-action-primary-active: #603225;
+  --color-action-secondary: #ffffff;
+  --color-action-secondary-hover: #f7eee8;
+  --color-action-secondary-text: #463a33;
+  --color-action-subtle: #f7eee8;
+  --color-action-subtle-hover: #efe1d7;
+  --color-action-subtle-text: #8a4b38;
+  --color-action-subtle-border: #e6ddd3;
+  --color-action-quiet: #fbf6f2;
   --color-action-danger: #dc2626;
   --color-action-danger-hover: #b91c1c;
   --color-action-danger-subtle: #fee2e2;
@@ -34,12 +34,22 @@
   --color-action-danger-quiet: #fff1f2;
   --color-action-danger-text: #991b1b;
   --color-action-danger-border: #fecaca;
-  --color-action-disabled: #e9eef5;
-  --color-action-disabled-text: #4b5563;
-  --color-selected-surface: #eff6ff;
-  --color-selected-border: #93c5fd;
-  --color-selected-border-hover: #60a5fa;
-  --color-focus: #2563eb;
+  --color-action-disabled: #eee8e1;
+  --color-action-disabled-text: #786d64;
+  --color-selected-surface: #f7eee8;
+  --color-selected-border: #caa28f;
+  --color-selected-border-hover: #a97459;
+  --color-focus: #8a4b38;
+  /* Linked-parent identity is retained from the approved chip design. */
+  --color-parent-surface: #eff6ff;
+  --color-parent-border: #93c5fd;
+  --color-parent-hover: #dbeafe;
+  --color-parent-border-hover: #60a5fa;
+  --color-parent-text: #4b5563;
+  --color-parent-icon: #3b82f6;
+  --color-linked-completion: var(--color-action-primary);
+  --color-action-danger-quiet-text: #98505a;
+  --color-action-danger-quiet-hover: #f9eeef;
   --color-focus-halo: #ffffff;
 
   --color-feedback-success-surface: #dcfce7;
@@ -98,9 +108,9 @@
   --color-stage-done-border: #7c3aed;
   --color-completion-text: #15803d;
   --color-completion-surface: #dcfce7;
-  --color-progress-surface: #f8fbff;
-  --color-progress-track: #dbeafe;
-  --color-progress-fill: #3b82f6;
+  --color-progress-surface: #fbf8f5;
+  --color-progress-track: #efe1d7;
+  --color-progress-fill: #a16b55;
 
   /* #99 states are presentation roles, not limits or enforcement. */
   --color-capacity-available-text: var(--color-text-secondary);
@@ -144,7 +154,7 @@
   --size-viewport-min: 320px;
   --border-width: 1px;
   --radius-compact: 6px;
-  --radius-control: 8px;
+  --radius-control: 9px;
   --radius-panel: 12px;
   --radius-column: 16px;
   --radius-pill: 999px;
@@ -153,6 +163,7 @@
   --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-overlay: 0 8px 20px rgba(0, 0, 0, 0.16);
   --shadow-dialog: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-control: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 2px rgba(70, 58, 51, .1);
   --shadow-action: 0 4px 10px rgba(0, 0, 0, 0.15);
   --overlay-dialog: rgba(0, 0, 0, 0.45);
   --overlay-confirm: rgba(0, 0, 0, 0.55);

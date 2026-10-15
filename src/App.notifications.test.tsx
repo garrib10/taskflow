@@ -72,7 +72,7 @@ it("reports a failed write, preserves the saved board, and only confirms saving 
   const user = userEvent.setup();
   render(<App />);
   const write = vi.spyOn(Storage.prototype, "setItem").mockImplementationOnce(() => { throw new DOMException("Full", "QuotaExceededError"); });
-  await user.click(screen.getByRole("button", { name: "Open task Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Title"), " updated");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(screen.getByRole("alert")).toHaveTextContent("could not confirm that your changes were saved");
@@ -92,7 +92,7 @@ it("does not announce normal loads or automatic saves", async () => {
   const user = userEvent.setup();
   render(<App />);
   expect(screen.queryByRole("button", { name: /Dismiss notification/ })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Open task Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Description"), " updated");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(screen.getByRole("status", { name: "Board updates" })).toHaveTextContent('Updated "Saved task".');
@@ -110,7 +110,7 @@ it("keeps a valid external-tab warning available during routine local edits with
   const warning = storageNotice(/Another tab changed/)!;
   expect(warning).toHaveTextContent("Warning:");
   expect(screen.getByRole("button", { name: "Reload saved board" })).toBeEnabled();
-  await user.click(screen.getByRole("button", { name: "Open task Saved task" }));
+  await user.click(screen.getByRole("button", { name: "Open task Saved task" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Title"), " local");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
   expect(warning).toBeInTheDocument();

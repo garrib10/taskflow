@@ -29,10 +29,11 @@ test("mode and manual positions survive refresh independently of Priority, filte
   expect(JSON.parse((await savedPreference(page)) ?? "null")).toEqual({ schemaVersion: 1, orderingMode: "manual" });
   await page.reload();
   await expect(mode).toHaveValue("manual");
-  await page.getByLabel("Movement actions for Release checklist", { exact: true }).click();
+  await page.getByRole("button", {name:"Open task Release checklist",exact:true}).click();
   const later = page.getByRole("button", { name: "Move Release checklist later", exact: true });
   await later.focus(); await page.keyboard.press("Enter");
-  await expect(page.getByRole("group", { name: "Move task Release checklist, To Do", exact: true })).toBeFocused();
+  await expect(later).toBeFocused();
+  await page.getByRole("button", {name:"Close task details",exact:true}).click();
   await expect(page.getByRole("status", { name: "Board updates" })).toContainText("position 2 of 4");
   const reorderedRaw = await savedBoard(page);
   const reordered = JSON.parse(reorderedRaw ?? "null");
@@ -49,8 +50,9 @@ test("mode and manual positions survive refresh independently of Priority, filte
   await expect(todo.getByRole("heading", { level: 3 })).toHaveText(["First high arrival", "Release checklist", "Second high arrival", "Low priority arrival"]);
   expect(await savedBoard(page)).toBe(reorderedRaw);
   await page.getByRole("searchbox").fill("Release checklist");
-  await page.getByLabel("Movement actions for Release checklist", { exact: true }).click();
+  await page.getByRole("button", {name:"Open task Release checklist",exact:true}).click();
   await expect(page.getByRole("button", { name: "Move Release checklist later", exact: true })).toBeDisabled();
+  await page.getByRole("button", {name:"Close task details",exact:true}).click();
   const filters = page.getByRole("button", { name: /^Filters \(/ });
   if (await filters.count()) await filters.click();
   else {

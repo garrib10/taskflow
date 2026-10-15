@@ -53,9 +53,10 @@ test("fresh storage and v1.5 upgrade preserve full board, independent ordering a
   expect(await snapshot(page)).toBe(raw);
   await expect(page.getByText(/Your saved board was upgraded/)).toHaveCount(0);
   await stage(page, "done");
-  await page.getByRole("button", { name: "Open task Completed linked child", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Completed linked child", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit SubTask" })).toBeVisible();
   await page.getByRole("button", { name: "Open parent Release checklist", exact: true }).click();
+  await page.getByRole("button", { name: "Edit task", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Edit Task" }).getByLabel("Title", { exact: true })).toHaveValue("Release checklist");
   expect(await snapshot(page)).toBe(raw);
 });
@@ -95,7 +96,7 @@ test("damaged order retains safe tasks and local edits without overwriting saved
   await seed(page, raw);
   await expect(page.getByRole("region", { name: "Board storage" })).toContainText("saving is paused");
   await expect(page.getByRole("button", { name: "Open task Release checklist", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Open task Low priority arrival", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Low priority arrival", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit Task" });
   await editor.getByLabel("Title", { exact: true }).fill("Local unsaved edit");
   await editor.getByRole("button", { name: "Save Changes" }).click();

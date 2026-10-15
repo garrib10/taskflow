@@ -6,7 +6,6 @@ import type { ColumnCapacity } from "../../domain/board/boardCapacity";
 import type { TaskContext } from "../Board/boardPresentation";
 import { descriptionMatch } from "../Board/boardPresentation";
 import TaskCard from "../TaskCard/TaskCard";
-import type { ReactNode } from "react";
 
 export interface DropHint { status: string; kind: "valid" | "invalid" | "neutral"; label: string; taskId?: string; position?: "before" | "after" }
 interface ColumnProps {
@@ -20,9 +19,8 @@ interface ColumnProps {
   selectedTaskId?: string;
   dropHint?: DropHint | null;
   onEdit: (task: Task) => void;
-  movementActions: (task: Task, index: number, tasks: Task[]) => ReactNode;
 }
-export default function Column({ column, tasks, capacity, contexts, search, isFiltering, manual, selectedTaskId, dropHint, onEdit, movementActions }: ColumnProps) {
+export default function Column({ column, tasks, capacity, contexts, search, isFiltering, manual, selectedTaskId, dropHint, onEdit }: ColumnProps) {
   const { setNodeRef } = useDroppable({ id: column.id, data: { status: column.id } });
   const capacityText = capacity.kind === "unlimited" ? "No work-in-progress limit"
     : capacity.state === "over" ? "Over limit · move or finish work to recover"
@@ -37,7 +35,7 @@ export default function Column({ column, tasks, capacity, contexts, search, isFi
     {dropHint && <p className="column-drop-feedback">{dropHint.kind === "valid" ? "✓ " : dropHint.kind === "invalid" ? "× " : ""}{dropHint.label}</p>}
     <div className="column-tasks">
       {tasks.length === 0 ? <div className="empty-column"><span aria-hidden="true">—</span><p>{capacity.count === 0 ? "No tasks in this stage" : "No tasks match these filters"}</p>{capacity.count === 0 && <small>{column.id === "todo" ? "Create a task to start your workflow." : "Move eligible work here when it is ready."}</small>}</div>
-      : tasks.map((task, index) => <TaskCard key={task.id} task={task} stage={column.title} context={contexts.get(task.id)} excerpt={descriptionMatch(task, search)} manual={manual && !isFiltering} selected={selectedTaskId === task.id} onEdit={onEdit} movementActions={() => movementActions(task, index, tasks)} dropPosition={dropHint?.kind === "valid" && dropHint.taskId === task.id ? dropHint.position : undefined} />)}
+      : tasks.map((task) => <TaskCard key={task.id} task={task} stage={column.title} context={contexts.get(task.id)} excerpt={descriptionMatch(task, search)} manual={manual && !isFiltering} selected={selectedTaskId === task.id} onEdit={onEdit} dropPosition={dropHint?.kind === "valid" && dropHint.taskId === task.id ? dropHint.position : undefined} />)}
     </div>
   </section>;
 }

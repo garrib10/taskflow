@@ -11,7 +11,7 @@ it("provides one page header/main and named board context with native creation a
     overlays={<div role="dialog" aria-label="Task details" />}>
     <section aria-label="Workflow columns">A long task title remains board-owned</section>
   </AppShell>);
-  expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("TaskFlow");
+  expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1, name: "TaskFlow" })).toBeVisible();
   const main = screen.getByRole("main", { name: "Task board" });
   expect(main).toContainElement(screen.getByRole("region", { name: "Workflow columns" }));
   expect(main).toContainElement(screen.getByRole("region", { name: "Board storage" }));

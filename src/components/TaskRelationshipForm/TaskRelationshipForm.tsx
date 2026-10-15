@@ -1,7 +1,8 @@
 import "../../styles/task-dialog.css";
 import Button from "../ui/Button/Button";
 import Field from "../ui/Field/Field";
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Board } from "../../domain/board/Board";
 import type { Task } from "../../domain/task/Task";
 import type { BoardAction } from "../../domain/board/boardReducer";
@@ -24,13 +25,25 @@ export default function TaskRelationshipForm({
   board, task, dispatch, onClose, onSuccess,
 }: TaskRelationshipFormProps) {
   const [parentId, setParentId] = useState(task.parentId ?? "");
+  const [discard, setDiscard] = useState(false);
   const { notification, show, dismiss } = useNotification();
   const candidates = board.columns.flatMap((column) => column.tasks)
     .filter((candidate) => !validateParentAssignment(board, task, candidate.id));
 
   const id = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
-  useModalFocus(dialogRef, onClose);
+  const dirty = parentId !== (task.parentId ?? "");
+  useEffect(() => {
+    if (!dirty) return;
+    function warnBeforeLeaving(event: BeforeUnloadEvent) { event.preventDefault(); }
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [dirty]);
+  function requestClose() {
+    if (parentId !== (task.parentId ?? "")) setDiscard(true);
+    else onClose();
+  }
+  useModalFocus(dialogRef, requestClose, !discard);
   useLayoutEffect(() => { if (notification) document.getElementById(`${id}-parent`)?.focus(); }, [notification, id]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -45,7 +58,7 @@ export default function TaskRelationshipForm({
   }
 
   return (
-    <div ref={dialogRef} tabIndex={-1} className="create-task-modal parent-child-form" role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} aria-describedby={`${id}-task ${id}-description`}>
+    <><div ref={dialogRef} tabIndex={-1} className="create-task-modal parent-child-form" role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} aria-describedby={`${id}-task ${id}-description`}>
       <form onSubmit={handleSubmit}>
         <h2 id={`${id}-title`}>Manage Parent</h2>
         <p id={`${id}-task`}>Task: {task.title}</p>
@@ -60,10 +73,10 @@ export default function TaskRelationshipForm({
           </select>
         </Field>
         <div className="create-task-actions">
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button variant="secondary" onClick={requestClose}>Cancel</Button>
           <Button type="submit" disabled={parentId === (task.parentId ?? "")}>Save Relationship</Button>
         </div>
       </form>
-    </div>
+    </div>{discard && <ConfirmModal title="Discard Relationship Changes?" message="The parent selection has not been saved. Discard this change?" confirmText="Discard" cancelText="Keep Editing" onCancel={() => setDiscard(false)} onConfirm={onClose}/>}</>
   );
 }

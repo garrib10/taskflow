@@ -6,9 +6,10 @@ import Button from "./Button";
 
 it("forwards native attributes, ref, accessible name and mouse events", async () => {
   const user = userEvent.setup(), click = vi.fn(), ref = createRef<HTMLButtonElement>();
-  render(<Button ref={ref} id="retry" name="intent" value="retry" aria-label="Retry saving" aria-describedby="reason" data-initial-focus className="local" variant="secondary" onClick={click}>Retry</Button>);
+  render(<Button icon="plus" ref={ref} id="retry" name="intent" value="retry" aria-label="Retry saving" aria-describedby="reason" data-initial-focus className="local" variant="secondary" onClick={click}>Retry</Button>);
   const button = screen.getByRole("button", { name: "Retry saving" });
   expect(ref.current).toBe(button);
+  expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   expect(button).toHaveAttribute("id", "retry");
   expect(button).toHaveAttribute("name", "intent");
   expect(button).toHaveAttribute("value", "retry");

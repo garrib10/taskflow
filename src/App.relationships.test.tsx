@@ -26,12 +26,12 @@ it("creates linked parent and child tasks through the full application", async (
   const user = userEvent.setup(); render(<App />);
   await user.click(screen.getByRole("button", { name: "+ Create Task" }));
   await createTask(user, "Release parent");
-  await user.click(screen.getByRole("button", { name: "Open task Release parent" }));
+  await user.click(screen.getByRole("button", { name: "Open task Release parent" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   for (const title of ["First child", "Second child"]) {
     await user.click(screen.getByRole("button", { name: "Add SubTask to Release parent" }));
     await createTask(user, title, true);
   }
-  await user.click(within(screen.getByRole("dialog", { name: "Edit Task" })).getByRole("button", { name: "Cancel" }));
+  await user.click(within(screen.getByRole("dialog", { name: "Edit Task" })).getByRole("button", { name: "Close task editor" }));
   const tasks = savedTasks();
   const parent = tasks.find(task => task.title === "Release parent")!;
   expect(parent).toMatchObject({ status: "todo", description: "Release parent description" });
@@ -48,10 +48,10 @@ it("creates linked parent and child tasks through the full application", async (
 it("edits related tasks without changing their identities or links and restores the edits", async () => {
   const { parent, children } = seedFamily();
   const user = userEvent.setup(); const view = render(<App />);
-  await user.click(screen.getByRole("button", { name: "Open task Release parent" }));
+  await user.click(screen.getByRole("button", { name: "Open task Release parent" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   await user.type(screen.getByLabelText("Title"), " edited");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
-  await user.click(screen.getByRole("button", { name: "Open task First child" }));
+  await user.click(screen.getByRole("button", { name: "Open task First child" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   expect(screen.getByRole("button", { name: "Open parent Release parent edited" })).toBeInTheDocument();
   await user.type(screen.getByLabelText("Description"), " updated");
   await user.click(screen.getByRole("button", { name: "Save Changes" }));
@@ -118,15 +118,15 @@ it("excludes invalid parents from management and persists valid reassignment wit
   ]), "links"));
   const user = userEvent.setup(); render(<App />);
   const original = localStorage.getItem(STORAGE_KEY);
-  await user.click(screen.getByRole("button", { name: "Open task Other" }));
-  await user.click(screen.getByRole("button", { name: "Manage parent of Other" }));
+  await user.click(screen.getByRole("button", { name: "Open task Other" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
+  await user.click(screen.getByRole("button", { name: "Choose parent for Other" }));
   const parentSelect = within(screen.getByRole("dialog", { name: "Manage Parent" })).getByLabelText("Parent");
   expect(within(parentSelect).getByRole("option", { name: "Parent" })).toBeInTheDocument();
   expect(within(parentSelect).queryByRole("option", { name: "Child" })).not.toBeInTheDocument();
   expect(within(parentSelect).queryByRole("option", { name: "Other" })).not.toBeInTheDocument();
   await user.keyboard("{Escape}"); await user.keyboard("{Escape}");
-  await user.click(screen.getByRole("button", { name: "Open task Child" }));
-  await user.click(screen.getByRole("button", { name: "Manage parent of Child" }));
+  await user.click(screen.getByRole("button", { name: "Open task Child" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
+  await user.click(screen.getByRole("button", { name: "Change parent of Child" }));
   const dialog = within(screen.getByRole("dialog", { name: "Manage Parent" }));
   const select = dialog.getByLabelText("Parent");
   expect(within(select).queryByRole("option", { name: "Child" })).not.toBeInTheDocument();
@@ -144,12 +144,12 @@ it("confirms child deletion and parent detachment, restores focus and persists n
     makeTask({ id: "p", title: "Parent" }), makeTask({ id: "a", title: "Child A", parentId: "p" }), makeTask({ id: "b", title: "Child B", parentId: "p" }),
   ]), "deletion"));
   const user = userEvent.setup(); const view = render(<App />);
-  if (!screen.queryByRole("button", { name: "Delete Child A" })) await user.click(screen.getByRole("button", { name: "Open task Child A" }));
+  if (!screen.queryByRole("button", { name: "Delete Child A" })) { await user.click(screen.getByRole("button", { name: "Open task Child A" })); await user.click(screen.getByRole("button", { name: "Edit task" })); }
   await user.click(screen.getByRole("button", { name: "Delete Child A" }));
   await user.click(within(screen.getByRole("dialog", { name: "Delete Task" })).getByRole("button", { name: "Delete" }));
   expect(savedTasks()).toHaveLength(2);
   expect(screen.getByRole("button", { name: "Open task Child B" })).toHaveFocus();
-  if (!screen.queryByRole("button", { name: "Delete Parent" })) await user.click(screen.getByRole("button", { name: "Open task Parent" }));
+  if (!screen.queryByRole("button", { name: "Delete Parent" })) { await user.click(screen.getByRole("button", { name: "Open task Parent" })); await user.click(screen.getByRole("button", { name: "Edit task" })); }
   await user.click(screen.getByRole("button", { name: "Delete Parent" }));
   const raw = localStorage.getItem(STORAGE_KEY);
   const confirmation = screen.getByRole("dialog", { name: "Delete Parent Task" });
@@ -157,7 +157,7 @@ it("confirms child deletion and parent detachment, restores focus and persists n
   expect(within(confirmation).getByRole("button", { name: "Cancel" })).toHaveFocus();
   await user.keyboard("{Escape}");
   expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
-  if (!screen.queryByRole("button", { name: "Delete Parent" })) await user.click(screen.getByRole("button", { name: "Open task Parent" }));
+  if (!screen.queryByRole("button", { name: "Delete Parent" })) { await user.click(screen.getByRole("button", { name: "Open task Parent" })); await user.click(screen.getByRole("button", { name: "Edit task" })); }
   await user.click(screen.getByRole("button", { name: "Delete Parent" }));
   await user.click(screen.getByRole("button", { name: "Delete Parent and Detach Subtasks" }));
   expect(savedTasks()).toHaveLength(1);
@@ -165,6 +165,6 @@ it("confirms child deletion and parent detachment, restores focus and persists n
   expect(savedTasks()[0].parentId).toBeUndefined();
   expect(screen.getByRole("button", { name: "Open task Child B" })).toHaveFocus();
   view.unmount(); render(<App />);
-  await user.click(screen.getByRole("button", { name: "Open task Child B" }));
+  await user.click(screen.getByRole("button", { name: "Open task Child B" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   expect(screen.getByRole("dialog", { name: "Edit Task" })).toBeInTheDocument();
 });

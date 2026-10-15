@@ -69,7 +69,7 @@ test("selective order repair saves local edits and full-board relationships with
   await page.getByRole("dialog", { name: "Repair Saved Order?" }).getByRole("button", { name: "Cancel" }).click();
   expect(await saved(page)).toBe(original);
   await expect(repair).toBeFocused();
-  await page.getByRole("button", { name: "Open task Low priority arrival", exact: true }).click();
+  await page.getByRole("button", { name: "Open task Low priority arrival", exact: true }).click(); await page.getByRole("button", { name: "Edit task", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Edit Task" });
   await editor.getByLabel("Title", { exact: true }).fill("Local recovery edit");
   await editor.getByRole("button", { name: "Save Changes" }).click();

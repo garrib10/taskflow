@@ -16,8 +16,12 @@
 .app-shell-header h1 {
   margin: 0;
   font-size: var(--font-size-identity);
-  font-weight: var(--font-weight-heading);
-  letter-spacing: -0.025em;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  color: var(--color-text-title);
+}
+.app-shell-wordmark-flow {
+  color: var(--color-action-primary);
 }
 .app-shell-header p { margin: var(--space-1) 0 0; }
 .last-updated { font-size: var(--font-size-metadata); color: var(--color-text-secondary); }

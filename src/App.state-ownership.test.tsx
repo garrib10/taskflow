@@ -15,7 +15,7 @@ it("keeps criteria and an open draft during an external-storage notice, then hyd
   const criteria = within(screen.getByRole("search", { name: "Search and filter tasks" }));
   await user.type(screen.getByLabelText("Search:"), "Build");
   await user.selectOptions(screen.getByLabelText("Priority"), "medium");
-  await user.click(screen.getByRole("button", { name: "Open task Build search" }));
+  await user.click(screen.getByRole("button", { name: "Open task Build search" })); await user.click(screen.getByRole("button", { name: "Edit task" }));
   const dialog = within(screen.getByRole("dialog", { name: "Edit Task" }));
   await user.clear(dialog.getByLabelText("Title"));
   await user.type(dialog.getByLabelText("Title"), "Draft title");
