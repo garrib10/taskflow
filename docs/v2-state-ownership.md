@@ -1,105 +1,135 @@
-# v2 state ownership
+# TaskFlow v2 architecture and state ownership
 
-Issue #104 preserves the typed domain reducer, persistence session and local interaction owners. No context hierarchy, external state library, URL state or additional storage key is introduced.
+This is the current architecture after #104–#116 and #44–#49, updated for the
+v2.0.0 release preparation. Earlier implementation-stage plans are retained in
+Git history; this guide describes the merged behavior.
 
-## Current ownership map
+## Boundaries and data flow
 
-| Values | Category and owner | Lifetime / storage |
-| --- | --- | --- |
-| Board identity/name, columns, task IDs/content, priority/category, status, timestamps, checklist data and `parentId` | Domain: `useBoardReducer` owns the board; `boardReducer` and validation apply atomic operations against the full board | Schema 2 envelope at LocalStorage `taskflow-board` |
-| Query and Priority/Category/Status filters | View preferences: Board mounts `useBoardViewPreferences`, passing only values/setters to controls | Mount-local; reset on reload/unmount. No URL or LocalStorage backing |
-| Current priority ordering | Existing deterministic presentation policy, not a user-selected state value | No mode selection exists yet; #105/#116 own implementation and independent preference persistence |
-| Visible columns, matching count, active-criteria flag, filter count | Derived view values: pure `filterBoardColumns`, Board and the preference hook | Computed from full domain data and criteria; never persisted or copied into state |
-| Parent/candidates/children, completion progress | Derived domain values: relationship helpers; TaskForm/TaskRelationshipForm render them from the full board | Never a second stored relationship/progress source |
-| Task-form visibility, task-to-edit, task-pending-deletion | Interaction: Board | Local. Selected task snapshots identify interaction context; TaskForm resolves current task/relationships against the latest board |
-| Form title/description/priority/category drafts, staged parent ID, inline checklist text | Interaction drafts: TaskForm, TaskRelationshipForm and SubtaskList respectively | Local until their existing explicit submit action; not autosaved |
-| Nested subtask editor, relationship editor, related-task destination, discard confirmation, validation error/field/attempt | Interaction: the corresponding form | Local to its dialog lifecycle. Dirty state remains derived |
-| Operation notifications and polite announcement sequence | Interaction: Board and form instances of `useNotification` | Local. Notification timers and dismissal do not resolve persistence restrictions |
-| Storage notification display/dismissal, reload confirmation, retry focus | Interaction: App and its notification instance | Local; distinct from the underlying persistence recovery state |
-| Hydrated initial board, known raw bytes, last-saved board identity, paused/migration status, recovery notice, subscribers | Persistence coordination: `PersistenceSession`, exposed through `useBoardReducer` | In memory. Only the validated board and envelope revision are written; notices/coordination are not domain fields |
-| Active drag, over destination and keyboard sensor coordinates | Interaction: dnd-kit within Board; existing coordinate/bounds helpers | Temporary. Successful movement dispatches one validated domain action; cancellation does not save movement state |
-| Focus targets, dialog stack/inert bookkeeping, last-task focus | Interaction: Board refs and existing modal-focus hook | Temporary DOM context, never persistent board data |
-| Responsive media match and mobile filter-sheet visibility | Interaction: BoardToolbar; FilterSheet owns each opening's modal focus lifecycle | Local; widening closes disclosure without resetting criteria |
-| Future read-first details, navigation trail, mobile active stage, scroll anchors | Not yet implemented. Current task presentation is the existing TaskForm | Future interaction/presentation ownership belongs to #44/#45/#47; no speculative fields added |
-| Storage-backed UI preferences | None currently | Future selected Order preference belongs to #116; no automatic persistence of query, filters, dialogs or drafts |
+```mermaid
+flowchart LR
+  UI[Board, details and forms] -->|typed action| R[Domain validation and reducer]
+  R --> B[Complete domain board]
+  B --> S[Pure view and relationship selectors]
+  S --> UI
+  B --> H[useBoardReducer save effect]
+  H --> P[PersistenceSession]
+  P --> V[Validate and encode schema 3]
+  V --> L[LocalStorage board key]
+  L -->|decode or migrate once| P
+  P -->|hydrated or explicitly recovered board| B
+```
 
-Search and filters are presentation choices even though their current lifetime is transient. Keeping them reset-on-reload preserves existing behavior and avoids retaining a hidden restrictive view without an approved persistence requirement. No saved views or URL/shareable filter requirement exists.
+`App` composes board state, ordering preferences, storage feedback and confirmed
+recovery. `Board` owns task selection/navigation, movement/deletion and operation
+feedback. `AppShell` supplies page structure and toolbar/overlay slots; it does
+not own domain actions. Component CSS owns local layout, while shared tokens and
+controls own the common visual language. `useModalFocus` owns modal stacking,
+background isolation, focus containment/restoration and Escape handling.
 
-## Contracts and changes
+## State ownership
 
-`useBoardViewPreferences` is the single owner of the four criteria. It takes no board, domain dispatch or persistence controller. Typed field setters retain other criteria, and `resetCriteria` restores the shared default factory. `filterCount` excludes Search; `isFiltering` ignores whitespace-only queries. Board derives matching columns/count on every render rather than storing copies. Focus after reset remains an interaction decision in Board (or local to the open filter sheet).
-
-Previously Board had four separate criterion states and repeated default/reset wiring. This was already separate from domain data; the focused hook clarifies that boundary without replacing a working architecture. No dialog, form, notification or reducer owner was moved merely to create another abstraction.
-
-Persistence already accepts `Board`, hydrates once per mount, validates unknown data and protects rejected originals/stale tabs. TypeScript's structural typing nevertheless permits variables with extra properties. Previously `saveBoard` validated serialized input but wrote that original input, including extras. It now writes the validator's explicit trusted domain projection. This excludes UI extras at board/column/task/checklist levels while preserving legitimate fields, IDs, dates, relationships, revision/schema format and conflict/retry behavior. The validator remains the single field whitelist; no parallel serializer schema was added. An approved new durable field must be included in that validator as well as its domain type before it can be saved.
-
-External storage changes pause saving and expose recovery rather than automatically replacing the current reducer board. Consequently active criteria and drafts stay in memory until deliberate reload. Hydration on a new mount restores domain data while newly mounted preference/dialog owners use their defaults. Dismissing the displayed notice does not clear the persistence restriction.
-
-## Atomic operation audit (#107)
-
-The #104–#106 reducer already calculates immutable next boards after `validateBoardAction` succeeds. `Board.tryDispatch` returns the existing typed rejection (or `null` for accepted dispatch), and the reducer repeats validation against its own current snapshot. Pointer, touch and keyboard drops share `MOVE_TASK`; forms submit intention-specific actions. No dependent dispatch chain, intermediate relationship update or reducer rewrite is needed.
-
-| Operation and preconditions | One accepted update / failure guarantee | Source and existing regression evidence |
-| --- | --- | --- |
-| Independent/linked creation: unique identities, To Do destination, valid manual metadata, eligible parent and content | Insert the record, optional parent link and latent manual top together; rejected creation returns the original board/timestamp | `boardValidation`, `boardReducer`; `boardReducer.test`, `taskRelationships.test`, `boardOrdering.test` |
-| Content editing: existing unambiguous task, valid current child link and complete proposed content | Update only title/description/priority/category on the current task. Status, parent, checklist completion and positions remain reducer-owned; any rejected field prevents all edits | `taskActions.updateTask`, `taskContent`, `boardValidation`; stale-edit and invalid multi-field cases in `boardReducer.test`, `useBoardReducer.test` |
-| Ordinary/child deletion: existing task, valid source manual order, no linked children | Remove the requested task/position only; parent progress derives from the remaining children. Ordinary parent deletion is rejected unchanged | `boardReducer`, `boardValidation`; `taskRelationships.test`, `boardOrdering.test` |
-| Confirmed parent deletion: existing parent with children and valid source order | Remove parent and its position, detach all surviving children in the same returned board; preserve child content/status/positions. Unrelated task objects survive; unaffected column values survive though this existing operation copies column containers | `boardReducer`; frozen-input parent-deletion cases in `taskRelationships.test`, ordered survivor cases in `boardOrdering.test` |
-| Assignment/reassignment/unlink: existing task, changed link, eligible parent | Set one child-owned parent ID directly, never detach then attach through two dispatches. Self/cycle/depth/missing/completed-parent rejections retain the old relationship. Unlinking can remove an invalid legacy link without deleting work | `validateParentAssignment`, `boardReducer`; `taskRelationships.test`, relationship form tests |
-| Status change / parent or child completion: consistent source/destination, allowed transition, eligible family, valid order/placement, destination capacity | Move one record, change its status and remove/insert manual IDs together. Parent completion checks every child against the same full-board snapshot; failure changes neither parent nor children. Child completion is an independent forward-only move, not a family-wide cascade | `boardValidation`, `boardReducer`, `boardCapacity`; movement/relationship/ordering/capacity tests; keyboard accessibility and browser journeys |
-| Same-column reorder, initialization and explicit repair: correct mode/criteria/identity/metadata/placement | Reorder IDs only; normalization is calculated as part of accepted initialization/repair. Invalid metadata rejects without partial normalization; repeated accepted normalization/reorder is a no-op. Priority data and unrelated columns remain intact | `boardOrdering`, `boardReducer`; frozen-input, stale-gap and repeat-safe normalization cases in `boardOrdering.test` |
-| Hydration/migration | Construct and validate the whole restored board before exposing it; malformed/colliding/deep/incomplete legacy conversions reject the complete result and retain raw originals. Valid over-limit boards restore without relocation | `persistence/validation`, `migrations`, `session`; `persistence.test`, `session.test`, `capacity.test`, `storage.relationships.test` |
-
-Two domain gaps were reproduced before the fix: a direct multi-field edit or linked creation could accept a blank title despite form rejection, and new task/legacy checklist identities could collide across their namespaces despite schema-2 persistence rejecting them. These could leave invalid in-memory data while persistence correctly retained the previous saved board.
-
-`validateTaskContent` now shares the **existing form rules and messages** with creation/edit validation. It returns a typed field/message rejection; forms preserve focus/dirty drafts and still trim submitted text. The reducer's existing preflight prevents all content, priority, link, status, position, count and timestamp changes on rejection. New identities are checked against both task and legacy checklist IDs, including collisions within a proposed new task. Valid legacy titles/descriptions are not revalidated during load or unrelated moves, edits of other records, deletion or reassignment; persistence compatibility is unchanged.
-
-Precedence remains intentional: creation checks identity, initial stage/destination, ordering metadata, proposed relationship, then content and capacity. Updates resolve identity and existing relationship before content; content checks Title, Description, Priority, Category in that order. Movement retains identity/relationship, source/destination, workflow, completion, ordering/placement, then capacity. Deletion and reordering retain their existing guards. All validation precedes mutation.
-
-Saving remains an effect after a complete accepted domain transition, not a transaction combining React and LocalStorage. Same-reference domain rejections trigger no save or partial rewrite. The new hook regression verifies unchanged saved bytes/no writes after rejected edits and identity collisions, then one complete valid write and restoration with links, status, completion and manual positions intact. Quota/conflict failures continue to retain complete local work and expose the approved recovery notice; they do not roll back an accepted board or claim durability.
-
-#108 still owns justified selector consolidation; #113–#115 own formal persistence/schema/migration/recovery changes. No status/parent editing expansion, Manual UI control, new action framework, automatic repair, policy change or visual redesign is included.
-
-Verification: all 375 Vitest cases in 36 files passed with default settings; the focused reducer/hook files passed 37 cases. Lint, strict TypeScript and production build passed. All ten production-build desktop/mobile Chromium cases passed. Separate browser checks covered invalid multi-field editing without storage changes, field focus, valid editing, assignment/reassignment/unlink, blocked parent completion, family completion, parent detachment/child deletion and refresh. A filtered pointer move with latent Manual metadata preserved arrival ties, ordering, criteria and restoration. Same-column Manual controls remain absent, so their accepted/rejected/no-op behavior is verified through the existing domain tests rather than a claimed UI mode.
-
-## Shared selector audit (#108)
-
-The source already has small pure selectors. The justified consolidation is Board's four complete-board task-by-ID scans (drop without destination, movement, deletion selection and drag titles): they now reuse `findTask`. This makes Board use the same unique-ID/null semantics as relationship validation and TaskForm instead of selecting the first ambiguous match. The helper reads full column membership, preserves task references and returns `null` for missing/ambiguous IDs. It remains in `taskRelationships.ts`; no new selector layer or memoization is needed.
-
-| Audited derivation | Shared implementation / decision |
+| State | Owner / lifetime |
 | --- | --- |
-| Task identity, parent, direct children and completion summary | Retain `findTask`, `getParent`, `getChildren`, `getChildProgress`. Board, TaskForm, TaskCard and validation share these. The editor's oldest-first child sort stays local: it sorts the fresh child result, not stored tasks. |
-| Complete status occupancy, remaining slots, full/over/unlimited state | Retain `getColumnCapacity` and `evaluateIncomingCapacity`, used by mutation validation. Do not feed filtered columns into these complete-board decisions. Column membership already groups tasks by status; no second grouping/count abstraction is justified. |
-| Search and combined filters | Retain `filterBoardColumns`: visible columns only, with trimmed/case-insensitive search and AND criteria. Complete board state is still passed separately to relationships, validation and capacity. |
-| Priority/manual order, stable ties and visible ID projection | Retain `selectOrderedTasks`, `manualOrderState` and `sortTasksByPriority`. Sorting copies arrays; manual reads do not normalize order or change priority. Invalid manual metadata returns the existing typed unavailable result. |
-| Movement/completion eligibility | Retain `canMoveTask`/`validateBoardAction`/`validateParentAssignment`. A separate Boolean completion selector would duplicate full-board workflow, family, ordering and capacity validation. |
-| Counts, empty states, filter options and labels | Column visible counts and empty-state wording, Board's one-use visible result count, fixed filter options, column titles, icons and focus/DOM neighbors remain local presentation. Toolbar renders the supplied visible summary and never recalculates occupancy. |
-| Reducer and migration scans | Retain scans that locate mutation targets, build next membership or validate unknown saved data. They serve different purposes from UI task identity lookup; rewriting them would not reduce a demonstrated selector inconsistency. |
+| Tasks, stage membership, links, priorities/categories, timestamps, arrival arrays and optional manual positions | `useBoardReducer` + domain reducer; board schema 3 |
+| Selected Priority/Manual mode | `useOrderingPreference`; independent preference schema 1 |
+| Query and Category/Priority/Status filters | `useBoardViewPreferences`; reset on remount |
+| Selected task/details/editor, mobile active stage, dialogs, drafts, drag state, focus targets and feedback | Board/form/toolbar/accessibility owners; temporary interaction state |
+| Recovery classification, known raw snapshot/revision, notice and saved-reference guards | `PersistenceSession`; in memory, not serialized board fields |
+| Visible tasks/counts, sorted projections, parent context, child progress and capacity | Pure selectors/configuration; derived from the complete board |
 
-Current display pipeline: full board -> `filterBoardColumns` visible projection -> Column's default Priority `selectOrderedTasks` -> cards/visible count/empty state. This is correct while no Manual UI switch exists. Future Manual presentation must supply the **full** column to `selectOrderedTasks` and pass matching visible IDs; validating the filtered column's complete manual metadata would incorrectly treat hidden positions as corruption. Ordering the complete column and then projecting matching IDs preserves both stable priority ties and full manual positions. Do not normalize or save from a selector.
+No external state library, backend, URL-backed filter state or speculative global
+context is needed for this workload. State ownership is separated even when
+related values share one component. See [preferences](v2-view-preferences.md).
 
-Retained selectors have no React, browser, CSS or component imports. Their existing frozen-input tests cover full/visible separation, multi-filter combinations, hidden parents/children, current progress, both ordering modes, stable ties, full/over/unlimited capacity and repeat-safe normalization. The added lookup regression checks empty/missing/ambiguous IDs, hidden references, deterministic repeats and unchanged source; the existing Board movement test now also checks a stale task ID. No standalone framework, generic wrappers, dependencies, new durable fields or speculative memoization were introduced. Future derivations should stay local unless multiple real consumers need the same domain meaning or implementations can disagree.
+## TypeScript and domain operations
 
-Verification: all 376 Vitest cases in 36 files passed with default settings; the focused relationship/Board files passed 50 cases. Lint, strict TypeScript and production build passed. All ten production-build desktop/mobile Chromium journeys passed, including capacity rejection with hidden occupants. Separate browser checks verified visible column/toolbar counts, search, individual and combined filters, stable Priority display, empty states/reset and unchanged saved bytes. Filtered pointer movement preserved latent Manual positions, arrival ties and restoration. Manual UI controls remain deferred, with both ordering modes verified by the existing domain tests.
+`TaskStatus`, `Priority`, `TaskCategory` and action unions restrict supported
+values. `TaskEdits` permits content fields while identity, status and relationships
+remain intention-specific reducer operations. `Date` values belong to the domain;
+DTOs serialize canonical strings. Imports use explicit type boundaries. Strict
+TypeScript, unused-value checks and exhaustive discriminated-result handling
+support the runtime guards; TypeScript does not validate stored JSON.
 
-Parent #21 review: #104–#107 are merged/closed; #108 still requires PR review/merge. Existing task/action types and preflight validation cover typed predictable transitions; `taskRules`/`taskPriority` are independent of UI components; persistence modules import no presentation components; the hooks separate domain, view state and saving. Shared helpers and the regression checks above satisfy the selector/testing requirements. The parent's current acceptance criteria contain no formal v2 schema or migration gate, so #113–#115 do not prevent its closure after #108 merges. Keep #21 open until then. The known priority/category metadata-map coupling remains a later alignment concern, not a dependency on React or presentation components, and this audit does not complete the persistence release work.
+IDs and action timestamps are supplied before dispatch. UI preflight produces a
+field or movement error, then the reducer repeats validation against its own
+current complete snapshot. Accepted operations return one immutable next board;
+rejections retain the original reference and timestamp. This protects against
+stale edits and avoids intermediate partial changes.
 
-## Contributor decisions and deferred work
+Creation, content edits, status movement, reordering, parent assignment and
+confirmed parent deletion are explicit actions. Parent deletion removes the
+parent and detaches surviving children in one update. Assignment changes one
+child-owned `parentId`; parent child-ID arrays/progress are not duplicate stored
+sources. Self-links, cycles, deeper nesting and finishing a parent with unfinished
+children are rejected. Children retain independent workflow stages.
 
-Put durable facts/rules in domain entities/actions only when required by approved behavior. Keep display choices separate and give them an explicit lifetime; persistence requires an approved benefit and independent validation. Keep incomplete edits, dialog/drag/focus context and feedback local to the interaction owner. Compute projections, counts and dirty flags from their sources. New controls should receive only their required values/actions, not a general-purpose global state object.
+Content validation shares form/domain rules without applying new form limits
+retroactively to supported historical saved content. Identity checks cover tasks
+and retained checklist entries. The detailed atomicity contracts remain in
+[reducer/validation source](../src/domain/board/boardValidation.ts) and their tests.
 
-#105 owns durable manual positions and typed ordering operations; #106 owns capacity rules/counts; #107 owns further atomic operation work; #108 owns justified selector consolidation. #113 decides any future schema change and related migration work. [#116 implements independent ordering-preference persistence](v2-view-preferences.md). Existing persistence validation's priority/category presentation-map dependency is unchanged here and remains scoped domain/persistence alignment work under #21/#43; it is not a UI-state serialization problem.
+## Selectors, workflow and ordering
 
-No behavior, visuals, schema version, initialization policy, form lifecycle or recovery policy is redesigned by #104.
+`taskRelationships` provides unique task lookup, parent/children and completion
+progress. `filterBoardColumns` produces a projection rather than editing source
+arrays. `selectOrderedTasks` applies Priority or Manual order to visible IDs.
+`boardPresentation` assembles card relationship context. #49 found these derived
+calculations inexpensive at the approved workload tiers; no broad memoization or
+second selector framework was introduced.
 
-## Verification
+Stage movement is forward by one step. `boardCapacity` counts the full board,
+including hidden records and children: In Progress=5, In Review=3, other stages
+unlimited. Hydration accepts over-limit columns; incoming moves remain blocked,
+while exits and valid same-column placements can recover the board.
 
-Focused tests exercise independent criterion updates, derived counts/matches, criteria-only reset, preference survival across domain operations, unchanged saved bytes for view actions, and default preferences with preserved domain data after remount. A storage regression test supplies structurally compatible objects with UI extras at every nesting level and verifies an exact domain-only envelope and valid restoration. An application test verifies that an external storage notice preserves a real open draft and filters, and that remount restores external domain data without persisting interaction context.
+Column `tasks` arrays preserve arrival ties. Optional domain `manualOrder` lists
+contain every column task ID once; they never change task priorities or arrival
+arrays. First explicit Manual selection initializes the full board from Priority
+and requires a verified save before persisting the mode. Existing valid positions
+survive mode switches. Filtered views preserve hidden positions and disable
+same-stage reordering. Pointer/touch Manual placement can target a gap; keyboard
+cross-stage movement uses the defined top placement. All input methods share
+workflow, relationship, order and capacity validation.
 
-Existing reducer/relationship, migration/recovery, form/dialog, notification, responsive toolbar and browser journeys remain the behavioral baseline. Lint, strict TypeScript checking and the production build passed. The focused preference/persistence tests passed 87 cases, and the real draft/conflict application test passed. All eight desktop/mobile Chromium journeys passed; a separate filtered pointer movement check preserved criteria, reset focus, domain-only storage and the moved task after reload.
+## Persistence and recovery
 
-The default two-worker `npm test` run passed 311/314 cases: two existing long application journeys timed out at 5000ms and a following filter test showed mixed typing after a timeout. An untouched `develop` checkout at `f89cddf` also timed out in both affected journeys, with follow-on failures. This reproduces pre-existing timing/isolation symptoms; it does not establish an application defect or a single environmental cause. Running the complete branch suite with `npm test -- --maxWorkers=1` passed all 314 cases in 32 files. No timeout, assertion, isolation setting or test configuration was changed. The default concurrency remains a local verification limitation, documented in the #104 PR.
+`utils/storage.ts` parses unknown input, then schema/migration validators construct
+an explicit trusted projection. `schema.ts` maps domain dates and optional order
+into schema-3 DTOs; uninitialized order is stored as `null`. Unknown supported
+fields are omitted from later serialization. Future schema versions are preserved
+without interpreting their payload. Board and preference versions are independent.
 
-## Persisted ordering follow-through (#116)
+`PersistenceSession` hydrates once per mount, exposes typed recovery states and
+coordinates normal saves, explicit retry/read/repair/replacement and external-tab
+warnings. Current valid hydration does not rewrite storage. Supported legacy
+migration validates the whole converted board before writeback; repeated loads
+do not duplicate children or regenerate manual positions. Schema-2-to-3 preserves
+valid legacy content, links, dates, arrival order and optional manual positions.
 
-[The view-preference guide](v2-view-preferences.md) records the implemented exception to mount-local display choices: selected Priority/Manual mode is independently persisted. Search and filters remain mount-local. App owns the ordering hook after board hydration; the existing Board view hook continues to own only criteria. Full-column ordering is now derived before projecting matching IDs. Current-schema Manual positions are never duplicated in the preference key, and dialogs/drafts remain temporary. Earlier #104–#108 verification sections are historical records.
+A normal save verifies the expected raw snapshot, validates/projects the entire
+candidate, serializes it with a revision, performs one board-key write, and
+checks readback. Autosave runs after an accepted domain update; it is not a
+transaction joining React state to LocalStorage. A failed write retains local
+work with explicit feedback instead of rolling the reducer back.
+
+Invalid/future/failed-migration sources remain untouched and paused; damaged order
+restores safe core data in Priority until confirmed repair. Read restrictions,
+write failures and conflicts have separate recovery actions. Replacement requires
+confirmation; dismissing feedback does not clear the restriction. LocalStorage
+has no atomic compare-and-swap, and a postflight failure can follow a complete
+write. Other-tab data is neither silently adopted nor merged.
+
+See the [schema contract](v2-persistence-schema.md), [migration guide](v2-data-migration.md)
+and [recovery guide](v2-persistence-recovery.md) for exact result variants,
+conversion rules and preservation limits. There is no automatic downgrade,
+backup/export, server storage or cross-device synchronization.
+
+## Evidence
+
+The [testing risk map](v2-testing.md) links domain, integration, migration,
+recovery, input and accessibility contracts to tests. The [#49 QA report](v2-performance-regression.md)
+records 487 Vitest tests, 70 Chromium cases, selected Firefox/WebKit coverage,
+representative workloads, bundle inspection and Lighthouse results. The release
+checklist distinguishes these technical results from pending exact-origin staging
+and production validation.

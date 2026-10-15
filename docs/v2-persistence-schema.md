@@ -4,17 +4,17 @@
 
 Issue [#113](https://github.com/garrib10/taskflow/issues/113) defines this contract under [#43](https://github.com/garrib10/taskflow/issues/43). [#114's implementation](v2-data-migration.md) now reads and writes schema 3 with supported legacy migration and paused order-recovery handoff. [#115 recovery](v2-persistence-recovery.md) now provides confirmed repair/replacement and explicit retries. [#116 implements independent ordering preferences](v2-view-preferences.md). Application release numbers and persistence schema numbers are independent.
 
-This contract builds on the completed [state ownership](v2-state-ownership.md), [manual ordering](v2-manual-ordering.md) and [capacity](v2-column-capacity.md) work (#104–#108), and the approved [ordering decisions in #98](https://github.com/garrib10/taskflow/issues/98). It does not redesign relationships, introduce a backend, add multiple boards or enable Manual controls.
+This contract builds on the completed [state ownership](v2-state-ownership.md), [manual ordering](v2-manual-ordering.md) and [capacity](v2-column-capacity.md) work (#104–#108), and the approved [ordering decisions in #98](https://github.com/garrib10/taskflow/issues/98). The completed application includes Manual controls and independent preferences through #116; this contract does not introduce a backend or multiple boards. Parent #43 is closed. The implementation-stage audit and original test counts below are historical, not the current release status.
 
-## Implementation audit at #113 (schema 2)
+## Historical implementation audit at #113 (schema 2)
 
-The single-board key is `taskflow-board`, scoped to browser origin and profile. [storage.ts](../src/utils/storage.ts) owns storage access and serializes the validator's trusted projection. The current envelope is `{ schemaVersion: 2, revision, board }`. Dates become canonical UTC ISO strings on serialization and return to domain `Date` values on hydration.
+The single-board key is `taskflow-board`, scoped to browser origin and profile. [storage.ts](../src/utils/storage.ts) owns storage access and serializes the validator's trusted projection. At #113 the envelope was `{ schemaVersion: 2, revision, board }`. Dates become canonical UTC ISO strings on serialization and return to domain `Date` values on hydration.
 
 [validation.ts](../src/persistence/validation.ts) validates the board, enum values, IDs, dates, column membership and relationships. Current schema 2 permits an absent column `manualOrder`; a present list must contain exactly the column's task IDs once each. Malformed lists currently reject the whole board. Valid optional lists round-trip; older v1.5 readers omit this metadata on re-save.
 
 [migrations.ts](../src/persistence/migrations.ts) handles unversioned boards and schema 1. The former fills supported legacy omissions; the latter converts legacy checklist entries to linked tasks. Current schema-2 checklist arrays still round-trip unchanged. [session.ts](../src/persistence/session.ts) and [useBoardReducer.ts](../src/hooks/useBoardReducer.ts) own hydration, autosave, retry and conflicts. Missing storage initializes the existing sample board. Invalid, future, failed-migration or unavailable storage produces a paused workspace without replacing the original.
 
-Search and filters are mount-local in [useBoardViewPreferences.ts](../src/hooks/useBoardViewPreferences.ts). There is currently no durable ordering-mode preference or Manual mode control. Capacity limits are domain policy, not saved configuration; over-limit boards remain loadable.
+Search and filters are mount-local in [useBoardViewPreferences.ts](../src/hooks/useBoardViewPreferences.ts). At that stage there was no durable ordering-mode preference or Manual mode control. Capacity limits are domain policy, not saved configuration; over-limit boards remain loadable.
 
 ## Version decision
 
@@ -142,15 +142,15 @@ Keep the existing single-snapshot writer: validate/project/serialize the complet
 
 LocalStorage provides no compare-and-swap transaction. Preserve the existing post-write replacement check and document its limitation: a postflight failure can occur **after** a complete candidate was written. Do not promise that every failed save leaves old bytes untouched or attempt an unsafe automatic rollback. Retry keeps local work; explicit reload may discard it with confirmation.
 
-## Implementation and verification gates
+## Implementation history and verification
 
-- **#114:** implement the schema-3 DTO boundary and pure migration chain; exercise v1.5 schema-2 fixtures, absent/partial/valid order, repeated conversion, checklist preservation and future-version refusal.
-- **#115:** independently classify invalid core versus damaged order; verify raw preservation, unsaved local edits, selective confirmed repair, conflict/write failures and sanitized diagnostics.
-- **#116:** implement the independent preference boundary, Priority fallbacks, guarded Manual restoration and board/preference failure combinations.
-- **#43:** remains open until those implementations and their acceptance evidence are complete.
+- **#114 completed:** schema-3 DTO boundary and pure migration chain; coverage includes v1.5 schema-2 fixtures, absent/partial/valid order, repeated conversion, checklist preservation and future-version refusal.
+- **#115 completed:** separate invalid core/damaged-order recovery; coverage includes raw preservation, unsaved local edits, selective confirmed repair, conflict/write failures and sanitized diagnostics.
+- **#116 completed:** independent preferences, Priority fallbacks, guarded Manual restoration and board/preference failure coverage.
+- **#43:** closed after its implementation and acceptance review; release promotion remains #50.
 
-At #113, existing [ordering persistence tests](../src/persistence/ordering.test.ts), [capacity tests](../src/persistence/capacity.test.ts), [relationship storage tests](../src/utils/storage.relationships.test.ts), session tests and reducer tests provided the schema-2 regression baseline. #113 changed documentation only. #114 adds schema-3 implementation and verification in the linked migration guide; the remaining gates above are not claimed complete by the original specification.
+At #113, existing [ordering persistence tests](../src/persistence/ordering.test.ts), [capacity tests](../src/persistence/capacity.test.ts), [relationship storage tests](../src/utils/storage.relationships.test.ts), session tests and reducer tests provided the schema-2 regression baseline. #113 changed documentation only. #114 adds schema-3 implementation and verification in the linked migration guide; the original specification did not claim completion of those later implementations. Their current behavior is documented in the linked migration, recovery and preference guides.
 
 Representative fixture review covered schema-2 linked parent/child records with canonical dates, schema-2 boards without positions, valid optional lists with independent arrival ties, retained current checklist data, unversioned/schema-1 checklist conversion and already-converted children. The compatibility matrix preserves each recognized valid field and retains existing malformed-data rejection; it does not promise support for unidentified external formats. Serialization tests already verify projection of UI extras, while capacity tests verify that restored over-limit boards remain loadable.
 
-Verification on October 11, 2026: the focused persistence/relationship-storage/reducer run passed **117 tests in 6 files**; default `npm test` passed **376 tests in 36 files**. `npm run lint`, `npm run typecheck` and `npm run build` passed. Local documentation links and `git diff --check` passed. These checks validate the unchanged runtime baseline; future contract implementation still requires the gates above. Browser reruns are not required for this documentation-only change.
+Verification on October 11, 2026: the focused persistence/relationship-storage/reducer run passed **117 tests in 6 files**; default `npm test` passed **376 tests in 36 files**. `npm run lint`, `npm run typecheck` and `npm run build` passed. Local documentation links and `git diff --check` passed. These checks record the original #113 documentation baseline, not the final v2 suite. The completed implementation and current release checks are linked from the [release checklist](v2-release-checklist.md).
