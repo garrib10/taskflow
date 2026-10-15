@@ -20,8 +20,8 @@ export default function AppShell({ lastUpdated, onCreateTask, feedback, toolbar,
     <div className="app-shell">
       <header className="app-shell-header">
         <div className="app-shell-identity">
-          <h1><img className="app-shell-brand-mark" src="/favicon-32x32.png?v=clay" alt="" width="32" height="32" />TaskFlow</h1>
-          <p>Rule-Based Workflow Board</p>
+          <h1><img className="app-shell-brand-mark" src="/apple-touch-icon.png?v=clay" alt="TaskFlow" width="32" height="32" /></h1>
+          <p>Clear priorities. Steady progress.</p>
           <p className="last-updated">Last updated: <time dateTime={lastUpdated.toISOString()}>{updated}</time></p>
         </div>
         <Button icon="plus" aria-label="+ Create Task" className="shell-create-task" data-focus-fallback onClick={onCreateTask}>Create Task</Button>
