@@ -3,6 +3,8 @@
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 
 **Clear priorities. Steady progress.** TaskFlow is a browser-based workflow board
 built with React, strict TypeScript, Vite and dnd-kit. It brings together a
@@ -152,9 +154,6 @@ there is no automatic downgrade migration.
 [Independent preferences](docs/v2-view-preferences.md)
 
 ## Testing and quality
-
-[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 
 ```bash
 npm run lint
