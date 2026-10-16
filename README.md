@@ -153,6 +153,9 @@ there is no automatic downgrade migration.
 
 ## Testing and quality
 
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+
 ```bash
 npm run lint
 npm run typecheck
