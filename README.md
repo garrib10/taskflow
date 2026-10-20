@@ -3,18 +3,19 @@
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 
 **Clear priorities. Steady progress.** TaskFlow is a browser-based workflow board
 built with React, strict TypeScript, Vite and dnd-kit. It brings together a
 responsive Kanban interface, explicit workflow rules and validated local
 persistence in a frontend engineering project.
 
-**v2.0.0 release preparation:** the implementation and technical QA are merged
-into `develop`. Staging validation, production promotion, tagging and publication
-remain under [#50](https://github.com/garrib10/taskflow/issues/50). The
-[production demo](https://taskflow-garrib10.vercel.app/) follows `main` and will
-continue showing the previous release until promotion. See the
-[release notes](docs/releases/v2.0.0.md) and [release checklist](docs/v2-release-checklist.md).
+**TaskFlow v2.0.0 is released.** Try the
+[production demo](https://taskflow-garrib10.vercel.app/) or read the
+[published release notes](https://github.com/garrib10/taskflow/releases/tag/v2.0.0).
+Production follows `main`; subsequent updates are reviewed and tested through
+`develop → staging → main`.
 
 ## The v2 modernization
 
