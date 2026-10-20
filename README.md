@@ -6,6 +6,7 @@
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](https://taskflow-garrib10.vercel.app/)
+[![Frontend CI](https://github.com/garrib10/taskflow/actions/workflows/frontend-ci.yml/badge.svg?branch=main&event=push)](https://github.com/garrib10/taskflow/actions/workflows/frontend-ci.yml)
 
 **Clear priorities. Steady progress.** TaskFlow is a browser-based workflow board
 built with React, strict TypeScript, Vite and dnd-kit. It brings together a
